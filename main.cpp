@@ -18,7 +18,7 @@ const double ICTCalib = 4.935E-9;
 
 void GetList(std::vector<std::string> &osclist, std::vector<std::string> &pointlist) {
     osclist.clear();
-    std::ifstream file("/home/dphan/Documents/GitHub/UT3-20240625/osc.csv");
+    std::ifstream file("/home/dphan/Documents/GitHub/UT3-DataAnalysis/osc.csv");
     std::string line;
     while (file >> line) {
         osclist.push_back(line);
@@ -26,7 +26,7 @@ void GetList(std::vector<std::string> &osclist, std::vector<std::string> &pointl
     file.close();
 
     pointlist.clear();
-    file = std::ifstream("/home/dphan/Documents/GitHub/UT3-20240625/point.csv");
+    file = std::ifstream("/home/dphan/Documents/GitHub/UT3-DataAnalysis/point.csv");
     while (file >> line) {
         pointlist.push_back(line);
     }
@@ -36,7 +36,7 @@ void GetList(std::vector<std::string> &osclist, std::vector<std::string> &pointl
 TGraph* GetOscData(const int& id) {
     auto filename = osclist[id];
 
-    std::ifstream file("/home/dphan/Documents/GitHub/UT3-20240625/Oscilloscope/" + filename);
+    std::ifstream file("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Oscilloscope/" + filename);
     if (!file.is_open()) {
         std::cerr << "Error: could not open file" << std::endl;
         return nullptr;
@@ -70,7 +70,7 @@ void PlotOscData(const int& id) {
     if (gr != nullptr) {
         auto c = new TCanvas("c", "c", 1600, 800);
         gr->Draw("ALP");
-        c->SaveAs(("/home/dphan/Documents/GitHub/UT3-20240625/Plot/Osc/" + osclist[id] + ".png").c_str());
+        c->SaveAs(("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Plot/Osc/" + osclist[id] + ".png").c_str());
         delete c;
     }
 }
@@ -101,7 +101,7 @@ void PlotBeamChargeDist(const std::vector<double>& EBeamCharge) {
     leg->AddEntry((TObject*)0, Form("Q = %.1f #pm %.1f (pC)", h->GetMean(), h->GetStdDev()), "");
     leg->Draw();
 
-    c->SaveAs("/home/dphan/Documents/GitHub/UT3-20240625/Plot/BeamChargeDist.png");
+    c->SaveAs("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Plot/BeamChargeDist.png");
     delete c;
 }
 
@@ -109,7 +109,7 @@ void GetHistsFromImage(const int& id, TH1D* pxVal, TH2D* pxVal2D) {
     pxVal->Reset();
     pxVal2D->Reset();
     auto filename = pointlist[id];
-    auto focusImage = TIFFOpen(("/home/dphan/Documents/GitHub/UT3-20240625/Point/" + filename).c_str(), "r");
+    auto focusImage = TIFFOpen(("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Point/" + filename).c_str(), "r");
     int NPixelX, NPixelY;
     if (focusImage) {
         // Get pixel data from the image
@@ -129,7 +129,7 @@ void GetHistsFromImage(const int& id, TH1D* pxVal, TH2D* pxVal2D) {
 }
 
 void PlotPointHist1D(TH1D* pxVal, const int& id) {
-    auto c = new TCanvas("c", "c", 1600, 1600);
+    auto c = new TCanvas("c", "c", 3200, 1600);
     c->SetLogy();
     pxVal->SetLineColor(kRed);
     pxVal->SetLineWidth(3);
@@ -141,7 +141,7 @@ void PlotPointHist1D(TH1D* pxVal, const int& id) {
     pxVal->GetYaxis()->SetNdivisions(505);
     pxVal->SetTitle("");
     pxVal->Draw();
-    c->SaveAs(("/home/dphan/Documents/GitHub/UT3-20240625/Plot/PointHist1D/" + pointlist[id] + ".png").c_str());
+    c->SaveAs(("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Plot/PointHist1D/" + pointlist[id] + ".png").c_str());
     delete c;
 }
 
@@ -157,7 +157,7 @@ int main() {
     PlotBeamChargeDist(EBeamCharge);
 
     for (int i = 0; i < pointlist.size(); i++) {
-        auto pxVal = new TH1D(Form("pxVal_%05i", i), "pxVal", 65536, 0, 65536);
+        auto pxVal = new TH1D(Form("pxVal_%05i", i), "pxVal", 656, 0, 65600);
         auto pxVal2D = new TH2D(Form("pxVal2D_%05i", i), "pxVal2D", 2048, -0.5, 2047.5, 1536, -0.5, 1535.5);
         GetHistsFromImage(i, pxVal, pxVal2D);
         PlotPointHist1D(pxVal, i);
