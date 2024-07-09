@@ -17,6 +17,31 @@ std::vector<std::string> osclist;
 std::vector<std::string> pointlist;
 const double ICTCalib = 4.935E-9;
 
+class FIRFilter {
+public:
+    // Constructor to initialize filter coefficients
+    FIRFilter(const std::vector<double>& coefficients)
+        : coeffs(coefficients) {}
+
+    // Apply the filter to a single sample
+    double filter(double sample) {
+        delayLine.insert(delayLine.begin(), sample); // Add new sample at beginning
+        if (delayLine.size() > coeffs.size()) {
+            delayLine.pop_back(); // Remove oldest sample
+        }
+
+        double output = 0.0;
+        for (size_t i = 0; i < delayLine.size(); ++i) {
+            output += delayLine[i] * coeffs[i];
+        }
+        return output;
+    }
+
+private:
+    std::vector<double> coeffs; // Filter coefficients
+    std::vector<double> delayLine; // Delay line
+};
+
 void GetList(std::vector<std::string> &osclist, std::vector<std::string> &pointlist) {
     osclist.clear();
     std::ifstream file("/home/dphan/Documents/GitHub/UT3-DataAnalysis/osc.csv");
@@ -63,14 +88,157 @@ TGraph* GetOscData(const int& id) {
     }
     file.close();
 
+    std::vector<double> coeffs =
+        {
+        0.000000000000000000,
+        -0.000011466433343440,
+        -0.000048159680438716,
+        -0.000070951498745996,
+        0.000000000000000000,
+        0.000226394896924650,
+        0.000570593070542985,
+        0.000843882357908127,
+        0.000742644459879189,
+        -0.000000000000000001,
+        -0.001387330856962112,
+        -0.002974017320060804,
+        -0.003876072294410999,
+        -0.003078546062261788,
+        0.000000000000000002,
+        0.004911281747189231,
+        0.009897689392343489,
+        0.012239432700612913,
+        0.009302643950572093,
+        -0.000000000000000005,
+        -0.013947257358995015,
+        -0.027649479941983943,
+        -0.034045985830080311,
+        -0.026173578588735643,
+        0.000000000000000007,
+        0.043288592274982135,
+        0.096612134128292462,
+        0.148460098539443669,
+        0.186178664190551207,
+        0.199977588313552862,
+        0.186178664190551235,
+        0.148460098539443669,
+        0.096612134128292462,
+        0.043288592274982128,
+        0.000000000000000007,
+        -0.026173578588735653,
+        -0.034045985830080325,
+        -0.027649479941983936,
+        -0.013947257358995019,
+        -0.000000000000000005,
+        0.009302643950572094,
+        0.012239432700612920,
+        0.009897689392343489,
+        0.004911281747189235,
+        0.000000000000000002,
+        -0.003078546062261790,
+        -0.003876072294411004,
+        -0.002974017320060808,
+        -0.001387330856962112,
+        -0.000000000000000001,
+        0.000742644459879189,
+        0.000843882357908127,
+        0.000570593070542984,
+        0.000226394896924650,
+        0.000000000000000000,
+        -0.000070951498745996,
+        -0.000048159680438716,
+        -0.000011466433343440,
+        0.000000000000000000
+        };
+    FIRFilter filter(coeffs);
+
+    for (int i = 0; i < gr->GetN(); i++) {
+        double x, y;
+        gr->GetPoint(i, x, y);
+        gr->SetPoint(i, x, filter.filter(y));
+    }
+
     return gr;
 }
 
 void PlotOscData(const int& id) {
     auto gr = GetOscData(id);
+    auto gr_filtered = GetOscData(id);
+        std::vector<double> coeffs =
+        {
+        0.000000000000000000,
+        -0.000011466433343440,
+        -0.000048159680438716,
+        -0.000070951498745996,
+        0.000000000000000000,
+        0.000226394896924650,
+        0.000570593070542985,
+        0.000843882357908127,
+        0.000742644459879189,
+        -0.000000000000000001,
+        -0.001387330856962112,
+        -0.002974017320060804,
+        -0.003876072294410999,
+        -0.003078546062261788,
+        0.000000000000000002,
+        0.004911281747189231,
+        0.009897689392343489,
+        0.012239432700612913,
+        0.009302643950572093,
+        -0.000000000000000005,
+        -0.013947257358995015,
+        -0.027649479941983943,
+        -0.034045985830080311,
+        -0.026173578588735643,
+        0.000000000000000007,
+        0.043288592274982135,
+        0.096612134128292462,
+        0.148460098539443669,
+        0.186178664190551207,
+        0.199977588313552862,
+        0.186178664190551235,
+        0.148460098539443669,
+        0.096612134128292462,
+        0.043288592274982128,
+        0.000000000000000007,
+        -0.026173578588735653,
+        -0.034045985830080325,
+        -0.027649479941983936,
+        -0.013947257358995019,
+        -0.000000000000000005,
+        0.009302643950572094,
+        0.012239432700612920,
+        0.009897689392343489,
+        0.004911281747189235,
+        0.000000000000000002,
+        -0.003078546062261790,
+        -0.003876072294411004,
+        -0.002974017320060808,
+        -0.001387330856962112,
+        -0.000000000000000001,
+        0.000742644459879189,
+        0.000843882357908127,
+        0.000570593070542984,
+        0.000226394896924650,
+        0.000000000000000000,
+        -0.000070951498745996,
+        -0.000048159680438716,
+        -0.000011466433343440,
+        0.000000000000000000
+        };
+    FIRFilter filter(coeffs);
+
+    for (int i = 0; i < gr_filtered->GetN(); i++) {
+        double x, y;
+        gr_filtered->GetPoint(i, x, y);
+        gr_filtered->SetPoint(i, x, filter.filter(y));
+    }
+
     if (gr != nullptr) {
         auto c = new TCanvas("c", "c", 1600, 800);
-        gr->Draw("ALP");
+        gr->Draw("AL");
+        gr_filtered->SetLineColor(kRed);
+        gr_filtered->Draw("SAME L");
         c->SaveAs(("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Plot/Osc/" + osclist[id] + ".png").c_str());
         delete c;
     }
@@ -79,13 +247,14 @@ void PlotOscData(const int& id) {
 void PlotBeamChargeDist(const std::vector<double>& EBeamCharge) {
     gStyle->SetOptStat(0);
 
-    auto h = new TH1D("h", "h", 50, 0, 50);
+    auto h = new TH1D("h", "h", 30, 9.5, 39.5);
     for (auto& elem : EBeamCharge) {
         h->Fill(elem);
     }
 
-    auto c = new TCanvas("c", "c", 1600, 1600);
+    auto c = new TCanvas("c", "c", 1800, 1800);
     h->SetLineColor(kRed);
+    h->SetFillColorAlpha(kRed, 0.4);
     h->SetLineWidth(3);
     h->GetXaxis()->SetTitle("Beam Charge (pC)");
     h->GetYaxis()->SetTitle("Counts");
@@ -93,7 +262,8 @@ void PlotBeamChargeDist(const std::vector<double>& EBeamCharge) {
     h->GetYaxis()->CenterTitle();
     h->GetXaxis()->SetNdivisions(505);
     h->GetYaxis()->SetNdivisions(505);
-    h->GetYaxis()->SetRangeUser(0, 8);
+    h->GetYaxis()->SetRangeUser(0, 15);
+    h->GetXaxis()->SetLimits(10, 40);
     h->SetTitle("");
     h->Draw();
 
@@ -188,29 +358,30 @@ int main() {
     for (int i = 0; i < osclist.size(); i++) {
         auto gr = GetOscData(i);
         EBeamCharge.push_back(gr->Integral() * 1000. / ICTCalib);
+        // PlotOscData(i);
     }
     PlotBeamChargeDist(EBeamCharge);
 
-    std::vector<double> totalPixelValues;
-    for (int i = 0; i < pointlist.size(); i++) {
-        auto pxVal = new TH1D(Form("pxVal_%05i", i), "pxVal", 656, 0, 65600);
-        auto pxVal2D = new TH2D(Form("pxVal2D_%05i", i), "pxVal2D", 2048, -0.5, 2047.5, 1536, -0.5, 1535.5);
-        double totalPixelValue = 0;
-        GetHistsFromImage(i, pxVal, pxVal2D, totalPixelValue);
-        totalPixelValues.push_back(totalPixelValue);
-        delete pxVal;
-        delete pxVal2D;
-    }
-
-    auto corr = new TGraph();
-    for (int i = 0; i < totalPixelValues.size(); i++) {
-        corr->SetPoint(corr->GetN(), EBeamCharge[i], totalPixelValues[i]);
-    }
-    auto c = new TCanvas("c", "c", 1600, 1600);
-    corr->SetMarkerStyle(20);
-    corr->SetMarkerSize(3);
-    corr->Draw("AP");
-    c->SaveAs("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Plot/Correlation.png");
+    // std::vector<double> totalPixelValues;
+    // for (int i = 0; i < pointlist.size(); i++) {
+    //     auto pxVal = new TH1D(Form("pxVal_%05i", i), "pxVal", 656, 0, 65600);
+    //     auto pxVal2D = new TH2D(Form("pxVal2D_%05i", i), "pxVal2D", 2048, -0.5, 2047.5, 1536, -0.5, 1535.5);
+    //     double totalPixelValue = 0;
+    //     GetHistsFromImage(i, pxVal, pxVal2D, totalPixelValue);
+    //     totalPixelValues.push_back(totalPixelValue);
+    //     delete pxVal;
+    //     delete pxVal2D;
+    // }
+    //
+    // auto corr = new TGraph();
+    // for (int i = 0; i < totalPixelValues.size(); i++) {
+    //     corr->SetPoint(corr->GetN(), EBeamCharge[i], totalPixelValues[i]);
+    // }
+    // auto c = new TCanvas("c", "c", 1600, 1600);
+    // corr->SetMarkerStyle(20);
+    // corr->SetMarkerSize(3);
+    // corr->Draw("AP");
+    // c->SaveAs("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Plot/Correlation.png");
 
     return 0;
 }
