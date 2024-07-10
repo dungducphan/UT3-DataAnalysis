@@ -414,11 +414,16 @@ std::vector<std::tuple<double, double, double>> GetEnergyStability() {
 void PlotChargeAndEnergy(const std::vector<double>& charges, const std::vector<std::tuple<double, double, double>>& energy) {
     auto gr_charge = new TGraph();
     auto gr_energy = new TGraph();
+
+    std::ofstream fileout("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Plot/ChargeEnergy.txt");
+    fileout << "BeamCharge(pC),PeakEnergy(MeV)" << std::endl;
     for (int i = 0; i < charges.size(); i++) {
         std::cout << charges[i] << " " << std::get<0>(energy[i]) << std::endl;
         gr_charge->SetPoint(gr_charge->GetN(), i, charges[i]);
         gr_energy->SetPoint(gr_energy->GetN(), i, std::get<0>(energy[i]));
+        fileout << charges[i] << "," << std::get<0>(energy[i]) << std::endl;
     }
+    fileout.close();
     gr_charge->SetMarkerStyle(20);
     gr_charge->SetMarkerSize(3);
     gr_charge->SetMarkerColor(kRed);
