@@ -12,6 +12,8 @@
 #include <TLegend.h>
 #include <TF2.h>
 #include <TStyle.h>
+#include <TMultiGraph.h>
+#include <TGaxis.h>
 
 std::vector<std::string> osclist;
 std::vector<std::string> pointlist;
@@ -350,6 +352,116 @@ void PlotPointHist2D(TH2D* pxVal2D, const int& id) {
     delete c;
 }
 
+std::vector<std::tuple<double, double, double>> GetEnergyStability() {
+    std::vector<std::tuple<double, double, double>> energyStability;
+
+    energyStability.push_back(std::make_tuple(95, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(101, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(79, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(100, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(91, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(89, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(96, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(98, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(85, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(81, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(73, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(103, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(96, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(98, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(91, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(104, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(94, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(99, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(99, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(106, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(86, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(94, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(91, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(107, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(70, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(88, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(100, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(105, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(85, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(98, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(95, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(101, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(98, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(91, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(97, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(101, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(88, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(107, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(89, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(112, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(105, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(99, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(79, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(100, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(105, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(104, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(97, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(91, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(90, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(107, 0.0, 0.0));
+    energyStability.push_back(std::make_tuple(89, 0.0, 0.0));
+
+    std::cout << "Energy Stability Size: " << energyStability.size() << std::endl;
+    return energyStability;
+}
+
+void PlotChargeAndEnergy(const std::vector<double>& charges, const std::vector<std::tuple<double, double, double>>& energy) {
+    auto gr_charge = new TGraph();
+    auto gr_energy = new TGraph();
+    for (int i = 0; i < charges.size(); i++) {
+        std::cout << charges[i] << " " << std::get<0>(energy[i]) << std::endl;
+        gr_charge->SetPoint(gr_charge->GetN(), i, charges[i]);
+        gr_energy->SetPoint(gr_energy->GetN(), i, std::get<0>(energy[i]));
+    }
+    gr_charge->SetMarkerStyle(20);
+    gr_charge->SetMarkerSize(3);
+    gr_charge->SetMarkerColor(kRed);
+    gr_energy->SetMarkerStyle(20);
+    gr_energy->SetMarkerSize(3);
+    gr_energy->SetMarkerColor(kBlue);
+
+    auto c = new TCanvas("c", "c", 3600, 1800);
+    gStyle->SetNdivisions(505, "XY");
+    gr_energy->Draw("AP");
+    gr_energy->GetXaxis()->SetTitle("Shot ID");
+    gr_energy->GetYaxis()->SetTitle("Mean Beam Energy (MeV)");
+    gr_energy->GetXaxis()->SetLimits(0, 50);
+    gr_energy->GetYaxis()->SetRangeUser(0, 150);
+    gr_energy->GetYaxis()->SetAxisColor(kBlue);
+    gr_energy->GetYaxis()->SetLabelColor(kBlue);
+    gr_energy->GetYaxis()->SetTitleColor(kBlue);
+    gr_energy->GetYaxis()->SetTitleFont(62);
+    gr_energy->GetYaxis()->SetLabelFont(62);
+    gr_energy->GetYaxis()->CenterTitle();
+    gr_energy->GetYaxis()->SetTitleOffset(1.2);
+    gr_energy->GetYaxis()->SetLabelOffset(0.01);
+    gr_energy->GetXaxis()->SetTitleFont(62);
+    gr_energy->GetXaxis()->SetLabelFont(62);
+    gr_energy->GetXaxis()->CenterTitle();
+    gr_charge->Draw("P SAME");
+
+    c->Update();
+
+    auto charge_axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(),
+         gPad->GetUxmax(), gPad->GetUymax(),0,150,505,"+L");
+    charge_axis->SetLineColor(kRed);
+    charge_axis->SetLabelColor(kRed);
+    charge_axis->SetTitleColor(kRed);
+    charge_axis->SetTitle("Beam Charge (pC)");
+    charge_axis->CenterTitle();
+    charge_axis->SetLabelOffset(0.01);
+    charge_axis->SetTitleOffset(1.2);
+    charge_axis->Draw();
+
+    c->SaveAs("/home/dphan/Documents/GitHub/UT3-DataAnalysis/Plot/ChargeEnergy.png");
+}
+
 int main() {
     GetList(osclist, pointlist);
 
@@ -361,6 +473,12 @@ int main() {
         // PlotOscData(i);
     }
     PlotBeamChargeDist(EBeamCharge);
+
+    auto eData = GetEnergyStability();
+
+    PlotChargeAndEnergy(EBeamCharge, eData);
+
+
 
     // std::vector<double> totalPixelValues;
     // for (int i = 0; i < pointlist.size(); i++) {
