@@ -172,7 +172,7 @@ int main() {
 
   int integralMarkerLeCroy = 1752;
   int integralMarkerPicoScope = 1202;
-  int nbins = 50;
+  int nbins = 40;
   int min_charge = 0;
   int max_charge = 20;
 
@@ -214,9 +214,9 @@ int main() {
   h_PicoScope->SetFillColorAlpha(kBlue, 0.5);
   h_PicoScope->Draw("SAME");
 
-  auto leg = new TLegend(0.5, 0.5, 0.85, 0.7);
-  leg->AddEntry(h_LeCroy, Form("LeCroy: %1.2f pC", h_LeCroy->GetMean()), "f");
-  leg->AddEntry(h_PicoScope, Form("PicoScope: %1.2f pC", h_PicoScope->GetMean()), "f");
+  auto leg = new TLegend(0.45, 0.65, 0.85, 0.85);
+  leg->AddEntry(h_LeCroy, Form("LeCroy: %1.2f #pm %1.2f pC", h_LeCroy->GetMean(), h_LeCroy->GetStdDev()), "f");
+  leg->AddEntry(h_PicoScope, Form("PicoScope: %1.2f  #pm %1.2f pC", h_PicoScope->GetMean(), h_PicoScope->GetStdDev()), "f");
   leg->SetBorderSize(0);
   leg->Draw();
 
