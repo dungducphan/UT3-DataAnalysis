@@ -22,13 +22,13 @@ method          scotch; // Decomposition method (scotch, hierarchical, etc.)
 
 simpleCoeffs
 {
-    n           (8 1 1); // Number of subdivisions in each direction
+    n           (2 2 2); // Number of subdivisions in each direction
     delta       0.001;   // Optional: Weighting factor
 }
 
 hierarchicalCoeffs
 {
-    n           (8 1 1); // Number of subdivisions in each direction
+    n           (2 2 2); // Number of subdivisions in each direction
     delta       0.001;   // Optional: Weighting factor
     order       xyz;     // Order of subdivision
 }
