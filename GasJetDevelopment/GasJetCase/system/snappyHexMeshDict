@@ -11,53 +11,53 @@ snap	true;
 addLayers	true;
 geometry
 {
-	GasJet.stl
+	GasJetSmaller.stl
 	{
 		type	triSurfaceMesh;
 		simflowType	brep;
 		topoType	solid;
-		name	GasJet;
+		name	GasJetSmaller;
 		faceGroups
 		{
 			face_4
 			{
-				name	GasJet_inlet;
+				name	GasJetSmaller_inlet;
 			}
 			face_5
 			{
-				name	GasJet_outlet;
+				name	GasJetSmaller_outlet;
 			}
 			face_6
 			{
-				name	GasJet_outlet;
+				name	GasJetSmaller_outlet;
 			}
 			face_7
 			{
-				name	GasJet_outlet;
+				name	GasJetSmaller_outlet;
 			}
 			face_8
 			{
-				name	GasJet_null_wall;
+				name	GasJetSmaller_nullwall;
 			}
 			face_9
 			{
-				name	GasJet_null_wall;
+				name	GasJetSmaller_nullwall;
 			}
 			face_10
 			{
-				name	GasJet_null_wall;
+				name	GasJetSmaller_nullwall;
 			}
 			face_1
 			{
-				name	GasJet_dynamic_wall;
+				name	GasJetSmaller_dynamicwall;
 			}
 			face_2
 			{
-				name	GasJet_dynamic_wall;
+				name	GasJetSmaller_dynamicwall;
 			}
 			face_3
 			{
-				name	GasJet_dynamic_wall;
+				name	GasJetSmaller_dynamicwall;
 			}
 		}
 	}
@@ -67,37 +67,25 @@ castellatedMeshControls
 	locationInMesh	(0.001 0 0);
 	refinementSurfaces
 	{
-		GasJet
+		GasJetSmaller
 		{
 			level	( 0 3 );
 			patchInfo
 			{
 				type	wall;
 			}
-			faceZone	GasJet;
-			faceType	baffle;
 		}
 	}
 	refinementRegions
 	{
-		GasJet
-		{
-			mode	inside;
-			levels	((1.0E30 3));
-		}
 	}
 	limitRegions
 	{
-		GasJet
-		{
-			mode	inside;
-			levels	((1.0E30 3));
-		}
 	}
 	features	
 	(
 	{
-		file	"GasJet.eMesh";
+		file	"GasJetSmaller.eMesh";
 		levels	((0 0));
 	}
 	);
@@ -125,39 +113,21 @@ addLayersControls
 {
 	layers
 	{
-		GasJet_face_1
+		GasJetSmaller_face_1
 		{
-			nSurfaceLayers	4;
+			nSurfaceLayers	5;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
-		GasJet_face_1_slave
+		GasJetSmaller_face_2
 		{
-			nSurfaceLayers	4;
+			nSurfaceLayers	5;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
-		GasJet_face_2
+		GasJetSmaller_face_3
 		{
-			nSurfaceLayers	4;
-			expansionRatio	1.25;
-			firstLayerThickness	0.2;
-		}
-		GasJet_face_2_slave
-		{
-			nSurfaceLayers	4;
-			expansionRatio	1.25;
-			firstLayerThickness	0.2;
-		}
-		GasJet_face_3
-		{
-			nSurfaceLayers	4;
-			expansionRatio	1.25;
-			firstLayerThickness	0.2;
-		}
-		GasJet_face_3_slave
-		{
-			nSurfaceLayers	4;
+			nSurfaceLayers	5;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
