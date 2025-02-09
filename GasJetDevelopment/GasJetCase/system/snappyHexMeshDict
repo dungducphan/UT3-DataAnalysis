@@ -8,7 +8,7 @@ FoamFile
 }
 castellatedMesh	true;
 snap	true;
-addLayers	false;
+addLayers	true;
 geometry
 {
 	GasJet.stl
@@ -64,18 +64,42 @@ geometry
 }
 castellatedMeshControls
 {
-	locationInMesh	(0 0 0);
+	locationInMesh	(0.001 0 0);
 	refinementSurfaces
 	{
+		GasJet
+		{
+			level	( 0 4 );
+			patchInfo
+			{
+				type	wall;
+			}
+			faceZone	GasJet;
+			faceType	baffle;
+		}
 	}
 	refinementRegions
 	{
+		GasJet
+		{
+			mode	inside;
+			levels	((1.0E30 4));
+		}
 	}
 	limitRegions
 	{
+		GasJet
+		{
+			mode	inside;
+			levels	((1.0E30 4));
+		}
 	}
 	features	
 	(
+	{
+		file	"GasJet.eMesh";
+		levels	((0 0));
+	}
 	);
 	maxLocalCells	1000000;
 	maxGlobalCells	10000000;
@@ -101,6 +125,42 @@ addLayersControls
 {
 	layers
 	{
+		GasJet_face_1
+		{
+			nSurfaceLayers	6;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJet_face_1_slave
+		{
+			nSurfaceLayers	6;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJet_face_2
+		{
+			nSurfaceLayers	6;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJet_face_2_slave
+		{
+			nSurfaceLayers	6;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJet_face_3
+		{
+			nSurfaceLayers	6;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJet_face_3_slave
+		{
+			nSurfaceLayers	6;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
 	}
 	relativeSizes	true;
 	minThickness	0.1;
