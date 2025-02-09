@@ -11,6 +11,56 @@ snap	true;
 addLayers	false;
 geometry
 {
+	GasJet.stl
+	{
+		type	triSurfaceMesh;
+		simflowType	brep;
+		topoType	solid;
+		name	GasJet;
+		faceGroups
+		{
+			face_4
+			{
+				name	GasJet_inlet;
+			}
+			face_5
+			{
+				name	GasJet_outlet;
+			}
+			face_6
+			{
+				name	GasJet_outlet;
+			}
+			face_7
+			{
+				name	GasJet_outlet;
+			}
+			face_8
+			{
+				name	GasJet_null_wall;
+			}
+			face_9
+			{
+				name	GasJet_null_wall;
+			}
+			face_10
+			{
+				name	GasJet_null_wall;
+			}
+			face_1
+			{
+				name	GasJet_dynamic_wall;
+			}
+			face_2
+			{
+				name	GasJet_dynamic_wall;
+			}
+			face_3
+			{
+				name	GasJet_dynamic_wall;
+			}
+		}
+	}
 }
 castellatedMeshControls
 {
