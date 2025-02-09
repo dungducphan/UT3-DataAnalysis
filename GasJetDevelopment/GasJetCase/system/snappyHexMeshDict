@@ -69,7 +69,7 @@ castellatedMeshControls
 	{
 		GasJet
 		{
-			level	( 0 4 );
+			level	( 0 3 );
 			patchInfo
 			{
 				type	wall;
@@ -83,7 +83,7 @@ castellatedMeshControls
 		GasJet
 		{
 			mode	inside;
-			levels	((1.0E30 4));
+			levels	((1.0E30 3));
 		}
 	}
 	limitRegions
@@ -91,7 +91,7 @@ castellatedMeshControls
 		GasJet
 		{
 			mode	inside;
-			levels	((1.0E30 4));
+			levels	((1.0E30 3));
 		}
 	}
 	features	
@@ -127,37 +127,37 @@ addLayersControls
 	{
 		GasJet_face_1
 		{
-			nSurfaceLayers	6;
+			nSurfaceLayers	4;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
 		GasJet_face_1_slave
 		{
-			nSurfaceLayers	6;
+			nSurfaceLayers	4;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
 		GasJet_face_2
 		{
-			nSurfaceLayers	6;
+			nSurfaceLayers	4;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
 		GasJet_face_2_slave
 		{
-			nSurfaceLayers	6;
+			nSurfaceLayers	4;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
 		GasJet_face_3
 		{
-			nSurfaceLayers	6;
+			nSurfaceLayers	4;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
 		GasJet_face_3_slave
 		{
-			nSurfaceLayers	6;
+			nSurfaceLayers	4;
 			expansionRatio	1.25;
 			firstLayerThickness	0.2;
 		}
