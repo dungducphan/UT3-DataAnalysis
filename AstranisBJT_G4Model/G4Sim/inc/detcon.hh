@@ -49,21 +49,20 @@ public:
 
 private:
     G4VPhysicalVolume* fWorldVolume;
-    G4LogicalVolume* logicalDetector;
-    G4LogicalVolume* logicalArc;
-    G4LogicalVolume* logicalChamber;
-    G4LogicalVolume* logicalFusedSilica;
-    G4LogicalVolume* logicalPbBlock1;
-    G4LogicalVolume* logicalPbBlock2;
-    G4LogicalVolume* logicalHDPEBlock1;
-    G4LogicalVolume* logicalHDPEBlock2;
-    G4LogicalVolume* logicalWBlock;
 
-    G4VisAttributes* arcVisAtt;
-    G4VisAttributes* vacuumChamberVisAtt;
-    G4VisAttributes* glassWindowVisAtt;
-    G4VisAttributes* HDPEOuterVisAtt;
-    G4VisAttributes* LeadVisAtt;
-    G4VisAttributes* TungstenVisAtt;
-    G4VisAttributes* PhantomVisAtt;
+    G4LogicalVolume* LV_SOT23;
+    G4LogicalVolume* LV_ActiveRegion; // <- this is the sensitive detector
+    G4LogicalVolume* LV_PCB;
+    G4LogicalVolume* LV_AlFoil000;
+    G4LogicalVolume* LV_AlFoil001;
+    G4LogicalVolume* LV_AlFoil002;
+    G4LogicalVolume* LV_MylarWindow000;
+    G4LogicalVolume* LV_MylarWindow001;
+
+    G4VisAttributes* visAtt_SOT23;
+    G4VisAttributes* visAtt_ActiveRegion;
+    G4VisAttributes* visAtt_PCB;
+    G4VisAttributes* visAtt_DRZScreen;
+    G4VisAttributes* visAtt_AlFoil;
+    G4VisAttributes* visAtt_MylarWindow;
 };

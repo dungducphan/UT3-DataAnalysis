@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+  <define>
+    <constant name="HALFPI" value="pi/2"/>
+    <constant name="PI" value="1*pi"/>
+    <constant name="TWOPI" value="2*pi"/>
+    <position name="ActiveRegion_0" unit="mm" x="1.2000000476837158" y="0.07500000298023224" z="-0.20000000298023224"/>
+    <position name="ActiveRegion_1" unit="mm" x="1.2000000476837158" y="0.02500000037252903" z="-0.20000000298023224"/>
+    <position name="ActiveRegion_2" unit="mm" x="1.2000000476837158" y="0.02500000037252903" z="-0.6000000238418579"/>
+    <position name="ActiveRegion_3" unit="mm" x="1.2000000476837158" y="0.07500000298023224" z="-0.6000000238418579"/>
+    <position name="ActiveRegion_4" unit="mm" x="0.4000000059604645" y="0.02500000037252903" z="-0.20000000298023224"/>
+    <position name="ActiveRegion_5" unit="mm" x="0.4000000059604645" y="0.07500000298023224" z="-0.20000000298023224"/>
+    <position name="ActiveRegion_6" unit="mm" x="0.4000000059604645" y="0.02500000037252903" z="-0.6000000238418579"/>
+    <position name="ActiveRegion_7" unit="mm" x="0.4000000059604645" y="0.07500000298023224" z="-0.6000000238418579"/>
+    <rotation name="identity" x="0" y="0" z="0"/>
+    <position name="PCB_0" unit="mm" x="40.0" y="1.600000023841858" z="20.0"/>
+    <position name="PCB_1" unit="mm" x="40.0" y="0.0" z="0.0"/>
+    <position name="PCB_2" unit="mm" x="40.0" y="1.600000023841858" z="0.0"/>
+    <position name="PCB_3" unit="mm" x="40.0" y="0.0" z="20.0"/>
+    <position name="PCB_4" unit="mm" x="0.0" y="0.0" z="0.0"/>
+    <position name="PCB_5" unit="mm" x="0.0" y="0.0" z="20.0"/>
+    <position name="PCB_6" unit="mm" x="0.0" y="1.600000023841858" z="20.0"/>
+    <position name="PCB_7" unit="mm" x="0.0" y="1.600000023841858" z="0.0"/>
+    <position name="MoldResin_0" unit="mm" x="2.9000000953674316" y="0.949999988079071" z="1.2999999523162842"/>
+    <position name="MoldResin_1" unit="mm" x="2.9000000953674316" y="0.949999988079071" z="0.0"/>
+    <position name="MoldResin_2" unit="mm" x="0.0" y="0.949999988079071" z="0.0"/>
+    <position name="MoldResin_3" unit="mm" x="0.0" y="0.949999988079071" z="1.2999999523162842"/>
+    <position name="MoldResin_4" unit="mm" x="2.9000000953674316" y="0.0" z="0.0"/>
+    <position name="MoldResin_5" unit="mm" x="2.9000000953674316" y="0.0" z="1.2999999523162842"/>
+    <position name="MoldResin_6" unit="mm" x="0.0" y="0.0" z="0.0"/>
+    <position name="MoldResin_7" unit="mm" x="0.0" y="0.0" z="1.2999999523162842"/>
+    <position name="MoldResin_8" unit="mm" x="2.125999927520752" y="0.5440000295639038" z="0.28600001335144043"/>
+    <position name="MoldResin_9" unit="mm" x="2.125999927520752" y="0.5440000295639038" z="0.9860000014305115"/>
+    <position name="MoldResin_10" unit="mm" x="0.8259999752044678" y="0.5440000295639038" z="0.28600001335144043"/>
+    <position name="MoldResin_11" unit="mm" x="0.8259999752044678" y="0.5440000295639038" z="0.9860000014305115"/>
+    <position name="MoldResin_12" unit="mm" x="2.125999927520752" y="0.3440000116825104" z="0.9860000014305115"/>
+    <position name="MoldResin_13" unit="mm" x="2.125999927520752" y="0.3440000116825104" z="0.28600001335144043"/>
+    <position name="MoldResin_14" unit="mm" x="0.8259999752044678" y="0.3440000116825104" z="0.28600001335144043"/>
+    <position name="MoldResin_15" unit="mm" x="0.8259999752044678" y="0.3440000116825104" z="0.9860000014305115"/>
+    <position name="center" x="0" y="0" z="0" unit="mm"/>
+    <position name="AlFoil_0" unit="mm" x="25.0" y="0.0" z="25.0"/>
+    <position name="AlFoil_1" unit="mm" x="25.0" y="0.0" z="-25.0"/>
+    <position name="AlFoil_2" unit="mm" x="25.0" y="0.029999999329447746" z="-25.0"/>
+    <position name="AlFoil_3" unit="mm" x="25.0" y="0.029999999329447746" z="25.0"/>
+    <position name="AlFoil_4" unit="mm" x="-25.0" y="0.0" z="-25.0"/>
+    <position name="AlFoil_5" unit="mm" x="-25.0" y="0.0" z="25.0"/>
+    <position name="AlFoil_6" unit="mm" x="-25.0" y="0.029999999329447746" z="-25.0"/>
+    <position name="AlFoil_7" unit="mm" x="-25.0" y="0.029999999329447746" z="25.0"/>
+    <position name="AlFoil001_0" unit="mm" x="75.0" y="0.0" z="75.0"/>
+    <position name="AlFoil001_1" unit="mm" x="75.0" y="0.0" z="25.0"/>
+    <position name="AlFoil001_2" unit="mm" x="75.0" y="0.029999999329447746" z="25.0"/>
+    <position name="AlFoil001_3" unit="mm" x="75.0" y="0.029999999329447746" z="75.0"/>
+    <position name="AlFoil001_4" unit="mm" x="25.0" y="0.0" z="25.0"/>
+    <position name="AlFoil001_5" unit="mm" x="25.0" y="0.0" z="75.0"/>
+    <position name="AlFoil001_6" unit="mm" x="25.0" y="0.029999999329447746" z="25.0"/>
+    <position name="AlFoil001_7" unit="mm" x="25.0" y="0.029999999329447746" z="75.0"/>
+    <position name="AlFoil002_0" unit="mm" x="25.0" y="0.0" z="25.0"/>
+    <position name="AlFoil002_1" unit="mm" x="25.0" y="0.0" z="-25.0"/>
+    <position name="AlFoil002_2" unit="mm" x="25.0" y="0.029999999329447746" z="-25.0"/>
+    <position name="AlFoil002_3" unit="mm" x="25.0" y="0.029999999329447746" z="25.0"/>
+    <position name="AlFoil002_4" unit="mm" x="-25.0" y="0.0" z="-25.0"/>
+    <position name="AlFoil002_5" unit="mm" x="-25.0" y="0.0" z="25.0"/>
+    <position name="AlFoil002_6" unit="mm" x="-25.0" y="0.029999999329447746" z="-25.0"/>
+    <position name="AlFoil002_7" unit="mm" x="-25.0" y="0.029999999329447746" z="25.0"/>
+    <position name="MylarWindow_0" unit="mm" x="25.0" y="0.0" z="25.0"/>
+    <position name="MylarWindow_1" unit="mm" x="25.0" y="0.0" z="-25.0"/>
+    <position name="MylarWindow_2" unit="mm" x="25.0" y="0.17000000178813934" z="-25.0"/>
+    <position name="MylarWindow_3" unit="mm" x="25.0" y="0.17000000178813934" z="25.0"/>
+    <position name="MylarWindow_4" unit="mm" x="-25.0" y="0.0" z="-25.0"/>
+    <position name="MylarWindow_5" unit="mm" x="-25.0" y="0.0" z="25.0"/>
+    <position name="MylarWindow_6" unit="mm" x="-25.0" y="0.17000000178813934" z="-25.0"/>
+    <position name="MylarWindow_7" unit="mm" x="-25.0" y="0.17000000178813934" z="25.0"/>
+    <position name="MylarWindow001_0" unit="mm" x="75.0" y="0.0" z="75.0"/>
+    <position name="MylarWindow001_1" unit="mm" x="75.0" y="0.0" z="25.0"/>
+    <position name="MylarWindow001_2" unit="mm" x="75.0" y="0.17000000178813934" z="25.0"/>
+    <position name="MylarWindow001_3" unit="mm" x="75.0" y="0.17000000178813934" z="75.0"/>
+    <position name="MylarWindow001_4" unit="mm" x="25.0" y="0.0" z="25.0"/>
+    <position name="MylarWindow001_5" unit="mm" x="25.0" y="0.0" z="75.0"/>
+    <position name="MylarWindow001_6" unit="mm" x="25.0" y="0.17000000178813934" z="25.0"/>
+    <position name="MylarWindow001_7" unit="mm" x="25.0" y="0.17000000178813934" z="75.0"/>
+  </define>
+  <materials/>
+  <solids>
+    <box name="WorldBox" x="100.0" y="2200.0" z="100.0" lunit="mm"/>
+    <tessellated name="ActiveRegion">
+      <triangular vertex1="ActiveRegion_0" vertex2="ActiveRegion_1" vertex3="ActiveRegion_2" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_0" vertex2="ActiveRegion_2" vertex3="ActiveRegion_3" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_1" vertex2="ActiveRegion_0" vertex3="ActiveRegion_4" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_4" vertex2="ActiveRegion_0" vertex3="ActiveRegion_5" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_4" vertex2="ActiveRegion_5" vertex3="ActiveRegion_6" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_6" vertex2="ActiveRegion_5" vertex3="ActiveRegion_7" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_3" vertex2="ActiveRegion_2" vertex3="ActiveRegion_6" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_3" vertex2="ActiveRegion_6" vertex3="ActiveRegion_7" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_6" vertex2="ActiveRegion_2" vertex3="ActiveRegion_4" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_4" vertex2="ActiveRegion_2" vertex3="ActiveRegion_1" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_3" vertex2="ActiveRegion_7" vertex3="ActiveRegion_5" type="ABSOLUTE"/>
+      <triangular vertex1="ActiveRegion_3" vertex2="ActiveRegion_5" vertex3="ActiveRegion_0" type="ABSOLUTE"/>
+    </tessellated>
+    <tessellated name="PCB">
+      <triangular vertex1="PCB_0" vertex2="PCB_1" vertex3="PCB_2" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_3" vertex2="PCB_1" vertex3="PCB_0" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_1" vertex2="PCB_3" vertex3="PCB_4" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_4" vertex2="PCB_3" vertex3="PCB_5" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_4" vertex2="PCB_6" vertex3="PCB_7" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_4" vertex2="PCB_5" vertex3="PCB_6" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_0" vertex2="PCB_2" vertex3="PCB_7" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_0" vertex2="PCB_7" vertex3="PCB_6" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_7" vertex2="PCB_2" vertex3="PCB_4" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_4" vertex2="PCB_2" vertex3="PCB_1" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_0" vertex2="PCB_6" vertex3="PCB_5" type="ABSOLUTE"/>
+      <triangular vertex1="PCB_0" vertex2="PCB_5" vertex3="PCB_3" type="ABSOLUTE"/>
+    </tessellated>
+    <tessellated name="MoldResin">
+      <triangular vertex1="MoldResin_0" vertex2="MoldResin_1" vertex3="MoldResin_2" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_0" vertex2="MoldResin_2" vertex3="MoldResin_3" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_4" vertex2="MoldResin_5" vertex3="MoldResin_6" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_6" vertex2="MoldResin_5" vertex3="MoldResin_7" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_6" vertex2="MoldResin_7" vertex3="MoldResin_2" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_2" vertex2="MoldResin_7" vertex3="MoldResin_3" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_0" vertex2="MoldResin_3" vertex3="MoldResin_7" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_0" vertex2="MoldResin_7" vertex3="MoldResin_5" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_2" vertex2="MoldResin_1" vertex3="MoldResin_6" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_6" vertex2="MoldResin_1" vertex3="MoldResin_4" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_5" vertex2="MoldResin_4" vertex3="MoldResin_1" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_5" vertex2="MoldResin_1" vertex3="MoldResin_0" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_8" vertex2="MoldResin_9" vertex3="MoldResin_10" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_10" vertex2="MoldResin_9" vertex3="MoldResin_11" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_12" vertex2="MoldResin_13" vertex3="MoldResin_14" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_12" vertex2="MoldResin_14" vertex3="MoldResin_15" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_15" vertex2="MoldResin_14" vertex3="MoldResin_10" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_15" vertex2="MoldResin_10" vertex3="MoldResin_11" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_11" vertex2="MoldResin_9" vertex3="MoldResin_15" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_15" vertex2="MoldResin_9" vertex3="MoldResin_12" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_8" vertex2="MoldResin_10" vertex3="MoldResin_14" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_8" vertex2="MoldResin_14" vertex3="MoldResin_13" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_13" vertex2="MoldResin_12" vertex3="MoldResin_8" type="ABSOLUTE"/>
+      <triangular vertex1="MoldResin_8" vertex2="MoldResin_12" vertex3="MoldResin_9" type="ABSOLUTE"/>
+    </tessellated>
+    <tessellated name="AlFoil">
+      <triangular vertex1="AlFoil_0" vertex2="AlFoil_1" vertex3="AlFoil_2" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_0" vertex2="AlFoil_2" vertex3="AlFoil_3" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_1" vertex2="AlFoil_0" vertex3="AlFoil_4" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_4" vertex2="AlFoil_0" vertex3="AlFoil_5" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_4" vertex2="AlFoil_5" vertex3="AlFoil_6" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_6" vertex2="AlFoil_5" vertex3="AlFoil_7" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_3" vertex2="AlFoil_2" vertex3="AlFoil_6" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_3" vertex2="AlFoil_6" vertex3="AlFoil_7" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_6" vertex2="AlFoil_2" vertex3="AlFoil_4" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_4" vertex2="AlFoil_2" vertex3="AlFoil_1" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_3" vertex2="AlFoil_7" vertex3="AlFoil_5" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil_3" vertex2="AlFoil_5" vertex3="AlFoil_0" type="ABSOLUTE"/>
+    </tessellated>
+    <tessellated name="AlFoil001">
+      <triangular vertex1="AlFoil001_0" vertex2="AlFoil001_1" vertex3="AlFoil001_2" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_0" vertex2="AlFoil001_2" vertex3="AlFoil001_3" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_1" vertex2="AlFoil001_0" vertex3="AlFoil001_4" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_4" vertex2="AlFoil001_0" vertex3="AlFoil001_5" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_4" vertex2="AlFoil001_5" vertex3="AlFoil001_6" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_6" vertex2="AlFoil001_5" vertex3="AlFoil001_7" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_3" vertex2="AlFoil001_2" vertex3="AlFoil001_6" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_3" vertex2="AlFoil001_6" vertex3="AlFoil001_7" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_6" vertex2="AlFoil001_2" vertex3="AlFoil001_4" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_4" vertex2="AlFoil001_2" vertex3="AlFoil001_1" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_3" vertex2="AlFoil001_7" vertex3="AlFoil001_5" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil001_3" vertex2="AlFoil001_5" vertex3="AlFoil001_0" type="ABSOLUTE"/>
+    </tessellated>
+    <tessellated name="AlFoil002">
+      <triangular vertex1="AlFoil002_0" vertex2="AlFoil002_1" vertex3="AlFoil002_2" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_0" vertex2="AlFoil002_2" vertex3="AlFoil002_3" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_1" vertex2="AlFoil002_0" vertex3="AlFoil002_4" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_4" vertex2="AlFoil002_0" vertex3="AlFoil002_5" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_4" vertex2="AlFoil002_5" vertex3="AlFoil002_6" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_6" vertex2="AlFoil002_5" vertex3="AlFoil002_7" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_3" vertex2="AlFoil002_2" vertex3="AlFoil002_6" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_3" vertex2="AlFoil002_6" vertex3="AlFoil002_7" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_6" vertex2="AlFoil002_2" vertex3="AlFoil002_4" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_4" vertex2="AlFoil002_2" vertex3="AlFoil002_1" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_3" vertex2="AlFoil002_7" vertex3="AlFoil002_5" type="ABSOLUTE"/>
+      <triangular vertex1="AlFoil002_3" vertex2="AlFoil002_5" vertex3="AlFoil002_0" type="ABSOLUTE"/>
+    </tessellated>
+    <tessellated name="MylarWindow">
+      <triangular vertex1="MylarWindow_0" vertex2="MylarWindow_1" vertex3="MylarWindow_2" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_0" vertex2="MylarWindow_2" vertex3="MylarWindow_3" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_1" vertex2="MylarWindow_0" vertex3="MylarWindow_4" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_4" vertex2="MylarWindow_0" vertex3="MylarWindow_5" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_4" vertex2="MylarWindow_5" vertex3="MylarWindow_6" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_6" vertex2="MylarWindow_5" vertex3="MylarWindow_7" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_3" vertex2="MylarWindow_2" vertex3="MylarWindow_6" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_3" vertex2="MylarWindow_6" vertex3="MylarWindow_7" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_6" vertex2="MylarWindow_2" vertex3="MylarWindow_4" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_4" vertex2="MylarWindow_2" vertex3="MylarWindow_1" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_3" vertex2="MylarWindow_7" vertex3="MylarWindow_5" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow_3" vertex2="MylarWindow_5" vertex3="MylarWindow_0" type="ABSOLUTE"/>
+    </tessellated>
+    <tessellated name="MylarWindow001">
+      <triangular vertex1="MylarWindow001_0" vertex2="MylarWindow001_1" vertex3="MylarWindow001_2" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_0" vertex2="MylarWindow001_2" vertex3="MylarWindow001_3" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_1" vertex2="MylarWindow001_0" vertex3="MylarWindow001_4" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_4" vertex2="MylarWindow001_0" vertex3="MylarWindow001_5" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_4" vertex2="MylarWindow001_5" vertex3="MylarWindow001_6" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_6" vertex2="MylarWindow001_5" vertex3="MylarWindow001_7" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_3" vertex2="MylarWindow001_2" vertex3="MylarWindow001_6" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_3" vertex2="MylarWindow001_6" vertex3="MylarWindow001_7" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_6" vertex2="MylarWindow001_2" vertex3="MylarWindow001_4" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_4" vertex2="MylarWindow001_2" vertex3="MylarWindow001_1" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_3" vertex2="MylarWindow001_7" vertex3="MylarWindow001_5" type="ABSOLUTE"/>
+      <triangular vertex1="MylarWindow001_3" vertex2="MylarWindow001_5" vertex3="MylarWindow001_0" type="ABSOLUTE"/>
+    </tessellated>
+  </solids>
+  <structure>
+    <volume name="LV_ActiveRegion">
+      <materialref ref="G4_Si"/>
+      <solidref ref="ActiveRegion"/>
+      <auxiliary auxtype="Color" auxvalue="#00ff84fa"/>
+    </volume>
+    <volume name="LV_PCB">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="PCB"/>
+      <auxiliary auxtype="Color" auxvalue="#ff9f00fa"/>
+    </volume>
+    <volume name="LV_MoldResin">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="MoldResin"/>
+      <auxiliary auxtype="Color" auxvalue="#ff9f00fa"/>
+    </volume>
+    <assembly name="DUT">
+      <physvol name="av_1_impr_1_LV_ActiveRegion_pv_0">
+        <volumeref ref="LV_ActiveRegion"/>
+        <position name="P-LV_ActiveRegion1" unit="mm" x="-0.8" y="-0.07500000000000001" z="0.4"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="av_1_impr_1_LV_PCB_pv_1">
+        <volumeref ref="LV_PCB"/>
+        <position name="P-LV_PCB2" unit="mm" x="-20.0" y="-2.2430000000000003" z="-10.0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="av_1_impr_1_LV_MoldResin_pv_2">
+        <volumeref ref="LV_MoldResin"/>
+        <position name="P-LV_MoldResin3" unit="mm" x="1.48" y="0.41399999999999987" z="-0.636"/>
+        <rotation name="R-LV_MoldResin1" unit="deg" z="-180.0"/>
+      </physvol>
+    </assembly>
+    <volume name="LV_AlFoil000">
+      <materialref ref="G4_Al"/>
+      <solidref ref="AlFoil"/>
+      <auxiliary auxtype="Color" auxvalue="#00ff7bfa"/>
+    </volume>
+    <volume name="LV_AlFoil001">
+      <materialref ref="G4_Al"/>
+      <solidref ref="AlFoil001"/>
+      <auxiliary auxtype="Color" auxvalue="#00ff7bfa"/>
+    </volume>
+    <volume name="LV_AlFoil002">
+      <materialref ref="G4_Al"/>
+      <solidref ref="AlFoil002"/>
+      <auxiliary auxtype="Color" auxvalue="#00ff7bfa"/>
+    </volume>
+    <volume name="LV_MylarWindow000">
+      <materialref ref="G4_MYLAR"/>
+      <solidref ref="MylarWindow"/>
+      <auxiliary auxtype="Color" auxvalue="#7e00ff00"/>
+    </volume>
+    <volume name="LV_MylarWindow001">
+      <materialref ref="G4_MYLAR"/>
+      <solidref ref="MylarWindow001"/>
+      <auxiliary auxtype="Color" auxvalue="#7e00ff00"/>
+    </volume>
+    <volume name="worldVOL">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="WorldBox"/>
+      <physvol name="PV_DUT">
+        <volumeref ref="DUT"/>
+        <positionref ref="center"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_LV_AlFoil000">
+        <volumeref ref="LV_AlFoil000"/>
+        <position name="P-LV_AlFoil0004" unit="mm" y="550.0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_LV_AlFoil001">
+        <volumeref ref="LV_AlFoil001"/>
+        <position name="P-LV_AlFoil0015" unit="mm" x="-50.0" y="325.0" z="-50.0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_LV_AlFoil002">
+        <volumeref ref="LV_AlFoil002"/>
+        <position name="P-LV_AlFoil0026" unit="mm" y="375.0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_LV_MylarWindow000">
+        <volumeref ref="LV_MylarWindow000"/>
+        <position name="P-LV_MylarWindow0007" unit="mm" y="100.0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_LV_MylarWindow001">
+        <volumeref ref="LV_MylarWindow001"/>
+        <position name="P-LV_MylarWindow0018" unit="mm" x="-50.0" y="105.0" z="-50.0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+  </structure>
+  <setup name="Default" version="1.0">
+    <world ref="worldVOL"/>
+  </setup>
+</gdml>

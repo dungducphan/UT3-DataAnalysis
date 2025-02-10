@@ -1,2 +1,3 @@
-# Radiation Shield Simulation for Carlsbad Facility
+# Determine the dose on the PMBT5551 BJT
+
 
