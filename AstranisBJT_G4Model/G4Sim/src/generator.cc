@@ -33,10 +33,10 @@ void generator::GeneratePrimaries(G4Event *anEvent) {
 }
 
 G4ThreeVector generator::RandomizedDirection() {
-    double rdm1 = fRandom->Gaus(0, 5);
+    double rdm1 = fRandom->Gaus(0, 3);
     double x_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);
-    double rdm2 = fRandom->Gaus(TMath::PiOver2(), 5);
+    double rdm2 = fRandom->Gaus(TMath::PiOver2(), 3);
     double y_mom = TMath::Sin(rdm2 * rad) * tmp;
     double z_mom = TMath::Cos(rdm2 * rad) * tmp;
 
