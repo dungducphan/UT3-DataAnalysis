@@ -84,6 +84,49 @@ detcon::~detcon() {
 }
 
 G4VPhysicalVolume *detcon::Construct() {
+    G4NistManager* nist = G4NistManager::Instance();
+
+    // FR4 = Epoxy + Silica
+    auto elH = new G4Element("Hydrogen", "H", 1, 1.01 * g / mole);
+    auto elC = new G4Element("Carbon", "C", 6, 12.01 * g / mole);
+    auto Epoxy = new G4Material("Epoxy", 1.2 * g/cm3, 2);
+    Epoxy->AddElement(elH, 2);
+    Epoxy->AddElement(elC, 2);
+    auto elSi = new G4Element("Silicon", "Si", 14, 28.09 * g / mole);
+    auto elO = new G4Element("Oxygen", "O", 8, 16.00 * g / mole);
+    auto  SiO2 = new G4Material("SiO2", 2.2 * g/cm3, 2);
+    SiO2->AddElement(elSi, 1);
+    SiO2->AddElement(elO , 2);
+    auto FR4 = new G4Material("FR4", 1.86 * g/cm3, 2);
+    FR4->AddMaterial(Epoxy, 0.472);
+    FR4->AddMaterial(SiO2, 0.528);
+
+    // Mold Resin = 0.72 Silica + 0.15 CAS_29690822 + 0.13 CAS_9003354
+    auto CAS_29690822 = new G4Material("CAS_29690822", 1.1 * g/cm3, 3);
+    CAS_29690822->AddElement(elC, 33);
+    CAS_29690822->AddElement(elH, 42);
+    CAS_29690822->AddElement(elO, 9);
+    auto CAS_9003354 = new G4Material("CAS_9003354", 1.18 * g/cm3, 3);
+    CAS_9003354->AddElement(elC, 7);
+    CAS_9003354->AddElement(elH, 8);
+    CAS_9003354->AddElement(elO, 2);
+    auto MoldResin = new G4Material("MoldResin", 1.2 * g/cm3, 3);
+    MoldResin->AddMaterial(SiO2, 0.72);
+    MoldResin->AddMaterial(CAS_29690822, 0.15);
+    MoldResin->AddMaterial(CAS_9003354, 0.13);
+
+    fWorldVolume->GetLogicalVolume()->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_SOT23->SetMaterial(nist->FindOrBuildMaterial("MoldResin"));
+    LV_ActiveRegion->SetMaterial(nist->FindOrBuildMaterial("G4_Si"));
+    LV_PCB->SetMaterial(nist->FindOrBuildMaterial("FR4"));
+    LV_AlFoil000->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
+    LV_AlFoil001->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
+    LV_AlFoil002->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
+    LV_MylarWindow000->SetMaterial(nist->FindOrBuildMaterial("G4_MYLAR"));
+    LV_MylarWindow001->SetMaterial(nist->FindOrBuildMaterial("G4_MYLAR"));
+
+    G4bool checkOverlaps = true;
+
     return fWorldVolume;
 }
 
