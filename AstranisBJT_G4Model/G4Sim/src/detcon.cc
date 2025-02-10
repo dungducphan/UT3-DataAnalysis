@@ -32,19 +32,19 @@ LV_MylarWindow001(nullptr) {
     visAtt_SOT23 = new G4VisAttributes();
     visAtt_SOT23->SetVisibility(true);
     visAtt_SOT23->SetForceSolid(true);
-    visAtt_SOT23->SetColour(1, 1, 1, 0.9);
+    visAtt_SOT23->SetColour(1, 1, 1, 0.08);
     LV_SOT23->SetVisAttributes(visAtt_SOT23);
 
     visAtt_ActiveRegion = new G4VisAttributes();
     visAtt_ActiveRegion->SetVisibility(true);
     visAtt_ActiveRegion->SetForceSolid(true);
-    visAtt_ActiveRegion->SetColour(0, 1, 0, 0.9);
+    visAtt_ActiveRegion->SetColour(0, 1, 0, 0.5);
     LV_ActiveRegion->SetVisAttributes(visAtt_ActiveRegion);
 
     visAtt_PCB = new G4VisAttributes();
     visAtt_PCB->SetVisibility(true);
     visAtt_PCB->SetForceSolid(true);
-    visAtt_PCB->SetColour(0, 0, 1, 0.9);
+    visAtt_PCB->SetColour(0, 0, 1, 0.08);
     LV_PCB->SetVisAttributes(visAtt_PCB);
 
     visAtt_AlFoil = new G4VisAttributes();

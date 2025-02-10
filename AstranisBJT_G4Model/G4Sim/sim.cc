@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     // Construct the run manager
 #ifdef G4MULTITHREADED
     G4MTRunManager *runManager = new G4MTRunManager();
-    runManager->SetNumberOfThreads(1);
+    runManager->SetNumberOfThreads(48);
 #else
     G4RunManager* runManager = new G4RunManager();
 #endif
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     runManager->SetUserInitialization(detector);
 
     // Set mandatory initialization classes
-    auto physics = new Shielding();
+    auto physics = new QGSP_BERT_HP();
     runManager->SetUserInitialization(physics);
 
     // Set user action classes through Worker Initialization

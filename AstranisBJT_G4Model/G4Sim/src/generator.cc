@@ -16,7 +16,7 @@ generator::generator() {
     sps->GetPosDist()->SetCentreCoords(G4ThreeVector(0., 1050*mm, 0));
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
-    sps->GetEneDist()->SetEnergyDisType("Gaus"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
+    sps->GetEneDist()->SetEnergyDisType("Gauss"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
     sps->GetEneDist()->SetMonoEnergy(70 * MeV);
     sps->GetEneDist()->SetBeamSigmaInE(5 * MeV);
 

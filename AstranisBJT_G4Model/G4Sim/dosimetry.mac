@@ -1,43 +1,30 @@
 ########################################
 
 # Define scoring mesh
-/score/create/boxMesh dosimeterMesh
-/score/mesh/boxSize 2000. 2000. 4000. mm
-/score/mesh/nBin 20 20 40
+/score/create/boxMesh DUTMesh
+/score/mesh/boxSize 405. 30. 205. um
+/score/mesh/nBin 1 1 1
+/score/mesh/translate/xyz 0. -25. 0. um
 
 # Filters
 /score/quantity/doseDeposit doseDepAll
-/score/quantity/nOfTrack nOfTrackAll
-/score/quantity/nOfTrack nOfTrackNeutrino
-/score/filter/particle nueFilter nu_e
-/score/quantity/nOfTrack nOfTrackAntiNeutrino
-/score/filter/particle antinueFilter anti_nu_e
-/score/quantity/nOfTrack nOfTrackGamma
-/score/filter/particle gammaFilter gamma
-/score/quantity/nOfTrack nOfTrackNeutron
-/score/filter/particle neutronFilter neutron
 /score/close
 /score/list
 
 ########################################
 
 # Run control
-# /vis/disable
-# /control/verbose 2
-# /run/verbose 2
-/run/beamOn 10000
-# /vis/enable
+/vis/disable
+/control/verbose 2
+/run/verbose 2
+/run/beamOn 1000000
+/vis/enable
 
 ########################################
 
 # Drawing projections
-# /score/drawProjection dosimeterMesh doseDepAll
+/score/drawProjection DUTMesh doseDepAll
 
 ########################################
 # Dump scorers to a file
-/score/dumpQuantityToFile dosimeterMesh doseDepAll  doseDepAll.csv
-/score/dumpQuantityToFile dosimeterMesh nOfTrackAll  nOfTrackAll.csv
-/score/dumpQuantityToFile dosimeterMesh nOfTrackGamma  nOfTrackGamma.csv
-/score/dumpQuantityToFile dosimeterMesh nOfTrackNeutron  nOfTrackNeutron.csv
-/score/dumpQuantityToFile dosimeterMesh nOfTrackNeutrino  nOfTrackNeutrino.csv
-/score/dumpQuantityToFile dosimeterMesh nOfTrackAntiNeutrino  nOfTrackAntiNeutrino.csv
+/score/dumpQuantityToFile DUTMesh doseDepAll  doseDepAll.csv
