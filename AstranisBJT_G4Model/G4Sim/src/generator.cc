@@ -40,5 +40,6 @@ G4ThreeVector generator::RandomizedDirection() {
     double y_mom = TMath::Sin(rdm2 * rad) * tmp;
     double z_mom = TMath::Cos(rdm2 * rad) * tmp;
 
-    return {z_mom, -x_mom, y_mom};
+    return {0, -1, 0};
+    // return {z_mom, -x_mom, y_mom};
 }

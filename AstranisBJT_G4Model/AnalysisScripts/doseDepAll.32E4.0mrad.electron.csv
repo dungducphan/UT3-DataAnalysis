@@ -1,0 +1,4 @@
+# mesh name: DUTMesh
+# primitive scorer name: doseDepAll
+# iX, iY, iZ, total(value) [Gy], total(val^2), entry
+0,0,0,0.02911853055255845,4.320722486856813e-09,319997

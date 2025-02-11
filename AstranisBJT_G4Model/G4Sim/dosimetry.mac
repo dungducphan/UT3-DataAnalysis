@@ -17,7 +17,7 @@
 /vis/disable
 /control/verbose 2
 /run/verbose 2
-/run/beamOn 62500000
+/run/beamOn 320000
 /vis/enable
 
 ########################################
@@ -27,4 +27,4 @@
 
 ########################################
 # Dump scorers to a file
-/score/dumpQuantityToFile DUTMesh doseDepAll  doseDepAll.csv
+/score/dumpQuantityToFile DUTMesh doseDepAll  doseDepAll.32E4.0mrad.electron.csv

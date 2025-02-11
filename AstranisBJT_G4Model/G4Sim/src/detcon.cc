@@ -119,11 +119,11 @@ G4VPhysicalVolume *detcon::Construct() {
     LV_SOT23->SetMaterial(nist->FindOrBuildMaterial("MoldResin"));
     LV_ActiveRegion->SetMaterial(nist->FindOrBuildMaterial("G4_Si"));
     LV_PCB->SetMaterial(nist->FindOrBuildMaterial("FR4"));
-    LV_AlFoil000->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
-    LV_AlFoil001->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
-    LV_AlFoil002->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
-    LV_MylarWindow000->SetMaterial(nist->FindOrBuildMaterial("G4_MYLAR"));
-    LV_MylarWindow001->SetMaterial(nist->FindOrBuildMaterial("G4_MYLAR"));
+    LV_AlFoil000->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_AlFoil001->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_AlFoil002->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_MylarWindow000->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_MylarWindow001->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
 
     G4bool checkOverlaps = true;
 
