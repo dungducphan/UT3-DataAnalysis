@@ -53,11 +53,15 @@ private:
     G4LogicalVolume* LV_SOT23;
     G4LogicalVolume* LV_ActiveRegion; // <- this is the sensitive detector
     G4LogicalVolume* LV_PCB;
+    G4LogicalVolume* LV_PE_BaseLayer;
+    G4LogicalVolume* LV_PE_Protection;
+    G4LogicalVolume* LV_DRZActiveLayer;
     G4LogicalVolume* LV_AlFoil000;
     G4LogicalVolume* LV_AlFoil001;
     G4LogicalVolume* LV_AlFoil002;
     G4LogicalVolume* LV_MylarWindow000;
     G4LogicalVolume* LV_MylarWindow001;
+    G4LogicalVolume* LV_AIRBOX;
 
     G4VisAttributes* visAtt_SOT23;
     G4VisAttributes* visAtt_ActiveRegion;
@@ -65,4 +69,5 @@ private:
     G4VisAttributes* visAtt_DRZScreen;
     G4VisAttributes* visAtt_AlFoil;
     G4VisAttributes* visAtt_MylarWindow;
+    G4VisAttributes* visAtt_AIRBOX;
 };

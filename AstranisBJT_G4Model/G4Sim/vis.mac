@@ -13,8 +13,8 @@
 /vis/scene/endOfEventAction accumulate -1
 
 # Draw markers
-/vis/scene/add/scale 1 m
-/vis/scene/add/axes
+# /vis/scene/add/scale 1 m
+# /vis/scene/add/axes
 
 # Set colors for particle identification
 /vis/modeling/trajectories/create/drawByParticleID

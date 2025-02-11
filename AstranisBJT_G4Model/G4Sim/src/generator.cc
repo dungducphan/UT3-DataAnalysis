@@ -17,7 +17,7 @@ generator::generator() {
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
     sps->GetEneDist()->SetEnergyDisType("Gauss"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
-    sps->GetEneDist()->SetMonoEnergy(70 * MeV);
+    sps->GetEneDist()->SetMonoEnergy(75 * MeV);
     sps->GetEneDist()->SetBeamSigmaInE(5 * MeV);
 
     fRandom = new TRandom3();
@@ -32,14 +32,16 @@ void generator::GeneratePrimaries(G4Event *anEvent) {
     fGeneralParticleSource->GeneratePrimaryVertex(anEvent);
 }
 
-G4ThreeVector generator::RandomizedDirection() {
-    double rdm1 = fRandom->Gaus(0, 3);
-    double x_mom = TMath::Cos(rdm1 * mrad);
+G4ThreeVector generator::RandomizedDirection() const {
+    double openingAngle = 1; // mrad
+    double rdm1 = fRandom->Gaus(0, openingAngle);
+    double y_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);
-    double rdm2 = fRandom->Gaus(TMath::PiOver2(), 3);
-    double y_mom = TMath::Sin(rdm2 * rad) * tmp;
+
+    double rdm2 = fRandom->Uniform(0, TMath::TwoPi());
+    double x_mom = TMath::Sin(rdm2 * rad) * tmp;
     double z_mom = TMath::Cos(rdm2 * rad) * tmp;
 
-    return {0, -1, 0};
-    // return {z_mom, -x_mom, y_mom};
+    // return {0, -1, 0};
+    return {x_mom, -y_mom, z_mom};
 }

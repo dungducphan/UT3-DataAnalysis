@@ -25,6 +25,6 @@ public:
 
 private:
     G4GeneralParticleSource *fGeneralParticleSource = nullptr;
-    G4ThreeVector RandomizedDirection();
+    G4ThreeVector RandomizedDirection() const;
     TRandom3 *fRandom;
 };
