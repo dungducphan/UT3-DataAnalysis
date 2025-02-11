@@ -151,15 +151,18 @@ G4VPhysicalVolume *detcon::Construct() {
     LV_SOT23->SetMaterial(nist->FindOrBuildMaterial("MoldResin"));
     LV_ActiveRegion->SetMaterial(nist->FindOrBuildMaterial("G4_Si"));
     LV_PCB->SetMaterial(nist->FindOrBuildMaterial("FR4"));
-    LV_AlFoil000->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
-    LV_AlFoil001->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
-    LV_AlFoil002->SetMaterial(nist->FindOrBuildMaterial("G4_Al"));
-    LV_MylarWindow000->SetMaterial(nist->FindOrBuildMaterial("G4_MYLAR"));
-    LV_MylarWindow001->SetMaterial(nist->FindOrBuildMaterial("G4_MYLAR"));
-    LV_PE_BaseLayer->SetMaterial(Polyester);
-    LV_PE_Protection->SetMaterial(Polyester);
-    LV_DRZActiveLayer->SetMaterial(DRZ_material);
-    LV_AIRBOX->SetMaterial(nist->FindOrBuildMaterial("G4_AIR"));
+    LV_AlFoil000->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_AlFoil001->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_AlFoil002->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_MylarWindow000->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_MylarWindow001->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    // LV_PE_BaseLayer->SetMaterial(Polyester);
+    // LV_PE_Protection->SetMaterial(Polyester);
+    // LV_DRZActiveLayer->SetMaterial(DRZ_material);
+    LV_PE_BaseLayer->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_PE_Protection->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_DRZActiveLayer->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
+    LV_AIRBOX->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
 
     G4bool checkOverlaps = true;
 
