@@ -37,6 +37,18 @@ void PSDataProcessor::AddDataset(const std::string& path) {
     delete h;
 }
 
+void PSDataProcessor::CreateDataForErrorBarPlot(
+    double* x,
+    double* y,
+    double* y_err) const {
+    for (int i = 0; i < GetDatasetSize(); i++) {
+        x[i] = i;
+        y[i] = datasets.at(i).meanCharge;
+        y_err[i] = datasets.at(i).stdDevCharge;
+    }
+}
+
+
 int PSDataProcessor::GetDatasetSize() const {
     return static_cast<int>(datasets.size());
 }

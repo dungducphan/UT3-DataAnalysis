@@ -37,6 +37,7 @@ public:
     double GetScanMeanCharge(int datasetID) const;
     double GetScanStdDevCharge(int datasetID) const;
     Dataset GetDataset(int datasetID) const;
+    void CreateDataForErrorBarPlot(double* x, double* y, double* y_err) const;
 
 private:
     std::vector<Dataset> datasets;
@@ -47,4 +48,3 @@ private:
     static double IntegrateTGraph(TGraph* gr);
     static std::vector<std::string> PSDataProcessor::GetCSVFiles(const std::string& directoryPath);
 };
-

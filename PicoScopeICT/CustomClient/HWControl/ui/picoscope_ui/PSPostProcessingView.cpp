@@ -13,8 +13,12 @@ void PSPostProcessingView::Render() {
     RenderDatasetView();
     ImGui::End();
 
-    ImGui::Begin("Charge Distribution");
+    ImGui::Begin("ICT Charge Distribution");
     RenderHistogramView();
+    ImGui::End();
+
+    ImGui::Begin("ICT Charge versus Scan Number");
+    RenderErrorBarPlotView();
     ImGui::End();
 }
 
@@ -65,8 +69,8 @@ void PSPostProcessingView::RenderDatasetView() {
             if (ImGui::TreeNode("", "Scan %d", i)) {
                 ImGui::Separator();
                 ImGui::Text("Number of Waveforms: %i", ps_data_processor->GetScanSize(i));
-                ImGui::Text("Mean Charge: %.2f", ps_data_processor->GetScanMeanCharge(i));
-                ImGui::Text("Std Dev Charge: %.2f", ps_data_processor->GetScanStdDevCharge(i));
+                ImGui::Text("Mean Charge: %.2f pC", ps_data_processor->GetScanMeanCharge(i));
+                ImGui::Text("Std Dev Charge: %.2f pC", ps_data_processor->GetScanStdDevCharge(i));
                 ImGui::Separator();
                 if (ImGui::SmallButton("Show Distribution")) {
                     // Plot Charge Distribution Histogram
@@ -90,7 +94,7 @@ void PSPostProcessingView::RenderHistogramView() {
         return;
     }
 
-    if (ImPlot::BeginPlot("Charge Distribution Histogram")) {
+    if (ImPlot::BeginPlot("ICT Charge Distribution")) {
         // Extract from the selected dataset
         auto dataset = ps_data_processor->GetDataset(selectedDataset);
 
@@ -102,9 +106,23 @@ void PSPostProcessingView::RenderHistogramView() {
             data[i] = dataset.waveforms[i].chargeValue;
         }
 
-        ImPlot::SetupAxes(nullptr,nullptr,ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
+        ImPlot::SetupAxes("ICT Charge (pc)","Counts",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
         ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
         ImPlot::PlotHistogram(Form("Scan %d", selectedDataset), data, count, bins);
+        ImPlot::EndPlot();
+    }
+}
+
+void PSPostProcessingView::RenderErrorBarPlotView() {
+    double scan_evolution_scanID[1000] = {0};
+    double scan_evolution_meanCharge[1000] = {0};
+    double scan_evolution_stdDevCharge[1000] = {0};
+    if (ImPlot::BeginPlot("Scan Evolution of ICT Charge")) {
+        // Extract from all scans (all dataset)
+        ps_data_processor->CreateDataForErrorBarPlot(scan_evolution_scanID, scan_evolution_meanCharge, scan_evolution_stdDevCharge);
+        ImPlot::SetupAxes("Scan No.","ICT Charge (pC)",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
+        ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
+        ImPlot::PlotErrorBars("ICT Charge vs. Scan No.", scan_evolution_scanID, scan_evolution_meanCharge, scan_evolution_stdDevCharge, ps_data_processor->GetDatasetSize());
         ImPlot::EndPlot();
     }
 }

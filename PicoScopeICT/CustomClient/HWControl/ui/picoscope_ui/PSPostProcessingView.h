@@ -18,6 +18,7 @@ private:
     // Render components
     void RenderDatasetView();
     void RenderHistogramView();
+    void RenderErrorBarPlotView();
 
     // Dataset to show histogram
     int selectedDataset;
