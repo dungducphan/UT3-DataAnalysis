@@ -6,7 +6,7 @@
 #include "PSDataProcessor.h"
 
 PSPostProcessingView::PSPostProcessingView(PSDataProcessor* ps_data_processor)
-    : ps_data_processor(ps_data_processor) {}
+    : ps_data_processor(ps_data_processor), selectedDataset(-1) {}
 
 void PSPostProcessingView::Render() {
     ImGui::Begin("Dataset Configuration");
@@ -95,15 +95,16 @@ void PSPostProcessingView::RenderHistogramView() {
         auto dataset = ps_data_processor->GetDataset(selectedDataset);
 
         static const int bins = 100;
-        static const int count = dataset.waveforms.size();
-        static double data[bins];
-        for (int i = 0; i < bins; ++i) {
+        static int count = dataset.waveforms.size();
+
+        static double data[5000];
+        for (int i = 0; i < count; ++i) {
             data[i] = dataset.waveforms[i].chargeValue;
         }
 
         ImPlot::SetupAxes(nullptr,nullptr,ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
         ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
-        ImPlot::PlotHistogram("Charge Distribution", data, count, bins);
+        ImPlot::PlotHistogram(Form("Scan %d", selectedDataset), data, count, bins);
         ImPlot::EndPlot();
     }
 }

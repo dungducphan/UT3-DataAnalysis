@@ -9,6 +9,11 @@ void PSDataProcessor::AddDataset(const std::string& path) {
     // Get list of all .csv files in the directory
     std::vector<std::string> csvFiles = GetCSVFiles(path);
 
+    if (csvFiles.empty()) {
+        std::cerr << "Error: No .csv files found in directory " << path << std::endl;
+        return;
+    }
+
     // Import csv files and make dataset
     Dataset dataset;
     auto h = new TH1D(Form("h_%03i", datasets.size() + 1), Form("h_%03i", datasets.size() + 1), 1000, 0, 200);

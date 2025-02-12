@@ -12,7 +12,6 @@ public:
     // Main method to render the GUI
     void Render();
 
-
 private:
     PSDataProcessor* ps_data_processor;
 
@@ -21,5 +20,5 @@ private:
     void RenderHistogramView();
 
     // Dataset to show histogram
-    int selectedDataset = -1;
+    int selectedDataset;
 };
