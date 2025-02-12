@@ -1,3 +1,6 @@
 [submodule "PicoScopeICT/CustomClient/HWControl/external/imgui"]
 	path = PicoScopeICT/CustomClient/HWControl/external/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "PicoScopeICT/CustomClient/HWControl/external/implot"]
+	path = PicoScopeICT/CustomClient/HWControl/external/implot
+	url = https://github.com/epezent/implot.git
