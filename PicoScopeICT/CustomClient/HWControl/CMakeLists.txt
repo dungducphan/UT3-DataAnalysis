@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 # Set project name and version
 project(CameraControl VERSION 0.1.0 LANGUAGES CXX)
 
+# If WIN32 is defined
+add_definitions(-DWIN32)
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -47,7 +50,9 @@ file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION "${CMAKE_RUNT
 # ===================================================================
 # hw_interface library
 # ===================================================================
+set(PICO_SDK_DIR "C:/Program\ Files/Pico\ Technology/SDK")
 add_library(hw_interface STATIC
+        # camera
         camera_interface/Camera.cpp
         camera_interface/Basler/BaslerCamera.cpp
         camera_interface/Basler/BaslerCameraProperties.cpp
@@ -57,21 +62,33 @@ add_library(hw_interface STATIC
         camera_interface/PCO/PCOCameraProperties.cpp
         camera_interface/CameraManager.cpp
         camera_interface/CameraController.cpp
+        # scope
+        scope_interface/ScopeManager.h
+        scope_interface/ScopeManager.cpp
 )
 
 # Specify include directories for hw_interface
 target_include_directories(hw_interface PUBLIC
-        ${CMAKE_SOURCE_DIR}/hw_interface
-        ${CMAKE_SOURCE_DIR}/hw_interface/Basler
-        ${CMAKE_SOURCE_DIR}/hw_interface/FLIR
-        ${CMAKE_SOURCE_DIR}/hw_interface/PCO
+        ${CMAKE_SOURCE_DIR}/camera_interface
+        ${CMAKE_SOURCE_DIR}/camera_interface/Basler
+        ${CMAKE_SOURCE_DIR}/camera_interface/FLIR
+        ${CMAKE_SOURCE_DIR}/camera_interface/PCO
+        ${CMAKE_SOURCE_DIR}/scope_interface
+        ${PICO_SDK_DIR}/inc
 )
 
 # Set library output name
-set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "camera_interface")
+set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "hw_interface")
+
+# Link libraries
+if (WIN32)
+    target_link_libraries(hw_interface PRIVATE user32 gdi32 kernel32)
+endif()
+link_directories(${PICO_SDK_DIR}/lib)
+target_link_libraries(hw_interface PRIVATE ps3000)
 
 # ===================================================================
-# CameraControl executable
+# HardwareControl executable
 # ===================================================================
 
 # Add executable
@@ -80,7 +97,9 @@ include_directories("ui")
 include_directories("ui/camera_ui")
 include_directories("ui/picoscope_ui")
 include_directories("camera_interface")
-add_executable(CameraControl
+include_directories("scope_interface")
+
+add_executable(HardwareControl
         # imgui core library
         external/imgui/imgui_demo.cpp
         external/imgui/imgui.h
@@ -116,7 +135,10 @@ add_executable(CameraControl
 )
 
 # Specify include directories
-target_include_directories(CameraControl PUBLIC ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/ui)
+target_include_directories(HardwareControl PUBLIC ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/ui)
 
 # Link libraries
-target_link_libraries(CameraControl PRIVATE glfw glad hw_interface)
+if (WIN32)
+    target_link_libraries(HardwareControl PRIVATE user32 gdi32 kernel32)
+endif()
+target_link_libraries(HardwareControl PRIVATE glfw glad hw_interface)

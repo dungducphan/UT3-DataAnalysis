@@ -1,6 +1,5 @@
 #include "ScopeControlView.h"
 #include "ScopeManager.h"
-#include "Scope.h"
 #include "imgui.h" // ImGui for rendering
 
 ScopeControlView::ScopeControlView(ScopeManager& cameraManager)
