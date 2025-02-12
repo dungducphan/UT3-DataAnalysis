@@ -7,12 +7,11 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-#include "CameraController.h"
-#include "CameraManager.h"
+#include "PSDataProcessor.h"
 
 // ui
 #include "ImGuiConfig.h"
-#include "CameraControlView.h"
+#include "PSPostProcessingView.h"
 
 int main() {
 
@@ -45,23 +44,27 @@ int main() {
     // Setup ImGui
     SetupImGui(window);
 
+    ////////////////////////////////////////////////////////////////////////////////////////////
     // Setup CameraManager
-    CameraManager cameraManager;
-    CameraController controller(cameraManager);
-    CameraControlView view(cameraManager);
+    // CameraManager cameraManager;
+    // CameraController controller(cameraManager);
+    // CameraControlView view(cameraManager);
 
     // Connect View to Controller
-    view.SetOnAddCameraCallback(
-        [&controller](const std::string& vendor, const std::string& serialNumber, const std::string& name) {
-            controller.AddCamera(vendor, serialNumber, name);
-        });
+    // view.SetOnAddCameraCallback(
+    //     [&controller](const std::string& vendor, const std::string& serialNumber, const std::string& name) {
+    //         controller.AddCamera(vendor, serialNumber, name);
+    //     });
+    //
+    // view.SetOnRemoveCameraCallback(
+    //     [&controller](const std::string& serialNumber) {
+    //         controller.RemoveCamera(serialNumber);
+    //     });
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
-    view.SetOnRemoveCameraCallback(
-        [&controller](const std::string& serialNumber) {
-            controller.RemoveCamera(serialNumber);
-        });
+    PSDataProcessor processor;
+    PSPostProcessingView view(processor);
 
-    
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {

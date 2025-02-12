@@ -52,7 +52,6 @@ file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION "${CMAKE_RUNT
 # ===================================================================
 # hw_interface library
 # ===================================================================
-set(PICO_SDK_DIR "C:/Program\ Files/Pico\ Technology/SDK")
 add_library(hw_interface STATIC
         # camera
         camera_interface/Camera.cpp
@@ -64,6 +63,8 @@ add_library(hw_interface STATIC
         camera_interface/PCO/PCOCameraProperties.cpp
         camera_interface/CameraManager.cpp
         camera_interface/CameraController.cpp
+        # scope
+        scope_interface/PSDataProcessor.cpp
 )
 
 # Specify include directories for hw_interface
@@ -72,18 +73,11 @@ target_include_directories(hw_interface PUBLIC
         ${CMAKE_SOURCE_DIR}/camera_interface/Basler
         ${CMAKE_SOURCE_DIR}/camera_interface/FLIR
         ${CMAKE_SOURCE_DIR}/camera_interface/PCO
-        ${PICO_SDK_DIR}/inc
+        ${CMAKE_SOURCE_DIR}/scope_interface
 )
 
 # Set library output name
 set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "hw_interface")
-
-# Link libraries
-if (WIN32)
-    target_link_libraries(hw_interface PRIVATE user32 gdi32 kernel32)
-endif()
-link_directories(${PICO_SDK_DIR}/lib)
-target_link_libraries(hw_interface PRIVATE ${PICO_SDK_DIR}/lib/ps3000a.lib)
 
 # ===================================================================
 # HardwareControl executable
@@ -118,10 +112,18 @@ add_executable(HardwareControl
         external/imgui/backends/imgui_impl_opengl3.cpp
         external/imgui/backends/imgui_impl_opengl3_loader.h
 
+        # implot
+        external/implot/implot.h
+        external/implot/implot_internal.h
+        external/implot/implot.cpp
+        external/implot/implot_items.cpp
+
         # UI
         ui/ImGuiConfig.h
         ui/camera_ui/CameraControlView.cpp
         ui/camera_ui/CameraControlView.h
+        ui/picoscope_ui/PSPostProcessingView.cpp
+        ui/picoscope_ui/PSPostProcessingView.h
 
         # Entrypoint
         main.cpp
@@ -134,7 +136,4 @@ add_executable(HardwareControl
 target_include_directories(HardwareControl PUBLIC ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/ui)
 
 # Link libraries
-if (WIN32)
-    target_link_libraries(HardwareControl PRIVATE user32 gdi32 kernel32)
-endif()
 target_link_libraries(HardwareControl PRIVATE glfw glad hw_interface)
