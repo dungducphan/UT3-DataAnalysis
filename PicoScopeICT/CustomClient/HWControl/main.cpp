@@ -13,9 +13,10 @@
 // ui
 #include "ImGuiConfig.h"
 #include "CameraControlView.h"
-#include "ScopeControlView.h"
 
 int main() {
+
+    // Initialize GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
         return -1;
@@ -59,6 +60,8 @@ int main() {
         [&controller](const std::string& serialNumber) {
             controller.RemoveCamera(serialNumber);
         });
+
+    
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {

@@ -5,7 +5,9 @@ cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 project(CameraControl VERSION 0.1.0 LANGUAGES CXX)
 
 # If WIN32 is defined
-add_definitions(-DWIN32)
+if (WIN32)
+    add_definitions(-DWIN32)
+endif()
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -62,9 +64,6 @@ add_library(hw_interface STATIC
         camera_interface/PCO/PCOCameraProperties.cpp
         camera_interface/CameraManager.cpp
         camera_interface/CameraController.cpp
-        # scope
-        scope_interface/ScopeManager.h
-        scope_interface/ScopeManager.cpp
 )
 
 # Specify include directories for hw_interface
@@ -73,7 +72,6 @@ target_include_directories(hw_interface PUBLIC
         ${CMAKE_SOURCE_DIR}/camera_interface/Basler
         ${CMAKE_SOURCE_DIR}/camera_interface/FLIR
         ${CMAKE_SOURCE_DIR}/camera_interface/PCO
-        ${CMAKE_SOURCE_DIR}/scope_interface
         ${PICO_SDK_DIR}/inc
 )
 
@@ -85,7 +83,7 @@ if (WIN32)
     target_link_libraries(hw_interface PRIVATE user32 gdi32 kernel32)
 endif()
 link_directories(${PICO_SDK_DIR}/lib)
-target_link_libraries(hw_interface PRIVATE ps3000)
+target_link_libraries(hw_interface PRIVATE ${PICO_SDK_DIR}/lib/ps3000a.lib)
 
 # ===================================================================
 # HardwareControl executable
@@ -124,8 +122,6 @@ add_executable(HardwareControl
         ui/ImGuiConfig.h
         ui/camera_ui/CameraControlView.cpp
         ui/camera_ui/CameraControlView.h
-        ui/picoscope_ui/ScopeControlView.cpp
-        ui/picoscope_ui/ScopeControlView.h
 
         # Entrypoint
         main.cpp
