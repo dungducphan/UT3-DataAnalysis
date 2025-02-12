@@ -7,3 +7,4 @@ Debug/
 .vs/
 *.vcxproj.user
 *.aps
+build/
