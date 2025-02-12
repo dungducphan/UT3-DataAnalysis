@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "imgui.h"
+#include "implot.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -44,6 +45,9 @@ int main() {
     // Setup ImGui
     SetupImGui(window);
 
+    // Create ImPlot context
+    ImPlot::CreateContext();
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Setup CameraManager
     // CameraManager cameraManager;
@@ -80,7 +84,7 @@ int main() {
         // Create a docking space and set it as the default docking space
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 
-        // Show the CamaraControlView
+        // Show the PicoScope Control View
         view.Render();
 
         // // Show demo
@@ -93,6 +97,9 @@ int main() {
         // Swap buffers
         glfwSwapBuffers(window);
     }
+
+    // Destroy ImPlot context
+    ImPlot::DestroyContext();
 
     // Clean up
     CleanupImGui();

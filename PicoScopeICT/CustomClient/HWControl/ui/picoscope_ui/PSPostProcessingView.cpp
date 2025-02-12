@@ -1,4 +1,5 @@
 #include "imgui.h"
+#include "implot.h"
 #include "ImGuiFileDialog.h"
 
 #include "PSPostProcessingView.h"
@@ -17,7 +18,7 @@ void PSPostProcessingView::Render() {
     ImGui::End();
 }
 
-void PSPostProcessingView::RenderDatasetView() const {
+void PSPostProcessingView::RenderDatasetView() {
     ImGui::SeparatorText("ADD DATASET");
 
     static std::string selectedFolderPath;
@@ -69,6 +70,7 @@ void PSPostProcessingView::RenderDatasetView() const {
                 ImGui::Separator();
                 if (ImGui::SmallButton("Show Distribution")) {
                     // Plot Charge Distribution Histogram
+                    selectedDataset = i;
                 }
                 ImGui::SameLine();
                 if (ImGui::SmallButton("Remove")) {
@@ -83,6 +85,26 @@ void PSPostProcessingView::RenderDatasetView() const {
 }
 
 void PSPostProcessingView::RenderHistogramView() {
+    if (selectedDataset == -1) {
+        ImGui::Text("Select a dataset to show the charge distribution.");
+        return;
+    }
 
+    if (ImPlot::BeginPlot("Charge Distribution Histogram")) {
+        // Extract from the selected dataset
+        auto dataset = ps_data_processor->GetDataset(selectedDataset);
+
+        static const int bins = 100;
+        static const int count = dataset.waveforms.size();
+        static double data[bins];
+        for (int i = 0; i < bins; ++i) {
+            data[i] = dataset.waveforms[i].chargeValue;
+        }
+
+        ImPlot::SetupAxes(nullptr,nullptr,ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
+        ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
+        ImPlot::PlotHistogram("Charge Distribution", data, count, bins);
+        ImPlot::EndPlot();
+    }
 }
 

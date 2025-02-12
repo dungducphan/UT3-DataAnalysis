@@ -7,7 +7,6 @@ class PSDataProcessor;
 
 class PSPostProcessingView {
 public:
-    // Constructor requires a reference to the CameraManager (Model)
     explicit PSPostProcessingView(PSDataProcessor* ps_data_processor);
 
     // Main method to render the GUI
@@ -15,10 +14,12 @@ public:
 
 
 private:
-    // Reference to the CameraManager (Model)
     PSDataProcessor* ps_data_processor;
 
     // Render components
-    void RenderDatasetView() const;
+    void RenderDatasetView();
     void RenderHistogramView();
+
+    // Dataset to show histogram
+    int selectedDataset = -1;
 };

@@ -36,6 +36,7 @@ public:
     int GetScanSize(int datasetID) const;
     double GetScanMeanCharge(int datasetID) const;
     double GetScanStdDevCharge(int datasetID) const;
+    Dataset GetDataset(int datasetID) const;
 
 private:
     std::vector<Dataset> datasets;

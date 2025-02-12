@@ -6,12 +6,10 @@ PSDataProcessor::PSDataProcessor() {
 
 
 void PSDataProcessor::AddDataset(const std::string& path) {
-
+    // Get list of all .csv files in the directory
     std::vector<std::string> csvFiles = GetCSVFiles(path);
-    for (const auto& file : csvFiles) {
-        std::cout << file << std::endl;
-    }
 
+    // Import csv files and make dataset
     Dataset dataset;
     auto h = new TH1D(Form("h_%03i", datasets.size() + 1), Form("h_%03i", datasets.size() + 1), 1000, 0, 200);
     for (unsigned int i = 0; i < csvFiles.size(); i++) {
@@ -19,7 +17,6 @@ void PSDataProcessor::AddDataset(const std::string& path) {
         TGraph* gr = WaveformToTGraph(wf);
         BackgroundSubtraction(gr);
         double integral = IntegrateTGraph(gr);
-        std::cout << "Integral: " << integral * 1E12 / 50 << "pC." << std::endl;
         h->Fill(integral * 1E12 / 50);
         Waveform waveform{};
         waveform.wfID = i;
@@ -51,6 +48,9 @@ double PSDataProcessor::GetScanStdDevCharge(int datasetID) const {
     return (datasets.at(datasetID)).stdDevCharge;
 }
 
+Dataset PSDataProcessor::GetDataset(int datasetID) const {
+    return datasets.at(datasetID);
+}
 
 Waveform_t PSDataProcessor::ReadSingleWaveform(const std::string& filename) {
     std::vector<double> x, y;
@@ -121,7 +121,6 @@ void PSDataProcessor::BackgroundSubtraction(TGraph* gr) {
         gr->GetPoint(i, x, y);
         gr->SetPoint(i, x, y - mean);
     }
-    std::cout << "Background: " << mean << "mV." << std::endl;
 }
 
 double PSDataProcessor::IntegrateTGraph(TGraph* gr) {
