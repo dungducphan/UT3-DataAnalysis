@@ -6,12 +6,13 @@
 #include <utility>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 #include "TH1.h"
 #include "TROOT.h"
 #include "TGraph.h"
 
-using waveform = std::pair<std::vector<double>, std::vector<double>>;
+using Waveform_t = std::pair<std::vector<double>, std::vector<double>>;
 
 struct Waveform {
     int wfID;
@@ -39,9 +40,10 @@ public:
 private:
     std::vector<Dataset> datasets;
 
-    static waveform ReadSingleWaveform(const std::string& filename);
-    static TGraph* WaveformToTGraph(const waveform& wf);
-    static void BackgroundSubtraction(TGraph* gr, int idx);
-    static double IntegrateTGraph(TGraph* gr, int idx_min);
+    static Waveform_t ReadSingleWaveform(const std::string& filename);
+    static TGraph* WaveformToTGraph(const Waveform_t& wf);
+    static void BackgroundSubtraction(TGraph* gr);
+    static double IntegrateTGraph(TGraph* gr);
+    static std::vector<std::string> PSDataProcessor::GetCSVFiles(const std::string& directoryPath);
 };
 

@@ -4,16 +4,35 @@ PSDataProcessor::PSDataProcessor() {
     datasets.clear();
 }
 
+
 void PSDataProcessor::AddDataset(const std::string& path) {
 
-
+    std::vector<std::string> csvFiles = GetCSVFiles(path);
+    for (const auto& file : csvFiles) {
+        std::cout << file << std::endl;
+    }
 
     Dataset dataset;
+    auto h = new TH1D(Form("h_%03i", datasets.size() + 1), Form("h_%03i", datasets.size() + 1), 1000, 0, 200);
+    for (unsigned int i = 0; i < csvFiles.size(); i++) {
+        Waveform_t wf = ReadSingleWaveform(csvFiles.at(i));
+        TGraph* gr = WaveformToTGraph(wf);
+        BackgroundSubtraction(gr);
+        double integral = IntegrateTGraph(gr);
+        std::cout << "Integral: " << integral * 1E12 / 50 << "pC." << std::endl;
+        h->Fill(integral * 1E12 / 50);
+        Waveform waveform{};
+        waveform.wfID = i;
+        waveform.chargeValue = integral * 1E12 / 50;
+        dataset.waveforms.push_back(waveform);
+    }
+
     dataset.path = path;
-    dataset.name = "";
-    dataset.meanCharge = 0.0;
-    dataset.stdDevCharge = 0.0;
+    dataset.name = "Scan " + std::to_string(datasets.size() + 1);
+    dataset.meanCharge = h->GetMean();
+    dataset.stdDevCharge = h->GetStdDev();
     datasets.push_back(dataset);
+    delete h;
 }
 
 int PSDataProcessor::GetDatasetSize() const {
@@ -33,7 +52,7 @@ double PSDataProcessor::GetScanStdDevCharge(int datasetID) const {
 }
 
 
-waveform PSDataProcessor::ReadSingleWaveform(const std::string& filename) {
+Waveform_t PSDataProcessor::ReadSingleWaveform(const std::string& filename) {
     std::vector<double> x, y;
 
     std::ifstream file(filename);
@@ -69,35 +88,52 @@ waveform PSDataProcessor::ReadSingleWaveform(const std::string& filename) {
     return std::make_pair(x, y);
 }
 
-TGraph* PSDataProcessor::WaveformToTGraph(const waveform& wf) {
+TGraph* PSDataProcessor::WaveformToTGraph(const Waveform_t& wf) {
     std::vector<double> x = wf.first;
     std::vector<double> y = wf.second;
-
     auto gr = new TGraph(x.size(), x.data(), y.data());
-    gr->SetMarkerStyle(20);
-    gr->SetMarkerSize(0.5);
-    gr->SetMarkerColor(kBlack);
-    gr->SetLineColor(kBlack);
-
     return gr;
 }
 
-void PSDataProcessor::BackgroundSubtraction(TGraph* gr, int idx) {
-    double mean = 0;
-    for (int i = 0; i < idx; i++) {
+void PSDataProcessor::BackgroundSubtraction(TGraph* gr) {
+    TH1D* bkgd = new TH1D("bkgd", "bkgd", 100, gr->GetMinimum(), gr->GetMaximum());
+    for (int i = 0; i < gr->GetN(); i++) {
         double x, y;
         gr->GetPoint(i, x, y);
-        mean += y;
+        bkgd->Fill(y);
     }
-    mean = mean / idx;
+
+    double mean = bkgd->GetMean();
+    double stdDev = bkgd->GetStdDev();
+    delete bkgd;
+
+    TH1D* bkgd_refined = new TH1D("bkgd_refined", "bkgd_refined", 100, gr->GetMinimum(), gr->GetMaximum());
+    for (int i = 0; i < gr->GetN(); i++) {
+        double x, y;
+        gr->GetPoint(i, x, y);
+        if (TMath::Abs(y - mean) < 3 * stdDev) bkgd_refined->Fill(y);
+    }
+    mean = bkgd_refined->GetMean();
+    delete bkgd_refined;
 
     for (int i = 0; i < gr->GetN(); i++) {
         double x, y;
         gr->GetPoint(i, x, y);
         gr->SetPoint(i, x, y - mean);
     }
+    std::cout << "Background: " << mean << "mV." << std::endl;
 }
 
-double PSDataProcessor::IntegrateTGraph(TGraph* gr, int idx_min) {
-    return gr->Integral(idx_min, -1);
+double PSDataProcessor::IntegrateTGraph(TGraph* gr) {
+    return gr->Integral();
+}
+
+std::vector<std::string> PSDataProcessor::GetCSVFiles(const std::string& directoryPath) {
+    std::vector<std::string> csvFiles;
+    for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".csv") {
+            csvFiles.push_back(entry.path().string());
+        }
+    }
+    return csvFiles;
 }

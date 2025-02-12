@@ -42,8 +42,7 @@ void PSPostProcessingView::RenderDatasetView() const {
 
     ImGui::InputText("Selected Path", path, IM_ARRAYSIZE(path), ImGuiInputTextFlags_ElideLeft);
     if (ImGui::Button("ADD")) {
-        std::cout << "Selected Path: " << path << std::endl;
-        ps_data_processor->AddDataset(selectedFolderPath);
+        ps_data_processor->AddDataset(path);
     }
 
 
@@ -84,5 +83,6 @@ void PSPostProcessingView::RenderDatasetView() const {
 }
 
 void PSPostProcessingView::RenderHistogramView() {
+
 }
 
