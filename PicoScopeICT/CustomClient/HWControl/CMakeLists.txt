@@ -35,6 +35,10 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
 endif()
 
+# ROOT
+find_package(ROOT REQUIRED)
+include(${ROOT_USE_FILE})
+
 # imgui
 include_directories(SYSTEM "external/imgui")
 
@@ -136,4 +140,4 @@ add_executable(HardwareControl
 target_include_directories(HardwareControl PUBLIC ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/ui)
 
 # Link libraries
-target_link_libraries(HardwareControl PRIVATE glfw glad hw_interface)
+target_link_libraries(HardwareControl PRIVATE glfw glad hw_interface ${ROOT_LIBRARIES})

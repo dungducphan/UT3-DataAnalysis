@@ -24,7 +24,6 @@ void PSPostProcessingView::RenderDatasetView() const {
     ImGui::InputText("Data Path", path, IM_ARRAYSIZE(path), ImGuiInputTextFlags_ElideLeft);
 
     if (ImGui::Button("ADD")) {
-        std::cout << "Adding dataset: " << path << std::endl;
         ps_data_processor->AddDataset(path);
     }
 

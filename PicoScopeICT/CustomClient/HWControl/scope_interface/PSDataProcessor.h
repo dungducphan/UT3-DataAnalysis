@@ -1,7 +1,17 @@
 #pragma once
 
-#include<vector>
-#include<string>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <utility>
+#include <fstream>
+#include <sstream>
+
+#include "TH1.h"
+#include "TROOT.h"
+#include "TGraph.h"
+
+using waveform = std::pair<std::vector<double>, std::vector<double>>;
 
 struct Waveform {
     int wfID;
@@ -28,5 +38,10 @@ public:
 
 private:
     std::vector<Dataset> datasets;
+
+    static waveform ReadSingleWaveform(const std::string& filename);
+    static TGraph* WaveformToTGraph(const waveform& wf);
+    static void BackgroundSubtraction(TGraph* gr, int idx);
+    static double IntegrateTGraph(TGraph* gr, int idx_min);
 };
 
