@@ -4,3 +4,6 @@
 [submodule "PicoScopeICT/CustomClient/HWControl/external/implot"]
 	path = PicoScopeICT/CustomClient/HWControl/external/implot
 	url = https://github.com/epezent/implot.git
+[submodule "PicoScopeICT/CustomClient/HWControl/external/ImGuiFileDialog"]
+	path = PicoScopeICT/CustomClient/HWControl/external/ImGuiFileDialog
+	url = https://github.com/aiekick/ImGuiFileDialog.git

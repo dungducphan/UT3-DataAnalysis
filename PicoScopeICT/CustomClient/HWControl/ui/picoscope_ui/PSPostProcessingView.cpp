@@ -1,6 +1,5 @@
-#include <iostream> // std::cout
-
-#include "imgui.h" // ImGui for rendering
+#include "imgui.h"
+#include "ImGuiFileDialog.h"
 
 #include "PSPostProcessingView.h"
 #include "PSDataProcessor.h"
@@ -20,11 +19,31 @@ void PSPostProcessingView::Render() {
 
 void PSPostProcessingView::RenderDatasetView() const {
     ImGui::SeparatorText("ADD DATASET");
-    static char path[128] = "";
-    ImGui::InputText("Data Path", path, IM_ARRAYSIZE(path), ImGuiInputTextFlags_ElideLeft);
 
+    static std::string selectedFolderPath;
+    static char path[128] = "";
+
+    if (ImGui::Button("Select Directory")) {
+        IGFD::FileDialogConfig config;
+        config.path = ".";
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseDirDlgKey", "Dataset Directory", nullptr, config);
+    }
+
+    // display
+    if (ImGuiFileDialog::Instance()->Display("ChooseDirDlgKey")) {
+        if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+            selectedFolderPath = ImGuiFileDialog::Instance()->GetCurrentPath();
+            // only change path when select a new path in this dialog
+            strncpy(path, selectedFolderPath.c_str(), sizeof(path) - 1);
+            path[sizeof(path) - 1] = '\0'; // Ensure null-termination
+        }
+        ImGuiFileDialog::Instance()->Close();
+    }
+
+    ImGui::InputText("Selected Path", path, IM_ARRAYSIZE(path), ImGuiInputTextFlags_ElideLeft);
     if (ImGui::Button("ADD")) {
-        ps_data_processor->AddDataset(path);
+        std::cout << "Selected Path: " << path << std::endl;
+        ps_data_processor->AddDataset(selectedFolderPath);
     }
 
 

@@ -41,6 +41,9 @@ include(${ROOT_USE_FILE})
 
 # imgui
 include_directories(SYSTEM "external/imgui")
+include_directories(SYSTEM "external/imgui/backends")
+include_directories(SYSTEM "external/implot")
+include_directories(SYSTEM "external/ImGuiFileDialog")
 
 # glad
 include_directories(SYSTEM "external/glad/include")
@@ -121,6 +124,11 @@ add_executable(HardwareControl
         external/implot/implot_internal.h
         external/implot/implot.cpp
         external/implot/implot_items.cpp
+
+        # imguiFileDialog
+        external/ImGuiFileDialog/ImGuiFileDialogConfig.h
+        external/ImGuiFileDialog/ImGuiFileDialog.h
+        external/ImGuiFileDialog/ImGuiFileDialog.cpp
 
         # UI
         ui/ImGuiConfig.h
