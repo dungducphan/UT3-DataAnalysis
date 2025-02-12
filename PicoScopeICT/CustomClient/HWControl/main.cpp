@@ -7,10 +7,13 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-#include "ImGuiConfig.h"
-#include "CameraControlView.h"
 #include "CameraController.h"
 #include "CameraManager.h"
+
+// ui
+#include "ImGuiConfig.h"
+#include "CameraControlView.h"
+#include "ScopeControlView.h"
 
 int main() {
     if (!glfwInit()) {

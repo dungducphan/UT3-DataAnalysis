@@ -77,6 +77,8 @@ set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "camera_interface")
 # Add executable
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories("ui")
+include_directories("ui/camera_ui")
+include_directories("ui/picoscope_ui")
 include_directories("camera_interface")
 add_executable(CameraControl
         # imgui core library
@@ -101,8 +103,10 @@ add_executable(CameraControl
 
         # UI
         ui/ImGuiConfig.h
-        ui/CameraControlView.cpp
-        ui/CameraControlView.h
+        ui/camera_ui/CameraControlView.cpp
+        ui/camera_ui/CameraControlView.h
+        ui/picoscope_ui/ScopeControlView.cpp
+        ui/picoscope_ui/ScopeControlView.h
 
         # Entrypoint
         main.cpp
