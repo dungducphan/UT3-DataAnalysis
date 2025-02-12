@@ -20,6 +20,12 @@ class PSDataProcessor {
 public:
     PSDataProcessor();
     void AddDataset(const std::string& path);
+
+    int GetDatasetSize() const;
+    int GetScanSize(int datasetID) const;
+    double GetScanMeanCharge(int datasetID) const;
+    double GetScanStdDevCharge(int datasetID) const;
+
 private:
     std::vector<Dataset> datasets;
 };

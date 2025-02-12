@@ -62,9 +62,8 @@ int main() {
     //     });
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-    PSDataProcessor processor;
+    auto processor = new PSDataProcessor();
     PSPostProcessingView view(processor);
-
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
@@ -98,6 +97,8 @@ int main() {
     // Clean up
     CleanupImGui();
     glfwTerminate();
+
+    delete processor;
 
     return 0;
 }
