@@ -48,15 +48,15 @@ file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION "${CMAKE_RUNT
 # hw_interface library
 # ===================================================================
 add_library(hw_interface STATIC
-        hw_interface/Camera.cpp
-        hw_interface/Basler/BaslerCamera.cpp
-        hw_interface/Basler/BaslerCameraProperties.cpp
-        hw_interface/FLIR/FLIRCamera.cpp
-        hw_interface/FLIR/FLIRCameraProperties.cpp
-        hw_interface/PCO/PCOCamera.cpp
-        hw_interface/PCO/PCOCameraProperties.cpp
-        hw_interface/CameraManager.cpp
-        hw_interface/CameraController.cpp
+        camera_interface/Camera.cpp
+        camera_interface/Basler/BaslerCamera.cpp
+        camera_interface/Basler/BaslerCameraProperties.cpp
+        camera_interface/FLIR/FLIRCamera.cpp
+        camera_interface/FLIR/FLIRCameraProperties.cpp
+        camera_interface/PCO/PCOCamera.cpp
+        camera_interface/PCO/PCOCameraProperties.cpp
+        camera_interface/CameraManager.cpp
+        camera_interface/CameraController.cpp
 )
 
 # Specify include directories for hw_interface
@@ -68,7 +68,7 @@ target_include_directories(hw_interface PUBLIC
 )
 
 # Set library output name
-set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "hw_interface")
+set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "camera_interface")
 
 # ===================================================================
 # CameraControl executable
@@ -77,7 +77,7 @@ set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "hw_interface")
 # Add executable
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories("ui")
-include_directories("hw_interface")
+include_directories("camera_interface")
 add_executable(CameraControl
         # imgui core library
         external/imgui/imgui_demo.cpp

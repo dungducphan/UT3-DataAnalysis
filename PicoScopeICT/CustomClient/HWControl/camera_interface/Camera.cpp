@@ -1,4 +1,4 @@
-#include "PCH.h"
+#include "../PCH.h"
 
 #include "Basler/BaslerCamera.h"
 #include "FLIR/FLIRCamera.h"
