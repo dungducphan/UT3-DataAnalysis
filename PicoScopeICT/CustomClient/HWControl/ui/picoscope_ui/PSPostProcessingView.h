@@ -17,8 +17,8 @@ private:
 
     // Render components
     void RenderDatasetView();
-    void RenderHistogramView();
-    void RenderErrorBarPlotView();
+    void RenderHistogramView() const;
+    void RenderErrorBarPlotView() const;
 
     // Dataset to show histogram
     int selectedDataset;

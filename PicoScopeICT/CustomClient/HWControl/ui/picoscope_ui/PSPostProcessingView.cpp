@@ -1,3 +1,5 @@
+#include "PCH.h"
+
 #include "imgui.h"
 #include "implot.h"
 #include "ImGuiFileDialog.h"
@@ -88,7 +90,7 @@ void PSPostProcessingView::RenderDatasetView() {
     }
 }
 
-void PSPostProcessingView::RenderHistogramView() {
+void PSPostProcessingView::RenderHistogramView() const {
     if (selectedDataset == -1) {
         ImGui::Text("Select a dataset to show the charge distribution.");
         return;
@@ -113,7 +115,7 @@ void PSPostProcessingView::RenderHistogramView() {
     }
 }
 
-void PSPostProcessingView::RenderErrorBarPlotView() {
+void PSPostProcessingView::RenderErrorBarPlotView() const {
     double scan_evolution_scanID[1000] = {0};
     double scan_evolution_meanCharge[1000] = {0};
     double scan_evolution_stdDevCharge[1000] = {0};

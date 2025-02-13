@@ -7,6 +7,7 @@
 #include <memory>
 #include <algorithm>
 #include <stdexcept>
+#include <variant>
 
 // Pre-compile the std library headers
 #include <cstdlib>

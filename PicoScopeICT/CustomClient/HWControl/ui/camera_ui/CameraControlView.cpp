@@ -1,6 +1,9 @@
+#include "PCH.h"
+
 #include "CameraControlView.h"
 #include "CameraManager.h"
 #include "Camera.h"
+
 #include "imgui.h" // ImGui for rendering
 
 CameraControlView::CameraControlView(CameraManager& cameraManager)
