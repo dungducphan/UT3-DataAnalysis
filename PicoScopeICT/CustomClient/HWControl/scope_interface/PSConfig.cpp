@@ -15,8 +15,7 @@ int32_t _getch() {
     setbuf(stdin, nullptr);
     do {
         ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
-        if (bytesWaiting)
-            getchar();
+        if (bytesWaiting) getchar();
     } while (bytesWaiting);
 
     ch = getchar();
@@ -53,7 +52,7 @@ int32_t fopen_s(FILE ** a, const char * b, const char * c) {
 * Used to set global flags etc. checked by user routines
 ****************************************************************************/
 void PREF4 callBackStreaming(
-	int16_t handle,
+	int16_t     handle,
 	int32_t		noOfSamples,
 	uint32_t	startIndex,
 	int16_t		overflow,
@@ -61,11 +60,11 @@ void PREF4 callBackStreaming(
 	int16_t		triggered,
 	int16_t		autoStop,
 	void		*pParameter) {
-	int32_t channel;
-	BUFFER_INFO * bufferInfo = nullptr;
+	int32_t     channel;
+	BUFFER_INFO* bufferInfo = nullptr;
 
 	if (pParameter != nullptr) {
-		bufferInfo = (BUFFER_INFO *) pParameter;
+		bufferInfo = static_cast<BUFFER_INFO*>(pParameter);
 	}
 
 	// used for streaming
@@ -80,57 +79,39 @@ void PREF4 callBackStreaming(
 	g_trig = triggered;
 	g_trigAt = triggerAt;
 
-	if (bufferInfo != nullptr && noOfSamples)
-	{
-		if (bufferInfo->mode == ANALOGUE)
-		{
-			for (channel = 0; channel < bufferInfo->unit->channelCount; channel++)
-			{
-				if (bufferInfo->unit->channelSettings[channel].enabled)
-				{
-					if (bufferInfo->appBuffers && bufferInfo->driverBuffers)
-					{
-						if (bufferInfo->appBuffers[channel * 2]  && bufferInfo->driverBuffers[channel * 2])
-						{
+	if (bufferInfo != nullptr && noOfSamples) {
+		if (bufferInfo->mode == ANALOGUE) {
+			for (channel = 0; channel < bufferInfo->unit->channelCount; channel++) {
+				if (bufferInfo->unit->channelSettings[channel].enabled) {
+					if (bufferInfo->appBuffers && bufferInfo->driverBuffers) {
+						if (bufferInfo->appBuffers[channel * 2]  && bufferInfo->driverBuffers[channel * 2]) {
 							memcpy_s (&bufferInfo->appBuffers[channel * 2][startIndex], noOfSamples * sizeof(int16_t),
 								&bufferInfo->driverBuffers[channel * 2][startIndex], noOfSamples * sizeof(int16_t));
 						}
-						if (bufferInfo->appBuffers[channel * 2 + 1] && bufferInfo->driverBuffers[channel * 2 + 1])
-						{
+						if (bufferInfo->appBuffers[channel * 2 + 1] && bufferInfo->driverBuffers[channel * 2 + 1]) {
 							memcpy_s (&bufferInfo->appBuffers[channel * 2 + 1][startIndex], noOfSamples * sizeof(int16_t),
 								&bufferInfo->driverBuffers[channel * 2 + 1][startIndex], noOfSamples * sizeof(int16_t));
 						}
 					}
 				}
 			}
-		}
-		else if (bufferInfo->mode == AGGREGATED)
-		{
-			for (channel = 0; channel < bufferInfo->unit->digitalPorts; channel++)
-			{
-				if (bufferInfo->appDigBuffers && bufferInfo->driverDigBuffers)
-				{
-					if (bufferInfo->appDigBuffers[channel * 2] && bufferInfo->driverDigBuffers[channel * 2])
-					{
+		} else if (bufferInfo->mode == AGGREGATED) {
+			for (channel = 0; channel < bufferInfo->unit->digitalPorts; channel++) {
+				if (bufferInfo->appDigBuffers && bufferInfo->driverDigBuffers) {
+					if (bufferInfo->appDigBuffers[channel * 2] && bufferInfo->driverDigBuffers[channel * 2]) {
 						memcpy_s (&bufferInfo->appDigBuffers[channel * 2][startIndex], noOfSamples * sizeof(int16_t),
 							&bufferInfo->driverDigBuffers[channel * 2][startIndex], noOfSamples * sizeof(int16_t));
 					}
-					if (bufferInfo->appDigBuffers[channel * 2 + 1] && bufferInfo->driverDigBuffers[channel * 2 + 1])
-					{
+					if (bufferInfo->appDigBuffers[channel * 2 + 1] && bufferInfo->driverDigBuffers[channel * 2 + 1]) {
 						memcpy_s (&bufferInfo->appDigBuffers[channel * 2 + 1][startIndex], noOfSamples * sizeof(int16_t),
 							&bufferInfo->driverDigBuffers[channel * 2 + 1][startIndex], noOfSamples * sizeof(int16_t));
 					}
 				}
 			}
-		}
-		else if (bufferInfo->mode == DIGITAL)
-		{
-			for (channel = 0; channel < bufferInfo->unit->digitalPorts; channel++)
-			{
-				if (bufferInfo->appDigBuffers && bufferInfo->driverDigBuffers)
-				{
-					if (bufferInfo->appDigBuffers[channel] && bufferInfo->driverDigBuffers[channel])
-					{
+		} else if (bufferInfo->mode == DIGITAL) {
+			for (channel = 0; channel < bufferInfo->unit->digitalPorts; channel++) {
+				if (bufferInfo->appDigBuffers && bufferInfo->driverDigBuffers) {
+					if (bufferInfo->appDigBuffers[channel] && bufferInfo->driverDigBuffers[channel]) {
 						memcpy_s (&bufferInfo->appDigBuffers[channel][startIndex], noOfSamples * sizeof(int16_t),
 							&bufferInfo->driverDigBuffers[channel][startIndex], noOfSamples * sizeof(int16_t));
 					}
@@ -153,17 +134,14 @@ void PREF4 callBackBlock( int16_t handle, PICO_STATUS status, void * pParameter)
 * setDefaults - restore default settings
 ****************************************************************************/
 void setDefaults(UNIT * unit) {
-	int32_t i;
-	PICO_STATUS status;
-
-	status = ps3000aSetEts(unit->handle, PS3000A_ETS_OFF, 0, 0, nullptr);	// Turn off ETS
+	PICO_STATUS status = ps3000aSetEts(unit->handle, PS3000A_ETS_OFF, 0, 0, nullptr);	// Turn off ETS
 	printf(status?"SetDefaults:ps3000aSetEts------ 0x%08lx \n":"", status);
 
-	for (i = 0; i < unit->channelCount; i++) { // reset channels to most recent settings
-		status = ps3000aSetChannel(unit->handle, (PS3000A_CHANNEL)(PS3000A_CHANNEL_A + i),
+	for (int32_t i = 0; i < unit->channelCount; i++) { // reset channels to most recent settings
+		status = ps3000aSetChannel(unit->handle, static_cast<PS3000A_CHANNEL>(PS3000A_CHANNEL_A + i),
 			unit->channelSettings[PS3000A_CHANNEL_A + i].enabled,
-			(PS3000A_COUPLING)unit->channelSettings[PS3000A_CHANNEL_A + i].DCcoupled,
-			(PS3000A_RANGE)unit->channelSettings[PS3000A_CHANNEL_A + i].range, 0);
+			static_cast<PS3000A_COUPLING>(unit->channelSettings[PS3000A_CHANNEL_A + i].DCcoupled),
+			static_cast<PS3000A_RANGE>(unit->channelSettings[PS3000A_CHANNEL_A + i].range), 0);
 
 		printf(status?"SetDefaults:ps3000aSetChannel------ 0x%08lx \n":"", status);
 	}
@@ -195,16 +173,15 @@ PICO_STATUS setDigitals(const UNIT *unit, const int16_t state) {
 ****************************************************************************/
 PICO_STATUS disableAnalogue(UNIT *unit) {
 	PICO_STATUS status = 0;
-	int16_t ch;
 
 	// Turn off analogue channels, keeping settings
-	for (ch = 0; ch < unit->channelCount; ch++) {
+	for (int16_t ch = 0; ch < unit->channelCount; ch++) {
 		unit->channelSettings[ch].enabled = FALSE;
 
-		status = ps3000aSetChannel(unit->handle, (PS3000A_CHANNEL) ch, unit->channelSettings[ch].enabled, (PS3000A_COUPLING) unit->channelSettings[ch].DCcoupled,
-			(PS3000A_RANGE) unit->channelSettings[ch].range, 0);
+		status = ps3000aSetChannel(unit->handle, static_cast<PS3000A_CHANNEL>(ch), unit->channelSettings[ch].enabled, static_cast<PS3000A_COUPLING>(unit->channelSettings[ch].DCcoupled),
+			static_cast<PS3000A_RANGE>(unit->channelSettings[ch].range), 0);
 
-		if(status != PICO_OK) {
+		if (status != PICO_OK) {
 			printf("disableAnalogue:ps3000aSetChannel(channel %d) ------ 0x%08lx \n", ch, status);
 		}
 	}
@@ -219,10 +196,10 @@ PICO_STATUS restoreAnalogueSettings(UNIT *unit) {
 
 	// Turn on analogue channels using previous settings
 	for (int16_t ch = 0; ch < unit->channelCount; ch++) {
-		status = ps3000aSetChannel(unit->handle, (PS3000A_CHANNEL) ch, unit->channelSettings[ch].enabled, (PS3000A_COUPLING) unit->channelSettings[ch].DCcoupled,
-			(PS3000A_RANGE) unit->channelSettings[ch].range, 0);
+		status = ps3000aSetChannel(unit->handle, static_cast<PS3000A_CHANNEL>(ch), unit->channelSettings[ch].enabled, static_cast<PS3000A_COUPLING>(unit->channelSettings[ch].DCcoupled),
+			static_cast<PS3000A_RANGE>(unit->channelSettings[ch].range), 0);
 
-		if(status != PICO_OK) {
+		if (status != PICO_OK) {
 			printf("restoreAnalogueSettings:ps3000aSetChannel(channel %d) ------ 0x%08lx \n", ch, status);
 		}
 	}
@@ -235,7 +212,7 @@ PICO_STATUS restoreAnalogueSettings(UNIT *unit) {
 *
 * Convert an 16-bit ADC count into millivolts
 ****************************************************************************/
-int32_t adc_to_mv(int32_t raw, int32_t ch, UNIT * unit) {
+int32_t adc_to_mv(const int32_t raw, const int32_t ch, const UNIT* unit) {
 	return (raw * inputRanges[ch]) / unit->maxValue;
 }
 
@@ -246,7 +223,7 @@ int32_t adc_to_mv(int32_t raw, int32_t ch, UNIT * unit) {
 *
 *  (useful for setting trigger thresholds)
 ****************************************************************************/
-int16_t mv_to_adc(int16_t mv, int16_t ch, UNIT * unit) {
+int16_t mv_to_adc(const int16_t mv, const int16_t ch, const UNIT* unit) {
 	return (mv * unit->maxValue) / inputRanges[ch];
 }
 
@@ -257,29 +234,22 @@ int16_t mv_to_adc(int16_t mv, int16_t ch, UNIT * unit) {
 PICO_STATUS changePowerSource(int16_t handle, PICO_STATUS status) {
 	char ch;
 
-	switch (status)
-	{
+	switch (status) {
 		case PICO_POWER_SUPPLY_NOT_CONNECTED:			// User must acknowledge they want to power via USB
 
-			do
-			{
+			do {
 				printf("\n5 V power supply not connected");
 				printf("\nDo you want to run using USB only Y/N?\n");
 				ch = toupper(_getch());
-				if(ch == 'Y')
-				{
+				if (ch == 'Y') {
 					printf("\nPowering the unit via USB\n");
 					status = ps3000aChangePowerSource(handle, PICO_POWER_SUPPLY_NOT_CONNECTED);		// Tell the driver that's ok
 
-					if (status == PICO_POWER_SUPPLY_UNDERVOLTAGE)
-					{
-						status = changePowerSource(handle, status);
-					}
+					if (status == PICO_POWER_SUPPLY_UNDERVOLTAGE) status = changePowerSource(handle, status);
 				}
-			}
-			while(ch != 'Y' && ch != 'N');
+			} while (ch != 'Y' && ch != 'N');
 
-			printf(ch == 'N'?"Please use the +5 V power supply to power this unit\n":"");
+			printf (ch == 'N'?"Please use the +5 V power supply to power this unit\n":"");
 			break;
 
 		case PICO_POWER_SUPPLY_CONNECTED:
@@ -297,25 +267,21 @@ PICO_STATUS changePowerSource(int16_t handle, PICO_STATUS status) {
 
 		case PICO_POWER_SUPPLY_UNDERVOLTAGE:
 
-			do
-			{
+			do {
 				printf("\nUSB not supplying required voltage");
 				printf("\nPlease plug in the +5 V power supply\n");
 				printf("\nHit any key to continue, or Esc to exit...\n");
 				ch = _getch();
 
-				if (ch == 0x1B)	// ESC key
-				{
+				if (ch == 0x1B)	{ // ESC key
 					exit(0);
-				}
-				else
-				{
+				} else {
 					status = ps3000aChangePowerSource(handle, PICO_POWER_SUPPLY_CONNECTED);		// Tell the driver that's ok
 				}
-			}
-			while (status == PICO_POWER_SUPPLY_REQUEST_INVALID);
+			} while (status == PICO_POWER_SUPPLY_REQUEST_INVALID);
 			break;
 
+		default: break;
 	}
 	return status;
 }
@@ -329,13 +295,12 @@ PICO_STATUS clearDataBuffers(const UNIT* unit) {
 	PICO_STATUS status = 0;
 
 	for (int32_t i = 0; i < unit->channelCount; i++) {
-		if ((status = ps3000aSetDataBuffers(unit->handle, (PS3000A_CHANNEL) i, nullptr, nullptr, 0, 0, PS3000A_RATIO_MODE_NONE)) != PICO_OK)
+		if ((status = ps3000aSetDataBuffers(unit->handle, static_cast<PS3000A_CHANNEL>(i), nullptr, nullptr, 0, 0, PS3000A_RATIO_MODE_NONE)) != PICO_OK)
 			printf("ClearDataBuffers:ps3000aSetDataBuffers(channel %d) ------ 0x%08lx \n", i, status);
 	}
 
-
 	for (int32_t i = 0; i < unit->digitalPorts; i++) {
-		if((status = ps3000aSetDataBuffer(unit->handle, (PS3000A_CHANNEL) (i + PS3000A_DIGITAL_PORT0), nullptr, 0, 0, PS3000A_RATIO_MODE_NONE))!= PICO_OK)
+		if((status = ps3000aSetDataBuffer(unit->handle, static_cast<PS3000A_CHANNEL>(i + PS3000A_DIGITAL_PORT0), nullptr, 0, 0, PS3000A_RATIO_MODE_NONE))!= PICO_OK)
 			printf("ClearDataBuffers:ps3000aSetDataBuffer(port 0x%X) ------ 0x%08lx \n", i + PS3000A_DIGITAL_PORT0, status);
 	}
 
@@ -352,8 +317,7 @@ PICO_STATUS clearDataBuffers(const UNIT* unit) {
 * - text : the text to display before the display of data slice
 * - offset : the offset into the data buffer to start the display's slice.
 ****************************************************************************/
-void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
-{
+void blockDataHandler(const UNIT* unit, char * text, int32_t offset, MODE mode) {
 	int16_t retry;
 	int16_t bit;
 
@@ -375,37 +339,31 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 	PICO_STATUS status;
 	PS3000A_RATIO_MODE ratioMode = PS3000A_RATIO_MODE_NONE;
 
-	if (mode == ANALOGUE || mode == MIXED)		// Analogue or (MSO Only) MIXED
-	{
-		for (i = 0; i < unit->channelCount; i++)
-		{
-			if(unit->channelSettings[i].enabled)
-			{
-				buffers[i * 2] = (int16_t*) calloc(sampleCount, sizeof(int16_t));
-				buffers[i * 2 + 1] = (int16_t*) calloc(sampleCount, sizeof(int16_t));
+	if (mode == ANALOGUE || mode == MIXED) {		// Analogue or (MSO Only) MIXED
+		for (i = 0; i < unit->channelCount; i++) {
+			if(unit->channelSettings[i].enabled) {
+				buffers[i * 2] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
+				buffers[i * 2 + 1] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
 
-				status = ps3000aSetDataBuffers(unit->handle, (PS3000A_CHANNEL)i, buffers[i * 2], buffers[i * 2 + 1], sampleCount, 0, ratioMode);
+				status = ps3000aSetDataBuffers(unit->handle, static_cast<PS3000A_CHANNEL>(i), buffers[i * 2], buffers[i * 2 + 1], sampleCount, 0, ratioMode);
 
 				printf(status?"BlockDataHandler:ps3000aSetDataBuffers(channel %d) ------ 0x%08lx \n":"", i, status);
 			}
 		}
 	}
 
-	if (mode == DIGITAL || mode == MIXED)		// (MSO Only) Digital or MIXED
-	{
-		for (i= 0; i < unit->digitalPorts; i++)
-		{
-			digiBuffer[i] = (int16_t*) calloc(sampleCount, sizeof(int16_t));
+	if (mode == DIGITAL || mode == MIXED) {		// (MSO Only) Digital or MIXED
+		for (i = 0; i < unit->digitalPorts; i++) {
+			digiBuffer[i] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
 
-			status = ps3000aSetDataBuffer(unit->handle, (PS3000A_CHANNEL) (i + PS3000A_DIGITAL_PORT0), digiBuffer[i], sampleCount, 0, ratioMode);
+			status = ps3000aSetDataBuffer(unit->handle, static_cast<PS3000A_CHANNEL>(i + PS3000A_DIGITAL_PORT0), digiBuffer[i], sampleCount, 0, ratioMode);
 
 			printf(status?"BlockDataHandler:ps3000aSetDataBuffer(port 0x%X) ------ 0x%08lx \n":"", i + PS3000A_DIGITAL_PORT0, status);
 		}
 	}
 
 	/* Find the maximum number of samples and the time interval (in nanoseconds) */
-	while (ps3000aGetTimebase(unit->handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, 0))
-	{
+	while (ps3000aGetTimebase(unit->handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, 0)) {
 		timebase++;
 	}
 
@@ -414,143 +372,104 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 	/* Start the device collecting, then wait for completion*/
 	g_ready = FALSE;
 
-
-	do
-	{
+	do {
 		retry = 0;
 
 		status = ps3000aRunBlock(unit->handle, 0, sampleCount, timebase, oversample, &timeIndisposed, 0, callBackBlock, nullptr);
 
-		if (status != PICO_OK)
-		{
+		if (status != PICO_OK) {
 			if (status == PICO_POWER_SUPPLY_CONNECTED || status == PICO_POWER_SUPPLY_NOT_CONNECTED ||
-				status == PICO_POWER_SUPPLY_UNDERVOLTAGE)       // PicoScope 340XA/B/D/D MSO devices...+5 V PSU connected or removed
-			{
+				status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {      // PicoScope 340XA/B/D/D MSO devices...+5 V PSU connected or removed
 				status = changePowerSource(unit->handle, status);
 				retry = 1;
-			}
-			else
-			{
+			} else {
 				printf("BlockDataHandler:ps3000aRunBlock ------ 0x%08lx \n", status);
 				return;
 			}
 		}
-	}
-	while (retry);
+	} while (retry);
 
 	printf("Waiting for trigger...Press a key to abort\n");
 
-	while (!g_ready && !_kbhit())
-	{
+	while (!g_ready && !_kbhit()) {
 		Sleep(0);
 	}
 
-	if (g_ready)
-	{
-		status = ps3000aGetValues(unit->handle, 0, (uint32_t*) &sampleCount, 1, ratioMode, 0, nullptr);
+	if (g_ready) {
+		status = ps3000aGetValues(unit->handle, 0, reinterpret_cast<uint32_t *>(&sampleCount), 1, ratioMode, 0, nullptr);
 
-		if (status != PICO_OK)
-		{
-			if (status == PICO_POWER_SUPPLY_CONNECTED || status == PICO_POWER_SUPPLY_NOT_CONNECTED || status == PICO_POWER_SUPPLY_UNDERVOLTAGE)
-			{
-				if (status == PICO_POWER_SUPPLY_UNDERVOLTAGE)
-				{
+		if (status != PICO_OK) {
+			if (status == PICO_POWER_SUPPLY_CONNECTED || status == PICO_POWER_SUPPLY_NOT_CONNECTED || status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {
+				if (status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {
 					changePowerSource(unit->handle, status);
-				}
-				else
-				{
+				} else {
 					printf("\nPower Source Changed. Data collection aborted.\n");
 				}
-			}
-			else
-			{
+			} else {
 				printf("BlockDataHandler:ps3000aGetValues ------ 0x%08lx \n", status);
 			}
-		}
-		else
-		{
+		} else {
 			/* Print out the first 10 readings, converting the readings to mV if required */
 			printf("%s\n",text);
 
-			if (mode == ANALOGUE || mode == MIXED)		// If we are capturing analogue or MIXED (analogue + digital) data
-			{
+			if (mode == ANALOGUE || mode == MIXED) {		// If we are capturing analogue or MIXED (analogue + digital) data
 				printf("Channels are in %s\n\n", ( scaleVoltages ) ? ("mV") : ("ADC Counts"));
 
-				for (j = 0; j < unit->channelCount; j++)
-				{
-					if (unit->channelSettings[j].enabled)
-					{
-						printf("Channel %c:    ", 'A' + j);
-					}
+				for (j = 0; j < unit->channelCount; j++) {
+					if (unit->channelSettings[j].enabled) printf("Channel %c:    ", 'A' + j);
 				}
 
 				printf("\n");
 			}
 
-			if (mode == DIGITAL || mode == MIXED)	// If we are capturing digital or MIXED data
-			{
+			if (mode == DIGITAL || mode == MIXED) // If we are capturing digital or MIXED data
 				printf("Digital\n");
-			}
 
 			printf("\n");
 
-			for (i = offset; i < offset+10; i++)
-			{
-				if (mode == ANALOGUE || mode == MIXED)	// If we are capturing analogue or MIXED data
-				{
-					for (j = 0; j < unit->channelCount; j++)
-					{
-						if (unit->channelSettings[j].enabled)
-						{
+			for (i = offset; i < offset+10; i++) {
+				if (mode == ANALOGUE || mode == MIXED) {	// If we are capturing analogue or MIXED data
+					for (j = 0; j < unit->channelCount; j++) {
+						if (unit->channelSettings[j].enabled) {
 							printf("  %d     ", scaleVoltages ?
 								adc_to_mv(buffers[j * 2][i], unit->channelSettings[PS3000A_CHANNEL_A + j].range, unit)	// If scaleVoltages, print mV value
 								: buffers[j * 2][i]);																	// else print ADC Count
 						}
 					}
 				}
-				if (mode == DIGITAL || mode == MIXED)	// If we're doing digital or MIXED
-				{
+				if (mode == DIGITAL || mode == MIXED) {	// If we're doing digital or MIXED
 					digiValue = 0x00ff & digiBuffer[1][i];	// Mask Port 1 values to get lower 8 bits
 					digiValue <<= 8;						// Shift by 8 bits to place in upper 8 bits of 16-bit word
 					digiValue |= digiBuffer[0][i];			// Mask Port 0 values to get lower 8 bits and apply bitwise inclusive OR to combine with Port 1 values
 					printf("0x%04X", digiValue);
-
 				}
 				printf("\n");
 			}
 
-			if (mode == ANALOGUE || mode == MIXED)		// If we're doing analogue or MIXED
-			{
+			if (mode == ANALOGUE || mode == MIXED) {	// If we're doing analogue or MIXED
 				sampleCount = min(sampleCount, BUFFER_SIZE);
 
 				fopen_s(&fp, BlockFile, "w");
 
-				if (fp != nullptr)
-				{
+				if (fp != nullptr) {
 					fprintf(fp, "Block Data log\n\n");
 					fprintf(fp,"Results shown for each of the %d Channels are......\n",unit->channelCount);
 					fprintf(fp,"Maximum Aggregated value ADC Count & mV, Minimum Aggregated value ADC Count & mV\n\n");
 
 					fprintf(fp, "Time  ");
 
-					for (i = 0; i < unit->channelCount; i++)
-					{
+					for (i = 0; i < unit->channelCount; i++) {
 						if (unit->channelSettings[i].enabled)
-						{
 							fprintf(fp," Ch   Max ADC   Max mV   Min ADC   Min mV   ");
-						}
 					}
 
 					fprintf(fp, "\n");
 
-					for (i = 0; i < sampleCount; i++)
-					{
+					for (i = 0; i < sampleCount; i++) {
 						fprintf(fp, "%d ", g_times[0] + (int32_t)(i * timeInterval));
 
-						for (j = 0; j < unit->channelCount; j++)
-						{
-							if (unit->channelSettings[j].enabled)
-							{
+						for (j = 0; j < unit->channelCount; j++) {
+							if (unit->channelSettings[j].enabled) {
 								fprintf(	fp,
 									"Ch%C  %d = %+dmV, %d = %+dmV   ",
 									'A' + j,
@@ -562,35 +481,29 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 						}
 						fprintf(fp, "\n");
 					}
-				}
-				else
-				{
+				} else {
 					printf(	"Cannot open the file %s for writing.\n"
 						"Please ensure that you have permission to access.\n", BlockFile);
 				}
 			}
 
 			// Output digital values to separate file
-			if (mode == DIGITAL || mode == MIXED)
-			{
+			if (mode == DIGITAL || mode == MIXED) {
 				fopen_s(&digiFp, DigiBlockFile, "w");
 
-				if (digiFp != nullptr)
-				{
+				if (digiFp != nullptr) {
 					fprintf(digiFp, "Block Digital Data log\n");
 					fprintf(digiFp, "Digital Channels will be in the order D15...D0\n");
 
 					fprintf(digiFp, "\n");
 
-					for (i = 0; i < sampleCount; i++)
-					{
+					for (i = 0; i < sampleCount; i++) {
 						digiValue = 0x00ff & digiBuffer[1][i];	// Mask Port 1 values to get lower 8 bits
 						digiValue <<= 8;						// Shift by 8 bits to place in upper 8 bits of 16-bit word
 						digiValue |= digiBuffer[0][i];			// Mask Port 0 values to get lower 8 bits and apply bitwise inclusive OR to combine with Port 1 values
 
 						// Output data in binary form
-						for (bit = 0; bit < 16; bit++)
-						{
+						for (bit = 0; bit < 16; bit++) {
 							// Shift value (32768 - binary 1000 0000 0000 0000), AND with value to get 1 or 0 for channel
 							// Order will be D15 to D8, then D7 to D0
 
@@ -599,51 +512,35 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 						}
 
 						fprintf(digiFp, "\n");
-
 					}
 				}
 			}
-
 		}
-	}
-	else
-	{
+	} else {
 		printf("\nData collection aborted.\n");
 		_getch();
 	}
 
 	if ((status = ps3000aStop(unit->handle)) != PICO_OK)
-	{
 		printf("BlockDataHandler:ps3000aStop ------ 0x%08lx \n", status);
-	}
 
 	if (fp != nullptr)
-	{
 		fclose(fp);
-	}
 
 	if (digiFp != nullptr)
-	{
 		fclose(digiFp);
-	}
 
-	if (mode == ANALOGUE || mode == MIXED)		// Only if we allocated these buffers
-	{
-		for (i = 0; i < unit->channelCount; i++)
-		{
-			if(unit->channelSettings[i].enabled)
-			{
+	if (mode == ANALOGUE || mode == MIXED) {	// Only if we allocated these buffers
+		for (i = 0; i < unit->channelCount; i++) {
+			if(unit->channelSettings[i].enabled) {
 				free(buffers[i * 2]);
 				free(buffers[i * 2 + 1]);
-
 			}
 		}
 	}
 
-	if (mode == DIGITAL || mode == MIXED)		// Only if we allocated these buffers
-	{
-		for (i = 0; i < unit->digitalPorts; i++)
-		{
+	if (mode == DIGITAL || mode == MIXED) {		// Only if we allocated these buffers
+		for (i = 0; i < unit->digitalPorts; i++) {
 			free(digiBuffer[i]);
 		}
 	}
@@ -659,8 +556,7 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 * - preTrigger - the number of samples in the pre-trigger phase
 *					(0 if no trigger has been set)
 ***************************************************************************/
-void streamDataHandler(UNIT * unit, uint32_t preTrigger, MODE mode)
-{
+void streamDataHandler(UNIT * unit, uint32_t preTrigger, MODE mode) {
 	int16_t autostop;
 	int16_t retry = 0;
 	int16_t powerChange = 0;
@@ -1643,7 +1539,7 @@ void setTimebase(UNIT unit)
 
 		if (status != PICO_OK)
 		{
-			if(status == PICO_INVALID_CHANNEL)
+			if (status == PICO_INVALID_CHANNEL)
 			{
 				printf("ps3000aGetTimebase: Status Error 0x%x\n", status);
 				printf("Please enable an analogue channel (option V from the main menu).");

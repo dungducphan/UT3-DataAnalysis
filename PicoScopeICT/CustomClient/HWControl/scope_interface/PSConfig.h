@@ -49,7 +49,6 @@ int32_t cycles = 0;
 #define DUAL_SCOPE		2
 
 // AWG Parameters
-
 #define AWG_DAC_FREQUENCY			20e6
 #define AWG_DAC_FREQUENCY_PS3207B	100e6
 #define	AWG_PHASE_ACCUMULATOR		4294967296.0
@@ -186,14 +185,14 @@ PICO_STATUS restoreAnalogueSettings(UNIT *unit);
 * adc_to_mv
 * Convert an 16-bit ADC count into millivolts
 ****************************************************************************/
-int32_t adc_to_mv(int32_t raw, int32_t ch, UNIT * unit);
+int32_t adc_to_mv(int32_t raw, int32_t ch, const UNIT * unit);
 
 /****************************************************************************
 * mv_to_adc
 * Convert a millivolt value into a 16-bit ADC count
 *  (useful for setting trigger thresholds)
 ****************************************************************************/
-int16_t mv_to_adc(int16_t mv, int16_t ch, UNIT * unit);
+int16_t mv_to_adc(int16_t mv, int16_t ch, const UNIT * unit);
 
 /****************************************************************************************
 * changePowerSource - function to handle switches between +5 V supply, and USB-only power
@@ -217,7 +216,7 @@ PICO_STATUS clearDataBuffers(const UNIT* unit);
 * - text : the text to display before the display of data slice
 * - offset : the offset into the data buffer to start the display's slice.
 ****************************************************************************/
-void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode);
+void blockDataHandler(const UNIT * unit, char * text, int32_t offset, MODE mode);
 
 /****************************************************************************
 * Stream Data Handler
