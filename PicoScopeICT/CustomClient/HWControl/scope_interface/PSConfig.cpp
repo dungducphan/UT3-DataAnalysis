@@ -1883,11 +1883,12 @@ void displaySettings(UNIT *unit) {
 ***************************************************************************/
 PICO_STATUS openDevice(UNIT *unit) {
 	int16_t value = 0;
-	struct tPwq pulseWidth;
-	struct tTriggerDirections directions;
+	struct tPwq pulseWidth{};
+	struct tTriggerDirections directions{};
 
 	PICO_STATUS status = ps3000aOpenUnit(&(unit->handle), nullptr);
 
+	// Check if the device is powered sufficiently and connected to a USB 3.0 port
 	if (status == PICO_POWER_SUPPLY_NOT_CONNECTED || status == PICO_USB3_0_DEVICE_NON_USB3_0_PORT ) {
 		status = changePowerSource(unit->handle, status);
 	}
@@ -1907,15 +1908,18 @@ PICO_STATUS openDevice(UNIT *unit) {
 	get_info(unit);
 	timebase = 1;
 
+	// Get and set maximum allowed sample value
 	ps3000aMaximumValue(unit->handle, &value);
 	unit->maxValue = value;
 
+	// Set up channels
 	for (int32_t i = 0; i < unit->channelCount; i++) {
-		unit->channelSettings[i].enabled = TRUE;
-		unit->channelSettings[i].DCcoupled = TRUE;
-		unit->channelSettings[i].range = PS3000A_5V;
+		unit->channelSettings[i].enabled = TRUE;     // Enable
+		unit->channelSettings[i].DCcoupled = TRUE;   // DC Coupled
+		unit->channelSettings[i].range = PS3000A_5V; // Range = 5V
 	}
 
+	// Set up structs for triggering
 	memset(&directions, 0, sizeof(struct tTriggerDirections));
 	memset(&pulseWidth, 0, sizeof(struct tPwq));
 

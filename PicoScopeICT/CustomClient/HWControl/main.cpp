@@ -12,11 +12,12 @@
 
 // scope
 #include "PSDataProcessor.h"
-#include "PSConfig.h"
+#include "PSDevice.h"
 
 // ui
 #include "ImGuiConfig.h"
 #include "PSPostProcessingView.h"
+#include "PSControlView.h"
 
 int main() {
     // Initialize GLFW
@@ -51,16 +52,11 @@ int main() {
     // Create ImPlot context
     ImPlot::CreateContext();
 
+    // Scope
     auto processor = new PSDataProcessor();
-    PSPostProcessingView view(processor);
-
-    // Setup the Picoscope
-    printf("ICT Beam Charge Measurement with PicoScope 3206D\n");
-    printf("Searching PicoScope...\n");
-    UNIT unit;
-    PICO_STATUS status = openDevice(&unit);
-    displaySettings(&unit);
-    collectBlockTriggered(&unit);
+    PSPostProcessingView dataView(processor);
+    auto device = new PSDevice();
+    PSControlView controlView(device);
 
     // Frame Update Loop
     while (!glfwWindowShouldClose(window)) {
@@ -79,7 +75,8 @@ int main() {
 
         // Show the PicoScope Control View
         // Anything in Render() will be executed every frame
-        view.Render();
+        dataView.Render();
+        controlView.Render();
 
         // Rendering
         ImGui::Render();
@@ -88,9 +85,6 @@ int main() {
         // Swap buffers
         glfwSwapBuffers(window);
     }
-
-    // Closing PicoScope
-    closeDevice(&unit);
 
     // Destroy ImPlot context
     ImPlot::DestroyContext();

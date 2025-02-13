@@ -78,6 +78,7 @@ add_library(hw_interface STATIC
         # scope
         scope_interface/PSDataProcessor.cpp
         scope_interface/PSConfig.cpp
+        scope_interface/PSDevice.cpp
 )
 
 # Specify include directories for hw_interface
@@ -144,6 +145,8 @@ add_executable(HardwareControl
         ui/camera_ui/CameraControlView.h
         ui/picoscope_ui/PSPostProcessingView.cpp
         ui/picoscope_ui/PSPostProcessingView.h
+        ui/picoscope_ui/PSControlView.cpp
+        ui/picoscope_ui/PSControlView.h
 
         # Entrypoint
         main.cpp
