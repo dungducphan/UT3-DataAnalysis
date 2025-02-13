@@ -85,6 +85,7 @@ int main() {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 
         // Show the PicoScope Control View
+        // Anything in Render() will be executed every frame
         view.Render();
 
         // // Show demo
