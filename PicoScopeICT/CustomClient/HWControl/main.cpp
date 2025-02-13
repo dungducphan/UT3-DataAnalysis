@@ -1,8 +1,10 @@
 #include "PCH.h"
 
+// opengl backend
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+// imgui
 #include "imgui.h"
 #include "implot.h"
 #include "backends/imgui_impl_glfw.h"
@@ -17,7 +19,6 @@
 #include "PSPostProcessingView.h"
 
 int main() {
-
     // Initialize GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -53,6 +54,14 @@ int main() {
     auto processor = new PSDataProcessor();
     PSPostProcessingView view(processor);
 
+    // Setup the Picoscope
+    printf("ICT Beam Charge Measurement with PicoScope 3206D\n");
+    printf("Searching PicoScope...\n");
+    UNIT unit;
+    PICO_STATUS status = openDevice(&unit);
+    displaySettings(&unit);
+    collectBlockTriggered(&unit);
+
     // Frame Update Loop
     while (!glfwWindowShouldClose(window)) {
         // Handle events
@@ -79,6 +88,9 @@ int main() {
         // Swap buffers
         glfwSwapBuffers(window);
     }
+
+    // Closing PicoScope
+    closeDevice(&unit);
 
     // Destroy ImPlot context
     ImPlot::DestroyContext();

@@ -41,8 +41,6 @@ int32_t fopen_s(FILE ** a, const char * b, const char * c);
 
 #define PREF4 __stdcall
 
-int32_t cycles = 0;
-
 #define BUFFER_SIZE 	1024
 
 #define QUAD_SCOPE		4
@@ -105,24 +103,24 @@ typedef struct {
 	int16_t					digitalPorts;
 } UNIT;
 
-uint32_t	timebase = 8;
-int16_t     oversample = 1;
-BOOL		scaleVoltages = TRUE;
+extern int32_t  cycles;
+extern uint32_t	timebase;
+extern int16_t  oversample;
+extern BOOL		scaleVoltages;
+extern uint16_t inputRanges [PS3000A_MAX_RANGES];
 
-uint16_t inputRanges [PS3000A_MAX_RANGES] = {10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000};
+extern BOOL     g_ready;
+extern int32_t 	g_times [PS3000A_MAX_CHANNELS];
+extern int16_t  g_timeUnit;
+extern int32_t  g_sampleCount;
+extern uint32_t	g_startIndex;
+extern int16_t	g_autoStopped;
+extern int16_t	g_trig;
+extern uint32_t	g_trigAt;
 
-BOOL     	g_ready = FALSE;
-int32_t 	g_times [PS3000A_MAX_CHANNELS] = {0, 0, 0, 0};
-int16_t     g_timeUnit;
-int32_t     g_sampleCount;
-uint32_t	g_startIndex;
-int16_t		g_autoStopped;
-int16_t		g_trig = 0;
-uint32_t	g_trigAt = 0;
-
-char BlockFile[20]		= "block.txt";
-char DigiBlockFile[20]	= "digiBlock.txt";
-char StreamFile[20]		= "stream.txt";
+extern char BlockFile[20];
+extern char DigiBlockFile[20];
+extern char StreamFile[20];
 
 typedef struct tBufferInfo {
 	UNIT* unit;
