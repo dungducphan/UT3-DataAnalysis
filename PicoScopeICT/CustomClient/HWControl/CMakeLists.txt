@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
 # Set project name and version
-project(CameraControl VERSION 0.1.0 LANGUAGES CXX)
+project(CameraControl)
 
 # If WIN32 is defined
 if (WIN32)
@@ -53,8 +53,12 @@ add_subdirectory(external/glad)
 include_directories(SYSTEM "external/glfw-3.4/include")
 add_subdirectory(external/glfw-3.4)
 
+# picoscope sdk
+include_directories(SYSTEM "external/pico_sdk/inc")
+link_directories("external/pico_sdk/lib")
+
 # Copy fonts
-file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION "${CMAKE_BINARY_DIR}")
 
 # ===================================================================
 # hw_interface library
@@ -72,19 +76,22 @@ add_library(hw_interface STATIC
         camera_interface/CameraController.cpp
         # scope
         scope_interface/PSDataProcessor.cpp
+        scope_interface/PSDriver.cpp
 )
 
 # Specify include directories for hw_interface
-target_include_directories(hw_interface PUBLIC
+target_include_directories(hw_interface PRIVATE
         ${CMAKE_SOURCE_DIR}/camera_interface
         ${CMAKE_SOURCE_DIR}/camera_interface/Basler
         ${CMAKE_SOURCE_DIR}/camera_interface/FLIR
         ${CMAKE_SOURCE_DIR}/camera_interface/PCO
         ${CMAKE_SOURCE_DIR}/scope_interface
+        ${CMAKE_SOURCE_DIR}/external/pico_sdk/inc
 )
 
 # Set library output name
 set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "hw_interface")
+target_link_libraries(hw_interface PRIVATE ps3000a.lib)
 
 # ===================================================================
 # HardwareControl executable
