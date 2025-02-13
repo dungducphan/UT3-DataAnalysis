@@ -59,6 +59,7 @@ link_directories("external/pico_sdk/lib")
 
 # Copy fonts
 file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+# file(COPY "resources/icons/tau.ico"                    DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 
 # ===================================================================
 # hw_interface library
@@ -149,6 +150,9 @@ add_executable(HardwareControl
 
         # PCH
         PCH.h
+
+        # resources
+        resources/app.rc
 )
 
 # Specify include directories
