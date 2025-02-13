@@ -8,7 +8,9 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+// scope
 #include "PSDataProcessor.h"
+#include "PSConfig.h"
 
 // ui
 #include "ImGuiConfig.h"
@@ -48,28 +50,10 @@ int main() {
     // Create ImPlot context
     ImPlot::CreateContext();
 
-    ////////////////////////////////////////////////////////////////////////////////////////////
-    // Setup CameraManager
-    // CameraManager cameraManager;
-    // CameraController controller(cameraManager);
-    // CameraControlView view(cameraManager);
-
-    // Connect View to Controller
-    // view.SetOnAddCameraCallback(
-    //     [&controller](const std::string& vendor, const std::string& serialNumber, const std::string& name) {
-    //         controller.AddCamera(vendor, serialNumber, name);
-    //     });
-    //
-    // view.SetOnRemoveCameraCallback(
-    //     [&controller](const std::string& serialNumber) {
-    //         controller.RemoveCamera(serialNumber);
-    //     });
-    ////////////////////////////////////////////////////////////////////////////////////////////
-
     auto processor = new PSDataProcessor();
     PSPostProcessingView view(processor);
 
-    // Main loop
+    // Frame Update Loop
     while (!glfwWindowShouldClose(window)) {
         // Handle events
         glfwPollEvents();
@@ -87,9 +71,6 @@ int main() {
         // Show the PicoScope Control View
         // Anything in Render() will be executed every frame
         view.Render();
-
-        // // Show demo
-        // ImGui::ShowDemoWindow();
 
         // Rendering
         ImGui::Render();
