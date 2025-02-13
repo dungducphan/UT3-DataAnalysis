@@ -76,7 +76,7 @@ add_library(hw_interface STATIC
         camera_interface/CameraController.cpp
         # scope
         scope_interface/PSDataProcessor.cpp
-        scope_interface/PSDriver.cpp
+        scope_interface/PSConfig.cpp
 )
 
 # Specify include directories for hw_interface

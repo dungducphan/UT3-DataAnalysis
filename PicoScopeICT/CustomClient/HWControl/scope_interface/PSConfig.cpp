@@ -1,286 +1,70 @@
-/*******************************************************************************
- *
- * Filename: ps3000aCon.c
- *
- * Description:
- *   This is a console mode program that demonstrates how to use the
- *   PicoScope 3000 Series (ps3000a) driver functions.
- *
- *	Supported PicoScope models:
- *
- *    PicoScope 3203A/B/D
- *		PicoScope 3204A/B/D
- *		PicoScope 3205A/B/D
- *		PicoScope 3206A/B/D
- *		PicoScope 3207A/B
- *		PicoScope 3203D MSO
- *		PicoScope 3204 MSO & D MSO
- *		PicoScope 3205 MSO & D MSO
- *		PicoScope 3206 MSO & D MSO
- *		PicoScope 3403D/D MSO
- *		PicoScope 3404A/B/D/D MSO
- *		PicoScope 3405A/B/D/D MSO
- *		PicoScope 3406A/B/D/D MSO
- *
- * Examples:
- *    Collect a block of samples immediately
- *    Collect a block of samples when a trigger event occurs
- *	  Collect a block of samples using Equivalent Time Sampling (ETS)
- *    Collect samples using a rapid block capture with trigger
- *    Collect a stream of data immediately
- *    Collect a stream of data when a trigger event occurs
- *    Set Signal Generator, using standard or custom signals
- *    Change timebase & voltage scales
- *    Display data in mV or ADC counts
- *    Handle power source changes (PicoScope 34XXA/B, 32XX D/D MSO, &
- *		34XX D/D MSO devices only)
- *
- * Digital Examples (MSO variants only):
- *    Collect a block of digital samples immediately
- *    Collect a block of digital samples when a trigger event occurs
- *    Collect a block of analogue & digital samples when analogue AND digital trigger events occurs
- *    Collect a block of analogue & digital samples when analogue OR digital trigger events occurs
- *    Collect a stream of digital data immediately
- *    Collect a stream of digital data and show aggregated values
- *
- *
- *	To build this application:
- *
- *		If Microsoft Visual Studio (including Express) is being used:
- *
- *			Select the solution configuration (Debug/Release) and platform (x86/x64)
- *			Ensure that the 32-/64-bit ps3000a.lib can be located
- *			Ensure that the ps3000aApi.h and PicoStatus.h files can be located
- *
- *		Otherwise:
- *
- *			 Set up a project for a 32-/64-bit console mode application
- *			 Add this file to the project
- *			 Add 32-/64-bit ps3000a.lib to the project
- *			 Add ps3000aApi.h and PicoStatus.h to the project
- *			 Build the project
- *
- *  Linux platforms:
- *
- *		Ensure that the libps3000a driver package has been installed using the
- *		instructions from https://www.picotech.com/downloads/linux
- *
- *		Place this file in the same folder as the files from the linux-build-files
- *		folder. In a terminal window, use the following commands to build
- *		the ps3000aCon application:
- *
- *			./autogen.sh <ENTER>
- *			make <ENTER>
- *
- * Copyright (C) 2011-2018 Pico Technology Ltd. See LICENSE file for terms.
- *
- ******************************************************************************/
+#include "PSConfig.h"
 
-#include <stdio.h>
+#ifdef WIN32
 
-/* Headers for Windows */
-#ifdef _WIN32
-#include "windows.h"
-#include <conio.h>
-#include "ps3000aApi.h"
 #else
-#include <sys/types.h>
-#include <string.h>
-#include <termios.h>
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
 
-#include <libps3000a/ps3000aApi.h>
-#ifndef PICO_STATUS
-#include <libps3000a/PicoStatus.h>
-#endif
+int32_t _getch() {
+    struct termios oldt, newt;
+    int32_t ch;
+    int32_t bytesWaiting;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~( ICANON | ECHO );
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    setbuf(stdin, nullptr);
+    do {
+        ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
+        if (bytesWaiting)
+            getchar();
+    } while (bytesWaiting);
 
-#define Sleep(a) usleep(1000*a)
-#define scanf_s scanf
-#define fscanf_s fscanf
-#define memcpy_s(a,b,c,d) memcpy(a,c,d)
+    ch = getchar();
 
-typedef enum enBOOL{FALSE,TRUE} BOOL;
-
-/* A function to detect a keyboard press on Linux */
-int32_t _getch()
-{
-	struct termios oldt, newt;
-	int32_t ch;
-	int32_t bytesWaiting;
-	tcgetattr(STDIN_FILENO, &oldt);
-	newt = oldt;
-	newt.c_lflag &= ~( ICANON | ECHO );
-	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-	setbuf(stdin, NULL);
-	do {
-		ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
-		if (bytesWaiting)
-			getchar();
-	} while (bytesWaiting);
-
-	ch = getchar();
-
-	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-	return ch;
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return ch;
 }
 
-int32_t _kbhit()
-{
-	struct termios oldt, newt;
-	int32_t bytesWaiting;
-	tcgetattr(STDIN_FILENO, &oldt);
-	newt = oldt;
-	newt.c_lflag &= ~( ICANON | ECHO );
-	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-	setbuf(stdin, NULL);
-	ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
+int32_t _kbhit() {
+    struct termios oldt, newt;
+    int32_t bytesWaiting;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~( ICANON | ECHO );
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    setbuf(stdin, nullptr);
+    ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
 
-	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-	return bytesWaiting;
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return bytesWaiting;
 }
 
-int32_t fopen_s(FILE ** a, const char * b, const char * c)
-{
-	FILE * fp = fopen(b,c);
-	*a = fp;
-	return (fp>0)?0:-1;
+int32_t fopen_s(FILE ** a, const char * b, const char * c) {
+    FILE * fp = fopen(b,c);
+    *a = fp;
+    return (fp>0)?0:-1;
 }
 
-/* A function to get a single character on Linux */
-#define max(a,b) ((a) > (b) ? a : b)
-#define min(a,b) ((a) < (b) ? a : b)
 #endif
-
-#define PREF4 __stdcall
-
-int32_t cycles = 0;
-
-#define BUFFER_SIZE 	1024
-
-#define QUAD_SCOPE		4
-#define DUAL_SCOPE		2
-
-// AWG Parameters
-
-#define AWG_DAC_FREQUENCY			20e6
-#define AWG_DAC_FREQUENCY_PS3207B	100e6
-#define	AWG_PHASE_ACCUMULATOR		4294967296.0
-
-typedef enum
-{
-	ANALOGUE,
-	DIGITAL,
-	AGGREGATED,
-	MIXED
-}MODE;
-
-
-typedef struct
-{
-	int16_t DCcoupled;
-	int16_t range;
-	int16_t enabled;
-}CHANNEL_SETTINGS;
-
-typedef enum
-{
-	SIGGEN_NONE = 0,
-	SIGGEN_FUNCTGEN = 1,
-	SIGGEN_AWG = 2
-} SIGGEN_TYPE;
-
-typedef struct tTriggerDirections
-{
-	PS3000A_THRESHOLD_DIRECTION channelA;
-	PS3000A_THRESHOLD_DIRECTION channelB;
-	PS3000A_THRESHOLD_DIRECTION channelC;
-	PS3000A_THRESHOLD_DIRECTION channelD;
-	PS3000A_THRESHOLD_DIRECTION ext;
-	PS3000A_THRESHOLD_DIRECTION aux;
-}TRIGGER_DIRECTIONS;
-
-typedef struct tPwq
-{
-	PS3000A_PWQ_CONDITIONS_V2 * conditions;
-	int16_t nConditions;
-	PS3000A_THRESHOLD_DIRECTION direction;
-	uint32_t lower;
-	uint32_t upper;
-	PS3000A_PULSE_WIDTH_TYPE type;
-}PWQ;
-
-typedef struct
-{
-	int16_t					handle;
-	int8_t					model[8];
-	PS3000A_RANGE			firstRange ;
-	PS3000A_RANGE			lastRange;
-	int16_t					channelCount;
-	int16_t					maxValue;
-	int16_t					sigGen;
-	int16_t					ETS;
-	int32_t					AWGFileSize;
-	CHANNEL_SETTINGS		channelSettings [PS3000A_MAX_CHANNELS];
-	int16_t					digitalPorts;
-}UNIT;
-
-uint32_t	timebase = 8;
-int16_t     oversample = 1;
-BOOL		scaleVoltages = TRUE;
-
-uint16_t inputRanges [PS3000A_MAX_RANGES] = {10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000};
-
-BOOL     	g_ready = FALSE;
-int32_t 	g_times [PS3000A_MAX_CHANNELS] = {0, 0, 0, 0};
-int16_t     g_timeUnit;
-int32_t     g_sampleCount;
-uint32_t	g_startIndex;
-int16_t		g_autoStopped;
-int16_t		g_trig = 0;
-uint32_t	g_trigAt = 0;
-
-char BlockFile[20]		= "block.txt";
-char DigiBlockFile[20]	= "digiBlock.txt";
-char StreamFile[20]		= "stream.txt";
-
-typedef struct tBufferInfo
-{
-	UNIT * unit;
-	MODE mode;
-	int16_t **driverBuffers;
-	int16_t **appBuffers;
-	int16_t **driverDigBuffers;
-	int16_t **appDigBuffers;
-
-} BUFFER_INFO;
-
-#ifndef min
-#define min(a,b) ((a) < (b) ? (a) : (b))
-#endif
-
 
 /****************************************************************************
 * Streaming callback
 * Used by ps3000a data streaming collection calls, on receipt of data.
 * Used to set global flags etc. checked by user routines
 ****************************************************************************/
-void PREF4 callBackStreaming(	int16_t handle,
+void PREF4 callBackStreaming(
+	int16_t handle,
 	int32_t		noOfSamples,
 	uint32_t	startIndex,
 	int16_t		overflow,
 	uint32_t	triggerAt,
 	int16_t		triggered,
 	int16_t		autoStop,
-	void		*pParameter)
-{
+	void		*pParameter) {
 	int32_t channel;
-	BUFFER_INFO * bufferInfo = NULL;
+	BUFFER_INFO * bufferInfo = nullptr;
 
-	if (pParameter != NULL)
-	{
+	if (pParameter != nullptr) {
 		bufferInfo = (BUFFER_INFO *) pParameter;
 	}
 
@@ -296,7 +80,7 @@ void PREF4 callBackStreaming(	int16_t handle,
 	g_trig = triggered;
 	g_trigAt = triggerAt;
 
-	if (bufferInfo != NULL && noOfSamples)
+	if (bufferInfo != nullptr && noOfSamples)
 	{
 		if (bufferInfo->mode == ANALOGUE)
 		{
@@ -359,29 +143,23 @@ void PREF4 callBackStreaming(	int16_t handle,
 /****************************************************************************
 * Block Callback
 * used by ps3000a data block collection calls, on receipt of data.
-* used to set global flags etc checked by user routines
+* used to set global flags etc. checked by user routines
 ****************************************************************************/
-void PREF4 callBackBlock( int16_t handle, PICO_STATUS status, void * pParameter)
-{
-	if (status != PICO_CANCELLED)
-	{
-		g_ready = TRUE;
-	}
+void PREF4 callBackBlock( int16_t handle, PICO_STATUS status, void * pParameter) {
+	if (status != PICO_CANCELLED) g_ready = TRUE;
 }
 
 /****************************************************************************
 * setDefaults - restore default settings
 ****************************************************************************/
-void setDefaults(UNIT * unit)
-{
+void setDefaults(UNIT * unit) {
 	int32_t i;
 	PICO_STATUS status;
 
-	status = ps3000aSetEts(unit->handle, PS3000A_ETS_OFF, 0, 0, NULL);	// Turn off ETS
+	status = ps3000aSetEts(unit->handle, PS3000A_ETS_OFF, 0, 0, nullptr);	// Turn off ETS
 	printf(status?"SetDefaults:ps3000aSetEts------ 0x%08lx \n":"", status);
 
-	for (i = 0; i < unit->channelCount; i++) // reset channels to most recent settings
-	{
+	for (i = 0; i < unit->channelCount; i++) { // reset channels to most recent settings
 		status = ps3000aSetChannel(unit->handle, (PS3000A_CHANNEL)(PS3000A_CHANNEL_A + i),
 			unit->channelSettings[PS3000A_CHANNEL_A + i].enabled,
 			(PS3000A_COUPLING)unit->channelSettings[PS3000A_CHANNEL_A + i].DCcoupled,
@@ -394,25 +172,18 @@ void setDefaults(UNIT * unit)
 /****************************************************************************
 * setDigitals - enable or disable Digital Channels
 ****************************************************************************/
-PICO_STATUS setDigitals(UNIT *unit, int16_t state)
-{
-	PICO_STATUS status;
+PICO_STATUS setDigitals(const UNIT *unit, const int16_t state) {
+	PICO_STATUS status = 0;
 
-	int16_t logicLevel;
-	float logicVoltage = 1.5;
-	int16_t maxLogicVoltage = 5;
-
-	int16_t timebase = 1;
-	int16_t port;
-
+	constexpr float logicVoltage = 1.5;
+	constexpr int16_t maxLogicVoltage = 5;
 
 	// Set logic threshold
-	logicLevel =  (int16_t) ((logicVoltage / maxLogicVoltage) * PS3000A_MAX_LOGIC_LEVEL);
+	constexpr auto logicLevel = static_cast<int16_t>((logicVoltage / static_cast<float>(maxLogicVoltage)) * PS3000A_MAX_LOGIC_LEVEL);
 
 	// Enable Digital ports
-	for (port = PS3000A_DIGITAL_PORT0; port <= PS3000A_DIGITAL_PORT1; port++)
-	{
-		status = ps3000aSetDigitalPort(unit->handle, (PS3000A_DIGITAL_PORT)port, state, logicLevel);
+	for (int16_t port = PS3000A_DIGITAL_PORT0; port <= PS3000A_DIGITAL_PORT1; port++) {
+		status = ps3000aSetDigitalPort(unit->handle, static_cast<PS3000A_DIGITAL_PORT>(port), state, logicLevel);
 		printf(status?"SetDigitals:PS3000ASetDigitalPort(Port 0x%X) ------ 0x%08lx \n":"", port, status);
 	}
 
@@ -422,21 +193,18 @@ PICO_STATUS setDigitals(UNIT *unit, int16_t state)
 /****************************************************************************
 * disableAnalogue - Disable Analogue Channels
 ****************************************************************************/
-PICO_STATUS disableAnalogue(UNIT *unit)
-{
-	PICO_STATUS status;
+PICO_STATUS disableAnalogue(UNIT *unit) {
+	PICO_STATUS status = 0;
 	int16_t ch;
 
 	// Turn off analogue channels, keeping settings
-	for (ch = 0; ch < unit->channelCount; ch++)
-	{
+	for (ch = 0; ch < unit->channelCount; ch++) {
 		unit->channelSettings[ch].enabled = FALSE;
 
 		status = ps3000aSetChannel(unit->handle, (PS3000A_CHANNEL) ch, unit->channelSettings[ch].enabled, (PS3000A_COUPLING) unit->channelSettings[ch].DCcoupled,
 			(PS3000A_RANGE) unit->channelSettings[ch].range, 0);
 
-		if(status != PICO_OK)
-		{
+		if(status != PICO_OK) {
 			printf("disableAnalogue:ps3000aSetChannel(channel %d) ------ 0x%08lx \n", ch, status);
 		}
 	}
@@ -446,19 +214,15 @@ PICO_STATUS disableAnalogue(UNIT *unit)
 /****************************************************************************
 * restoreAnalogueSettings - Restores Analogue Channel settings
 ****************************************************************************/
-PICO_STATUS restoreAnalogueSettings(UNIT *unit)
-{
-	PICO_STATUS status;
-	int16_t ch;
+PICO_STATUS restoreAnalogueSettings(UNIT *unit) {
+	PICO_STATUS status = 0;
 
 	// Turn on analogue channels using previous settings
-	for (ch = 0; ch < unit->channelCount; ch++)
-	{
+	for (int16_t ch = 0; ch < unit->channelCount; ch++) {
 		status = ps3000aSetChannel(unit->handle, (PS3000A_CHANNEL) ch, unit->channelSettings[ch].enabled, (PS3000A_COUPLING) unit->channelSettings[ch].DCcoupled,
 			(PS3000A_RANGE) unit->channelSettings[ch].range, 0);
 
-		if(status != PICO_OK)
-		{
+		if(status != PICO_OK) {
 			printf("restoreAnalogueSettings:ps3000aSetChannel(channel %d) ------ 0x%08lx \n", ch, status);
 		}
 	}
@@ -471,8 +235,7 @@ PICO_STATUS restoreAnalogueSettings(UNIT *unit)
 *
 * Convert an 16-bit ADC count into millivolts
 ****************************************************************************/
-int32_t adc_to_mv(int32_t raw, int32_t ch, UNIT * unit)
-{
+int32_t adc_to_mv(int32_t raw, int32_t ch, UNIT * unit) {
 	return (raw * inputRanges[ch]) / unit->maxValue;
 }
 
@@ -483,8 +246,7 @@ int32_t adc_to_mv(int32_t raw, int32_t ch, UNIT * unit)
 *
 *  (useful for setting trigger thresholds)
 ****************************************************************************/
-int16_t mv_to_adc(int16_t mv, int16_t ch, UNIT * unit)
-{
+int16_t mv_to_adc(int16_t mv, int16_t ch, UNIT * unit) {
 	return (mv * unit->maxValue) / inputRanges[ch];
 }
 
@@ -492,8 +254,7 @@ int16_t mv_to_adc(int16_t mv, int16_t ch, UNIT * unit)
 * changePowerSource - function to handle switches between +5 V supply, and USB-only power
 * Only applies to PicoScope 34xxA/B/D/D MSO units
 ******************************************************************************************/
-PICO_STATUS changePowerSource(int16_t handle, PICO_STATUS status)
-{
+PICO_STATUS changePowerSource(int16_t handle, PICO_STATUS status) {
 	char ch;
 
 	switch (status)
@@ -564,26 +325,18 @@ PICO_STATUS changePowerSource(int16_t handle, PICO_STATUS status)
 *
 * stops GetData writing values to memory that has been released
 ****************************************************************************/
-PICO_STATUS clearDataBuffers(UNIT * unit)
-{
-	int32_t i;
-	PICO_STATUS status;
+PICO_STATUS clearDataBuffers(const UNIT* unit) {
+	PICO_STATUS status = 0;
 
-	for (i = 0; i < unit->channelCount; i++)
-	{
-		if((status = ps3000aSetDataBuffers(unit->handle, (PS3000A_CHANNEL) i, NULL, NULL, 0, 0, PS3000A_RATIO_MODE_NONE)) != PICO_OK)
-		{
+	for (int32_t i = 0; i < unit->channelCount; i++) {
+		if ((status = ps3000aSetDataBuffers(unit->handle, (PS3000A_CHANNEL) i, nullptr, nullptr, 0, 0, PS3000A_RATIO_MODE_NONE)) != PICO_OK)
 			printf("ClearDataBuffers:ps3000aSetDataBuffers(channel %d) ------ 0x%08lx \n", i, status);
-		}
 	}
 
 
-	for (i= 0; i < unit->digitalPorts; i++)
-	{
-		if((status = ps3000aSetDataBuffer(unit->handle, (PS3000A_CHANNEL) (i + PS3000A_DIGITAL_PORT0), NULL, 0, 0, PS3000A_RATIO_MODE_NONE))!= PICO_OK)
-		{
+	for (int32_t i = 0; i < unit->digitalPorts; i++) {
+		if((status = ps3000aSetDataBuffer(unit->handle, (PS3000A_CHANNEL) (i + PS3000A_DIGITAL_PORT0), nullptr, 0, 0, PS3000A_RATIO_MODE_NONE))!= PICO_OK)
 			printf("ClearDataBuffers:ps3000aSetDataBuffer(port 0x%X) ------ 0x%08lx \n", i + PS3000A_DIGITAL_PORT0, status);
-		}
 	}
 
 	return status;
@@ -616,8 +369,8 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 	int32_t maxSamples;
 	int32_t timeIndisposed;
 
-	FILE * fp = NULL;
-	FILE * digiFp = NULL;
+	FILE * fp = nullptr;
+	FILE * digiFp = nullptr;
 
 	PICO_STATUS status;
 	PS3000A_RATIO_MODE ratioMode = PS3000A_RATIO_MODE_NONE;
@@ -666,7 +419,7 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 	{
 		retry = 0;
 
-		status = ps3000aRunBlock(unit->handle, 0, sampleCount, timebase, oversample, &timeIndisposed, 0, callBackBlock, NULL);
+		status = ps3000aRunBlock(unit->handle, 0, sampleCount, timebase, oversample, &timeIndisposed, 0, callBackBlock, nullptr);
 
 		if (status != PICO_OK)
 		{
@@ -694,7 +447,7 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 
 	if (g_ready)
 	{
-		status = ps3000aGetValues(unit->handle, 0, (uint32_t*) &sampleCount, 1, ratioMode, 0, NULL);
+		status = ps3000aGetValues(unit->handle, 0, (uint32_t*) &sampleCount, 1, ratioMode, 0, nullptr);
 
 		if (status != PICO_OK)
 		{
@@ -772,7 +525,7 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 
 				fopen_s(&fp, BlockFile, "w");
 
-				if (fp != NULL)
+				if (fp != nullptr)
 				{
 					fprintf(fp, "Block Data log\n\n");
 					fprintf(fp,"Results shown for each of the %d Channels are......\n",unit->channelCount);
@@ -822,7 +575,7 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 			{
 				fopen_s(&digiFp, DigiBlockFile, "w");
 
-				if (digiFp != NULL)
+				if (digiFp != nullptr)
 				{
 					fprintf(digiFp, "Block Digital Data log\n");
 					fprintf(digiFp, "Digital Channels will be in the order D15...D0\n");
@@ -864,12 +617,12 @@ void blockDataHandler(UNIT * unit, char * text, int32_t offset, MODE mode)
 		printf("BlockDataHandler:ps3000aStop ------ 0x%08lx \n", status);
 	}
 
-	if (fp != NULL)
+	if (fp != nullptr)
 	{
 		fclose(fp);
 	}
 
-	if (digiFp != NULL)
+	if (digiFp != nullptr)
 	{
 		fclose(digiFp);
 	}
@@ -936,7 +689,7 @@ void streamDataHandler(UNIT * unit, uint32_t preTrigger, MODE mode)
 	PS3000A_RATIO_MODE ratioMode;
 
 	BUFFER_INFO bufferInfo;
-	FILE * fp = NULL;
+	FILE * fp = nullptr;
 
 
 	if (mode == ANALOGUE)		// Analogue - collect raw data
@@ -1064,7 +817,7 @@ void streamDataHandler(UNIT * unit, uint32_t preTrigger, MODE mode)
 	{
 		fopen_s(&fp, StreamFile, "w");
 
-		if (fp != NULL)
+		if (fp != nullptr)
 		{
 			fprintf(fp,"For each of the %d Channels, results shown are....\n",unit->channelCount);
 			fprintf(fp,"Maximum Aggregated value ADC Count & mV, Minimum Aggregated value ADC Count & mV\n\n");
@@ -1122,7 +875,7 @@ void streamDataHandler(UNIT * unit, uint32_t preTrigger, MODE mode)
 			{
 				if (mode == ANALOGUE)
 				{
-					if(fp != NULL)
+					if(fp != nullptr)
 					{
 						for (j = 0; j < unit->channelCount; j++)
 						{
@@ -1187,7 +940,7 @@ void streamDataHandler(UNIT * unit, uint32_t preTrigger, MODE mode)
 		_getch();
 	}
 
-	if(fp != NULL)
+	if(fp != nullptr)
 	{
 		fclose(fp);
 	}
@@ -1234,7 +987,7 @@ void streamDataHandler(UNIT * unit, uint32_t preTrigger, MODE mode)
 /****************************************************************************
 * setTrigger
 *
-* - Used to call aall the functions required to set up triggering
+* - Used to call all the functions required to set up triggering
 *
 ***************************************************************************/
 PICO_STATUS setTrigger(	UNIT * unit,
@@ -1331,7 +1084,7 @@ void collectBlockImmediate(UNIT * unit)
 	setDefaults(unit);
 
 	/* Trigger disabled	*/
-	setTrigger(unit, NULL, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0, 0, 0);
+	setTrigger(unit, nullptr, 0, nullptr, 0, &directions, &pulseWidth, 0, 0, 0, 0, 0);
 
 	blockDataHandler(unit, "\nFirst 10 readings:\n", 0, ANALOGUE);
 }
@@ -1386,7 +1139,7 @@ void collectBlockEts(UNIT * unit)
 	// Trigger enabled
 	// Rising edge
 	// Threshold = 1000mV
-	status = setTrigger(unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, delay, 0, 0, 0, 0);
+	status = setTrigger(unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, delay, 0, 0, nullptr, 0);
 
 	status = ps3000aSetEts(unit->handle, PS3000A_ETS_FAST, 20, 4, &ets_sampletime);
 	printf("ETS Sample Time is: %ld\n", ets_sampletime);
@@ -1401,10 +1154,9 @@ void collectBlockEts(UNIT * unit)
 *  this function demonstrates how to collect a single block of data from the
 *  unit, when a trigger event occurs.
 ****************************************************************************/
-void collectBlockTriggered(UNIT * unit)
-{
+void collectBlockTriggered(UNIT* unit) {
 
-	int16_t triggerVoltage = mv_to_adc(1000, unit->channelSettings[PS3000A_CHANNEL_A].range, unit);
+	const int16_t triggerVoltage = mv_to_adc(1000, unit->channelSettings[PS3000A_CHANNEL_A].range, unit);
 
 	struct tPS3000ATriggerChannelProperties sourceDetails = {	triggerVoltage,
 																256 * 10,
@@ -1422,7 +1174,7 @@ void collectBlockTriggered(UNIT * unit)
 														PS3000A_CONDITION_DONT_CARE,
 														PS3000A_CONDITION_DONT_CARE};
 
-	struct tPwq pulseWidth;
+	struct tPwq pulseWidth{};
 
 	struct tTriggerDirections directions = {	PS3000A_RISING,
 												PS3000A_NONE,
@@ -1448,9 +1200,9 @@ void collectBlockTriggered(UNIT * unit)
 	/* Trigger enabled
 	* Rising edge
 	* Threshold = 1000mV */
-	setTrigger(unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, 0, 0);
+	setTrigger(unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
 
-	blockDataHandler(unit, "Ten readings after trigger:\n", 0, ANALOGUE);
+	blockDataHandler(unit, "Ten readings after trigger: \n", 0, ANALOGUE);
 }
 
 /****************************************************************************
@@ -1458,9 +1210,7 @@ void collectBlockTriggered(UNIT * unit)
 *  this function demonstrates how to collect a set of captures using
 *  rapid block mode.
 ****************************************************************************/
-void collectRapidBlock(UNIT * unit)
-{
-	int16_t i;
+void collectRapidBlock(UNIT * unit) {
 	int16_t retry;
 	int16_t channel;
 	int16_t *overflow;
@@ -1522,7 +1272,7 @@ void collectRapidBlock(UNIT * unit)
 	setDefaults(unit);
 
 	// Trigger enabled
-	setTrigger(unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, 0, 0);
+	setTrigger(unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
 
 	// Find the maximum number of segments
 	status = ps3000aGetMaxSegments(unit->handle, &maxSegments);
@@ -1567,7 +1317,7 @@ void collectRapidBlock(UNIT * unit)
 	{
 		retry = 0;
 
-		status = ps3000aRunBlock(unit->handle, 0, nSamples, timebase, 1, &timeIndisposed, 0, callBackBlock, NULL);
+		status = ps3000aRunBlock(unit->handle, 0, nSamples, timebase, 1, &timeIndisposed, 0, callBackBlock, nullptr);
 
 		if(status != PICO_OK)
 		{
@@ -1611,10 +1361,9 @@ void collectRapidBlock(UNIT * unit)
 		nCaptures = nCompletedCaptures;
 	}
 
-	//Allocate memory
-
-	rapidBuffers = (int16_t ***) calloc(unit->channelCount, sizeof(int16_t*));
-	overflow = (int16_t *) calloc(unit->channelCount * nCaptures, sizeof(int16_t));
+	// Allocate memory
+	rapidBuffers = static_cast<int16_t ***>(calloc(unit->channelCount, sizeof(int16_t *)));
+	overflow = static_cast<int16_t *>(calloc(unit->channelCount * nCaptures, sizeof(int16_t)));
 
 	for (channel = 0; channel < unit->channelCount; channel++)
 	{
@@ -1624,7 +1373,7 @@ void collectRapidBlock(UNIT * unit)
 		}
 		else
 		{
-			rapidBuffers[channel] = NULL;
+			rapidBuffers[channel] = nullptr;
 		}
 	}
 
@@ -1675,7 +1424,7 @@ void collectRapidBlock(UNIT * unit)
 
 			printf("\n");
 
-			for(i = 0; i < 10; i++)
+			for(int16_t i = 0; i < 10; i++)
 			{
 				for (channel = 0; channel < unit->channelCount; channel++)
 				{
@@ -1718,13 +1467,13 @@ void collectRapidBlock(UNIT * unit)
 
 	free(rapidBuffers);
 
-	// Set nunmber of segments and captures back to 1
+	// Set number of segments and captures back to 1
 	status = ps3000aMemorySegments(unit->handle, (uint32_t) 1, &nMaxSamples);
 	status = ps3000aSetNoOfCaptures(unit->handle, 1);
 }
 
 /****************************************************************************
-* Initialise unit' structure with Variant specific defaults
+* Initialise unit structure with Variant specific defaults
 ****************************************************************************/
 void get_info(UNIT * unit)
 {
@@ -1874,7 +1623,7 @@ void setVoltages(UNIT * unit)
 
 /****************************************************************************
 *
-* Select timebase, set oversample to on and time units as nano seconds
+* Select timebase, set oversample to on and time units as nanoseconds
 *
 ****************************************************************************/
 void setTimebase(UNIT unit)
@@ -1938,7 +1687,7 @@ void setSignalGenerator(UNIT unit)
 
 	double frequency = 1.0;
 
-	FILE * fp = NULL;
+	FILE * fp = nullptr;
 	PICO_STATUS status;
 
 
@@ -2010,7 +1759,7 @@ void setSignalGenerator(UNIT unit)
 				return;
 			}
 		}
-		else			// Set one of the built in waveforms
+		else			// Set one of the built-in waveforms
 		{
 			switch (choice)
 			{
@@ -2141,7 +1890,7 @@ void collectStreamingImmediate(UNIT * unit)
 	_getch();
 
 	/* Trigger disabled	*/
-	setTrigger(unit, NULL, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0, 0, 0);
+	setTrigger(unit, nullptr, 0, nullptr, 0, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
 
 	streamDataHandler(unit, 0, ANALOGUE);
 }
@@ -2191,7 +1940,7 @@ void collectStreamingTriggered(UNIT * unit)
 	/* Trigger enabled
 	* Rising edge
 	* Threshold = 1000mV */
-	setTrigger(unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, 0, 0);
+	setTrigger(unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
 
 	streamDataHandler(unit, 10000, ANALOGUE);
 }
@@ -2259,7 +2008,7 @@ PICO_STATUS openDevice(UNIT *unit)
 	struct tPwq pulseWidth;
 	struct tTriggerDirections directions;
 
-	PICO_STATUS status = ps3000aOpenUnit(&(unit->handle), NULL);
+	PICO_STATUS status = ps3000aOpenUnit(&(unit->handle), nullptr);
 
 	if (status == PICO_POWER_SUPPLY_NOT_CONNECTED || status == PICO_USB3_0_DEVICE_NON_USB3_0_PORT )
 	{
@@ -2298,7 +2047,7 @@ PICO_STATUS openDevice(UNIT *unit)
 	setDefaults(unit);
 
 	/* Trigger disabled	*/
-	setTrigger(unit, NULL, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0, 0, 0);
+	setTrigger(unit, nullptr, 0, nullptr, 0, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
 
 	return status;
 }
@@ -2307,8 +2056,7 @@ PICO_STATUS openDevice(UNIT *unit)
 /****************************************************************************
 * closeDevice
 ****************************************************************************/
-void closeDevice(UNIT *unit)
-{
+void closeDevice(const UNIT *unit) {
 	ps3000aCloseUnit(unit->handle);
 }
 
@@ -2320,8 +2068,7 @@ void closeDevice(UNIT *unit)
 *
 * Returns       none
 ***************************************************************************/
-void andAnalogueDigitalTriggered(UNIT * unit)
-{
+void andAnalogueDigitalTriggered(UNIT * unit) {
 	int32_t channel = 0;
 
 	int16_t	triggerVoltage = mv_to_adc(1000, unit->channelSettings[PS3000A_CHANNEL_A].range, unit);
@@ -2546,7 +2293,7 @@ void digitalBlockTriggered(UNIT * unit)
 	digDirections[0].direction = PS3000A_DIGITAL_DIRECTION_HIGH;
 
 
-	if (setTrigger(unit, NULL, 0, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, digDirections, 2) == PICO_OK)
+	if (setTrigger(unit, nullptr, 0, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, digDirections, 2) == PICO_OK)
 	{
 		printf("Press a key to start...\n");
 		_getch();
@@ -2573,7 +2320,7 @@ void digitalBlockImmediate(UNIT *unit)
 	memset(&pulseWidth, 0, sizeof(PWQ));
 	memset(&digDirections, 0, sizeof(PS3000A_DIGITAL_CHANNEL_DIRECTIONS));
 
-	setTrigger(unit, NULL, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0, &digDirections, 0);
+	setTrigger(unit, nullptr, 0, nullptr, 0, &directions, &pulseWidth, 0, 0, 0, &digDirections, 0);
 
 	printf("Press a key to start...\n");
 	_getch();
@@ -2601,7 +2348,7 @@ void digitalStreamingAggregated(UNIT * unit)
 	_getch();
 
 	/* Trigger disabled	*/
-	setTrigger(unit, NULL, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0, 0, 0);
+	setTrigger(unit, nullptr, 0, nullptr, 0, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
 
 	streamDataHandler(unit, 0, AGGREGATED);
 }
@@ -2625,7 +2372,7 @@ void digitalStreamingImmediate(UNIT * unit)
 	_getch();
 
 	/* Trigger disabled	*/
-	setTrigger(unit, NULL, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0, 0, 0);
+	setTrigger(unit, nullptr, 0, nullptr, 0, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
 
 	streamDataHandler(unit, 0, DIGITAL);
 }
