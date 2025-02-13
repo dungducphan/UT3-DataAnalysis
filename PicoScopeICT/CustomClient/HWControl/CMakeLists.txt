@@ -58,7 +58,7 @@ include_directories(SYSTEM "external/pico_sdk/inc")
 link_directories("external/pico_sdk/lib")
 
 # Copy fonts
-file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION "${CMAKE_BINARY_DIR}")
+file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 
 # ===================================================================
 # hw_interface library

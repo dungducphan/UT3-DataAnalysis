@@ -125,7 +125,7 @@ char DigiBlockFile[20]	= "digiBlock.txt";
 char StreamFile[20]		= "stream.txt";
 
 typedef struct tBufferInfo {
-	UNIT * unit;
+	UNIT* unit;
 	MODE mode;
 	int16_t **driverBuffers;
 	int16_t **appBuffers;
@@ -164,35 +164,35 @@ void PREF4 callBackBlock( int16_t handle, PICO_STATUS status, void * pParameter)
 /****************************************************************************
 * setDefaults - restore default settings
 ****************************************************************************/
-void setDefaults(UNIT * unit);
+void setDefaults(UNIT* unit);
 
 /****************************************************************************
 * setDigitals - enable or disable Digital Channels
 ****************************************************************************/
-PICO_STATUS setDigitals(const UNIT *unit, const int16_t state);
+PICO_STATUS setDigitals(const UNIT* unit, const int16_t state);
 
 /****************************************************************************
 * disableAnalogue - Disable Analogue Channels
 ****************************************************************************/
-PICO_STATUS disableAnalogue(UNIT *unit);
+PICO_STATUS disableAnalogue(UNIT* unit);
 
 /****************************************************************************
 * restoreAnalogueSettings - Restores Analogue Channel settings
 ****************************************************************************/
-PICO_STATUS restoreAnalogueSettings(UNIT *unit);
+PICO_STATUS restoreAnalogueSettings(UNIT* unit);
 
 /****************************************************************************
 * adc_to_mv
 * Convert an 16-bit ADC count into millivolts
 ****************************************************************************/
-int32_t adc_to_mv(int32_t raw, int32_t ch, const UNIT * unit);
+int32_t adc_to_mv(int32_t raw, int32_t ch, const UNIT* unit);
 
 /****************************************************************************
 * mv_to_adc
 * Convert a millivolt value into a 16-bit ADC count
 *  (useful for setting trigger thresholds)
 ****************************************************************************/
-int16_t mv_to_adc(int16_t mv, int16_t ch, const UNIT * unit);
+int16_t mv_to_adc(int16_t mv, int16_t ch, const UNIT* unit);
 
 /****************************************************************************************
 * changePowerSource - function to handle switches between +5 V supply, and USB-only power
@@ -216,7 +216,7 @@ PICO_STATUS clearDataBuffers(const UNIT* unit);
 * - text : the text to display before the display of data slice
 * - offset : the offset into the data buffer to start the display's slice.
 ****************************************************************************/
-void blockDataHandler(const UNIT * unit, char * text, int32_t offset, MODE mode);
+void blockDataHandler(const UNIT* unit, char * text, int32_t offset, MODE mode);
 
 /****************************************************************************
 * Stream Data Handler
@@ -226,13 +226,13 @@ void blockDataHandler(const UNIT * unit, char * text, int32_t offset, MODE mode)
 * - preTrigger - the number of samples in the pre-trigger phase
 *					(0 if no trigger has been set)
 ***************************************************************************/
-void streamDataHandler(UNIT * unit, uint32_t preTrigger, MODE mode);
+void streamDataHandler(UNIT* unit, uint32_t preTrigger, MODE mode);
 
 /****************************************************************************
 * setTrigger
 * - Used to call all the functions required to set up triggering
 ***************************************************************************/
-PICO_STATUS setTrigger(	UNIT * unit,
+PICO_STATUS setTrigger(UNIT* unit,
 
 						struct tPS3000ATriggerChannelProperties * channelProperties,
 							int16_t nChannelProperties,
@@ -252,14 +252,14 @@ PICO_STATUS setTrigger(	UNIT * unit,
 *  this function demonstrates how to collect a single block of data
 *  from the unit (start collecting immediately)
 ****************************************************************************/
-void collectBlockImmediate(UNIT * unit);
+void collectBlockImmediate(UNIT* unit);
 
 /****************************************************************************
 * collectBlockEts
 *  this function demonstrates how to collect a block of
 *  data using equivalent time sampling (ETS).
 ****************************************************************************/
-void collectBlockEts(UNIT * unit);
+void collectBlockEts(UNIT* unit);
 
 /****************************************************************************
 * collectBlockTriggered
@@ -273,18 +273,18 @@ void collectBlockTriggered(UNIT* unit);
 *  this function demonstrates how to collect a set of captures using
 *  rapid block mode.
 ****************************************************************************/
-void collectRapidBlock(UNIT * unit);
+void collectRapidBlock(UNIT* unit);
 
 /****************************************************************************
 * Initialise unit structure with Variant specific defaults
 ****************************************************************************/
-void get_info(UNIT * unit);
+void get_info(UNIT* unit);
 
 /****************************************************************************
 * setVoltages
 * Select input voltage ranges for channels
 ****************************************************************************/
-void setVoltages(UNIT * unit);
+void setVoltages(UNIT* unit);
 
 /****************************************************************************
 * Select timebase, set oversample to on and time units as nanoseconds
@@ -306,14 +306,14 @@ void setSignalGenerator(UNIT unit);
 *  this function demonstrates how to collect a stream of data
 *  from the unit (start collecting immediately)
 ***************************************************************************/
-void collectStreamingImmediate(UNIT * unit);
+void collectStreamingImmediate(UNIT* unit);
 
 /****************************************************************************
 * collectStreamingTriggered
 *  this function demonstrates how to collect a stream of data
 *  from the unit (start collecting on trigger)
 ***************************************************************************/
-void collectStreamingTriggered(UNIT * unit);
+void collectStreamingTriggered(UNIT* unit);
 
 /****************************************************************************
 * displaySettings
@@ -323,7 +323,7 @@ void collectStreamingTriggered(UNIT * unit);
 *
 * Returns       none
 ***************************************************************************/
-void displaySettings(UNIT *unit);
+void displaySettings(UNIT* unit);
 
 /****************************************************************************
 * openDevice
@@ -333,12 +333,12 @@ void displaySettings(UNIT *unit);
 * Returns
 * - PICO_STATUS to indicate success, or if an error occurred
 ***************************************************************************/
-PICO_STATUS openDevice(UNIT *unit);
+PICO_STATUS openDevice(UNIT* unit);
 
 /****************************************************************************
 * closeDevice
 ****************************************************************************/
-void closeDevice(const UNIT *unit);
+void closeDevice(const UNIT* unit);
 
 /****************************************************************************
 * andAnalogueDigital
@@ -348,7 +348,7 @@ void closeDevice(const UNIT *unit);
 *
 * Returns       none
 ***************************************************************************/
-void andAnalogueDigitalTriggered(UNIT * unit);
+void andAnalogueDigitalTriggered(UNIT* unit);
 
 /****************************************************************************
 * orAnalogueDigital
@@ -358,7 +358,7 @@ void andAnalogueDigitalTriggered(UNIT * unit);
 *
 * Returns       none
 ***************************************************************************/
-void orAnalogueDigitalTriggered(UNIT * unit);
+void orAnalogueDigitalTriggered(UNIT* unit);
 
 /****************************************************************************
 * digitalBlockTriggered
@@ -367,7 +367,7 @@ void orAnalogueDigitalTriggered(UNIT * unit);
 *
 * Returns       none
 ***************************************************************************/
-void digitalBlockTriggered(UNIT * unit);
+void digitalBlockTriggered(UNIT* unit);
 
 /****************************************************************************
 * digitalBlockImmediate
@@ -376,21 +376,21 @@ void digitalBlockTriggered(UNIT * unit);
 *
 * Returns       none
 ***************************************************************************/
-void digitalBlockImmediate(UNIT *unit);
+void digitalBlockImmediate(UNIT* unit);
 
 /****************************************************************************
 *  digitalStreamingAggregated
 *  this function demonstrates how to collect a stream of Aggregated data
 *  from the unit's Digital inputs (start collecting immediately)
 ***************************************************************************/
-void digitalStreamingAggregated(UNIT * unit);
+void digitalStreamingAggregated(UNIT* unit);
 
 /****************************************************************************
 *  digitalStreamingImmediate
 *  this function demonstrates how to collect a stream of data
 *  from the unit's Digital inputs (start collecting immediately)
 ***************************************************************************/
-void digitalStreamingImmediate(UNIT * unit);
+void digitalStreamingImmediate(UNIT* unit);
 
 /****************************************************************************
 * digitalMenu
@@ -400,4 +400,4 @@ void digitalStreamingImmediate(UNIT * unit);
 *
 * Returns       none
 ***************************************************************************/
-void digitalMenu(UNIT *unit);
+void digitalMenu(UNIT* unit);
