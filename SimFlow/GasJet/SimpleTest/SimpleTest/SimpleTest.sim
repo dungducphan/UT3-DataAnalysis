@@ -19,11 +19,11 @@ fieldInputs
 }
 primitiveMesh
 {
-	type	box;
+	type	cylinder;
 	box
 	{
-		min	(-0.5 -0.5 -0.5);
-		max	(0.5 0.5 0.5);
+		min	(-0.007354 -0.002524728 -0.002525);
+		max	(3.554e-03 2.5247e-03 2.525e-03);
 		division	(10 10 10);
 		grading	(1 1 1);
 		lockCellSize	false;
@@ -64,31 +64,31 @@ primitiveMesh
 	cylinder
 	{
 		axis	X;
-		origin	0;
-		radius	1;
-		length	1;
-		radialFraction	0.5;
-		radialDivision	10;
+		origin	-7.5e-03;
+		radius	2.8e-03;
+		length	0.0112;
+		radialFraction	0.7;
+		radialDivision	20;
 		radialGrading	1;
-		axialDivision	10;
+		axialDivision	100;
 		axialGrading	1;
-		circumferentialDivision	10;
+		circumferentialDivision	20;
 		boundaries
 		{
 			cylinder
 			{
 				name	boundaries;
-				type	patch;
+				type	wall;
 			}
 			outlet
 			{
 				name	boundaries;
-				type	patch;
+				type	wall;
 			}
 			inlet
 			{
 				name	boundaries;
-				type	patch;
+				type	wall;
 			}
 		}
 	}
@@ -249,7 +249,7 @@ mesh
 }
 meshing
 {
-	parallel	false;
+	parallel	true;
 	processors	48;
 	meshingStages
 	{
