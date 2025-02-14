@@ -35,9 +35,9 @@ mixture
 	}
 	equationOfState
 	{
-		Pc	1.0;
-		Vc	1.0;
-		omega	1.0;
-		Tc	1.0;
+		Pc	930000.0;
+		Vc	0.0352;
+		omega	-0.39;
+		Tc	5.2;
 	}
 }
