@@ -2,22 +2,22 @@
 
 #include "PSDevice.h"
 
-PSDevice::PSDevice() {
-    printf("ICT Beam Charge Measurement with PicoScope 3206D\n");
-    printf("Searching PicoScope...\n");
+
+PSDevice::PSDevice() : test_device_open(false) {
 }
 
 PSDevice::~PSDevice() {
-    printf("Closing PicoScope...\n");
-    CloseDevice();
+}
+
+bool PSDevice::IsDeviceOpen() const {
+    return test_device_open;
 }
 
 void PSDevice::OpenDevice() {
-    status = openDevice(&unit);
-    displaySettings(&unit);
+    test_device_open = true;
 }
 
-void PSDevice::CloseDevice() const {
-    closeDevice(&unit);
+void PSDevice::CloseDevice() {
+    test_device_open = false;
 }
 

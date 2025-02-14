@@ -1393,7 +1393,7 @@ void collectRapidBlock(UNIT * unit) {
 /****************************************************************************
 * Initialise unit structure with Variant specific defaults
 ****************************************************************************/
-void get_info(UNIT * unit)
+void get_info(UNIT* unit)
 {
 	char description [11][25]= { "Driver Version",
 		"USB Version",

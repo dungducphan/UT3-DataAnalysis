@@ -1,20 +1,14 @@
 #pragma once
 
-#include <PSConfig.h>
-
-#include "PSDevice.h"
-
 class PSDevice {
 public:
     PSDevice();
     ~PSDevice();
 
-public:
+    [[nodiscard]] bool IsDeviceOpen() const;
     void OpenDevice();
-    void CloseDevice() const;
+    void CloseDevice();
 
 private:
-    UNIT unit{};
-    PICO_STATUS status{};
+    bool test_device_open;
 };
-
