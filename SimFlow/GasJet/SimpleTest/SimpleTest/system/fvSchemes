@@ -22,6 +22,9 @@ divSchemes
 	div(tauMC)	Gauss linear;
 	default	Gauss upwind;
 	div(phiMRF,p)	Gauss limitedLinear 1.0;
+	div(phi,k)	Gauss upwind;
+	div(phi,epsilon)	Gauss upwind;
+	div(phi,alphat)	Gauss upwind;
 }
 laplacianSchemes
 {

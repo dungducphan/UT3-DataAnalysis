@@ -2,6 +2,7 @@ materials
 {
 	regions
 	{
+		default	helium-gas;
 	}
 }
 geometry
@@ -28,13 +29,13 @@ fieldInputs
 				{
 					type	totalPressure;
 					p0	"uniform 100000";
-					gamma	1.4;
+					gamma	1.668;
 				}
 				GasJetSmaller_out
 				{
 					type	totalPressure;
 					p0	"uniform 100000";
-					gamma	1.4;
+					gamma	1.668;
 				}
 				GasJetSmaller_dyn_wall
 				{
@@ -80,14 +81,14 @@ fieldInputs
 				{
 					type	totalTemperature;
 					T0	"uniform 300";
-					gamma	1.4;
+					gamma	1.668;
 					psi	thermo:psi;
 				}
 				GasJetSmaller_out
 				{
 					type	totalTemperature;
 					T0	"uniform 300";
-					gamma	1.4;
+					gamma	1.668;
 					psi	thermo:psi;
 				}
 				GasJetSmaller_dyn_wall
@@ -97,6 +98,104 @@ fieldInputs
 				GasJetSmaller_nil_wall
 				{
 					type	zeroGradient;
+				}
+			}
+		}
+		k
+		{
+			internalField	uniform 1e-02;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	turbulentIntensityKineticEnergyInlet;
+					intensity	0.05;
+				}
+				GasJetSmaller_out
+				{
+					type	turbulentIntensityKineticEnergyInlet;
+					intensity	0.05;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	kqRWallFunction;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	kqRWallFunction;
+				}
+			}
+		}
+		epsilon
+		{
+			internalField	uniform 1;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	turbulentMixingLengthDissipationRateInlet;
+					mixingLength	1e-03;
+				}
+				GasJetSmaller_out
+				{
+					type	turbulentMixingLengthDissipationRateInlet;
+					mixingLength	1e-03;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	epsilonWallFunction;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	epsilonWallFunction;
+				}
+			}
+		}
+		nut
+		{
+			internalField	uniform 0.1;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	calculated;
+				}
+				GasJetSmaller_out
+				{
+					type	calculated;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	nutUWallFunction;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	nutUWallFunction;
+				}
+			}
+		}
+		alphat
+		{
+			internalField	uniform 0;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	calculated;
+				}
+				GasJetSmaller_out
+				{
+					type	calculated;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	compressible::alphatJayatillekeWallFunction;
+					Prt	0.85;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	compressible::alphatJayatillekeWallFunction;
+					Prt	0.85;
 				}
 			}
 		}

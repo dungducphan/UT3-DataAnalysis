@@ -15,14 +15,14 @@ boundaryField
 	{
 		type	totalTemperature;
 		T0	uniform 300;
-		gamma	1.4;
+		gamma	1.668;
 		psi	thermo:psi;
 	}
 	GasJetSmaller_out
 	{
 		type	totalTemperature;
 		T0	uniform 300;
-		gamma	1.4;
+		gamma	1.668;
 		psi	thermo:psi;
 	}
 	GasJetSmaller_dyn_wall

@@ -1,0 +1,34 @@
+FoamFile
+{
+	version	2.0;
+	format	binary;
+	class	volScalarField;
+	location	"0";
+	object	nut;
+	arch	"LSB;label=32;scalar=64";
+}
+dimensions	[0 2 -1 0 0 0 0];
+internalField	uniform 0.10000000149011612;
+boundaryField
+{
+	GasJetSmaller_in
+	{
+		type	calculated;
+		value	uniform 0.10000000149011612;
+	}
+	GasJetSmaller_out
+	{
+		type	calculated;
+		value	uniform 0.10000000149011612;
+	}
+	GasJetSmaller_dyn_wall
+	{
+		type	nutUWallFunction;
+		value	uniform 0.10000000149011612;
+	}
+	GasJetSmaller_nil_wall
+	{
+		type	nutUWallFunction;
+		value	uniform 0.10000000149011612;
+	}
+}

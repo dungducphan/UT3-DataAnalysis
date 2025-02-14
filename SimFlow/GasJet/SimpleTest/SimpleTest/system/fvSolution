@@ -48,7 +48,25 @@ solvers
 	{
 		solver	diagonal;
 	}
+	k
+	{
+		solver	PBiCGStab;
+		relTol	1.0E-4;
+		preconditioner	DILU;
+		tolerance	1.0E-6;
+		maxIter	100;
+	}
+	epsilon
+	{
+		solver	PBiCGStab;
+		relTol	1.0E-4;
+		preconditioner	DILU;
+		tolerance	1.0E-6;
+		maxIter	100;
+	}
 }
 relaxationFactors
 {
+	k	1.0;
+	epsilon	1.0;
 }

@@ -10,9 +10,9 @@ thermoType
 {
 	type	hePsiThermo;
 	mixture	pureMixture;
-	transport	const;
+	transport	sutherland;
 	thermo	hConst;
-	equationOfState	perfectGas;
+	equationOfState	PengRobinsonGas;
 	specie	specie;
 	energy	sensibleEnthalpy;
 }
@@ -21,19 +21,23 @@ mixture
 	specie
 	{
 		nMoles	1.0;
-		molWeight	28.96;
+		molWeight	4.0026;
 	}
 	thermodynamics
 	{
-		Cp	1005.0;
+		Cp	5188.0;
 		Hf	0.0;
 	}
 	transport
 	{
-		mu	1.8E-5;
-		Pr	0.7;
+		As	8.6E-7;
+		Ts	273.0;
 	}
 	equationOfState
 	{
+		Pc	1.0;
+		Vc	1.0;
+		omega	1.0;
+		Tc	1.0;
 	}
 }
