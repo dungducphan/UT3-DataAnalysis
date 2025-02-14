@@ -6,17 +6,4 @@ FoamFile
 	location	"constant";
 	object	turbulenceProperties;
 }
-simulationType	RAS;
-RAS
-{
-	turbulence	true;
-	printCoeffs	true;
-	RASModel	none;
-	noneCoeffs
-	{
-	}
-	delta	cubeRootVol;
-	cubeRootVolCoeffs
-	{
-	}
-}
+simulationType	laminar;

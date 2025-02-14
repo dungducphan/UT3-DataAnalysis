@@ -8,4 +8,47 @@ FoamFile
 }
 solvers
 {
+	rho
+	{
+		solver	diagonal;
+	}
+	rhoU
+	{
+		solver	diagonal;
+	}
+	rhoE
+	{
+		solver	diagonal;
+	}
+	U
+	{
+		solver	PCG;
+		relTol	1.0E-4;
+		preconditioner	DIC;
+		tolerance	1.0E-6;
+		maxIter	100;
+	}
+	h
+	{
+		solver	PCG;
+		relTol	1.0E-4;
+		preconditioner	DIC;
+		tolerance	1.0E-6;
+		maxIter	100;
+	}
+	rho
+	{
+		solver	diagonal;
+	}
+	rhoU
+	{
+		solver	diagonal;
+	}
+	rhoE
+	{
+		solver	diagonal;
+	}
+}
+relaxationFactors
+{
 }

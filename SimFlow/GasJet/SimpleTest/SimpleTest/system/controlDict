@@ -6,16 +6,20 @@ FoamFile
 	object	controlDict;
 	version	2.0;
 }
+adjustTimeStep	false;
+application	rhoCentralFoam;
 deltaT	1;
 endTime	1;
-purgeWrite	2;
+maxCo	2;
+maxDeltaT	1;
+purgeWrite	0;
 startFrom	latestTime;
 startTime	0;
 stopAt	endTime;
 timeFormat	general;
 timePrecision	6;
-writeControl	timeStep;
-writeInterval	10;
+writeControl	adjustableRunTime;
+writeInterval	1;
 writePrecision	7;
 runTimeModifiable	true;
 timeFormat	general;

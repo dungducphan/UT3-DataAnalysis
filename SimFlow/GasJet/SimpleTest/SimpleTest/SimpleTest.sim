@@ -11,10 +11,95 @@ geometry
 		tessellation	Normal;
 	}
 }
+regionInit
+{
+	patchInitializationMode	onInitialization;
+}
 fieldInputs
 {
 	default
 	{
+		p
+		{
+			internalField	uniform 100000;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	totalPressure;
+					p0	"uniform 100000";
+					gamma	1.4;
+				}
+				GasJetSmaller_out
+				{
+					type	totalPressure;
+					p0	"uniform 100000";
+					gamma	1.4;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	zeroGradient;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	zeroGradient;
+				}
+			}
+		}
+		U
+		{
+			internalField	uniform (0 0 0);
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	pressureInletOutletVelocity;
+					rho	rho;
+				}
+				GasJetSmaller_out
+				{
+					type	pressureInletOutletVelocity;
+					rho	rho;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	noSlip;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	noSlip;
+				}
+			}
+		}
+		T
+		{
+			internalField	uniform 300;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	totalTemperature;
+					T0	"uniform 300";
+					gamma	1.4;
+					psi	thermo:psi;
+				}
+				GasJetSmaller_out
+				{
+					type	totalTemperature;
+					T0	"uniform 300";
+					gamma	1.4;
+					psi	thermo:psi;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	zeroGradient;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	zeroGradient;
+				}
+			}
+		}
 	}
 }
 primitiveMesh
@@ -306,6 +391,18 @@ regionProperties
 		{
 		}
 	}
+}
+initialization
+{
+	potentialInit	false;
+	nNonOrthogonalCorrectors	8;
+	mapInit	false;
+	mapConsistent	false;
+}
+run
+{
+	parallel	false;
+	processors	48;
 }
 mesh
 {
