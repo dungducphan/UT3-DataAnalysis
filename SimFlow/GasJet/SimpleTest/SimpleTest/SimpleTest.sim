@@ -188,7 +188,7 @@ Graphics3D
 				transparency	0.0;
 				Model
 				{
-					faceHide	false;
+					faceHide	true;
 					edgesHide	false;
 				}
 				Slice
@@ -203,7 +203,7 @@ Graphics3D
 				transparency	0.0;
 				Model
 				{
-					faceHide	false;
+					faceHide	true;
 					edgesHide	false;
 				}
 				Slice
@@ -218,7 +218,7 @@ Graphics3D
 				transparency	0.0;
 				Model
 				{
-					faceHide	false;
+					faceHide	true;
 					edgesHide	false;
 				}
 				Slice
@@ -233,7 +233,7 @@ Graphics3D
 				transparency	0.0;
 				Model
 				{
-					faceHide	false;
+					faceHide	true;
 					edgesHide	false;
 				}
 				Slice
