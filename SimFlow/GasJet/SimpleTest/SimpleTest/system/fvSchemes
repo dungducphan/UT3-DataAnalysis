@@ -28,11 +28,11 @@ divSchemes
 }
 laplacianSchemes
 {
-	default	Gauss linear corrected;
+	default	Gauss cubic corrected;
 }
 interpolationSchemes
 {
-	default	linear;
+	default	cubic;
 	reconstruct(rho)	vanLeer;
 	reconstruct(U)	vanLeerV;
 	reconstruct(T)	vanLeer;
