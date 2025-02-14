@@ -1,0 +1,50 @@
+FoamFile
+{
+	version	2.0;
+	format	ascii;
+	class	dictionary;
+	location	"system";
+	object	createPatchDict;
+}
+pointSync	false;
+patches	(
+	{
+		name	GasJetSmaller_in;
+		patchInfo
+		{
+			type	wall;
+		}
+		constructFrom	patches;
+		patches	(GasJetSmaller_face_4);
+	}
+
+	{
+		name	GasJetSmaller_out;
+		patchInfo
+		{
+			type	wall;
+		}
+		constructFrom	patches;
+		patches	(GasJetSmaller_face_5 GasJetSmaller_face_6 GasJetSmaller_face_7);
+	}
+
+	{
+		name	GasJetSmaller_dyn_wall;
+		patchInfo
+		{
+			type	wall;
+		}
+		constructFrom	patches;
+		patches	(GasJetSmaller_face_1 GasJetSmaller_face_2 GasJetSmaller_face_3);
+	}
+
+	{
+		name	GasJetSmaller_nil_wall;
+		patchInfo
+		{
+			type	wall;
+		}
+		constructFrom	patches;
+		patches	(GasJetSmaller_face_8 GasJetSmaller_face_9 GasJetSmaller_face_10);
+	}
+);

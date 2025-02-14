@@ -180,6 +180,69 @@ Graphics3D
 {
 	MeshParameters
 	{
+		default
+		{
+			GasJetSmaller_dyn_wall
+			{
+				color	(155 50 0);
+				transparency	0.0;
+				Model
+				{
+					faceHide	false;
+					edgesHide	false;
+				}
+				Slice
+				{
+					faceHide	true;
+					edgesHide	true;
+				}
+			}
+			GasJetSmaller_in
+			{
+				color	(155 180 50);
+				transparency	0.0;
+				Model
+				{
+					faceHide	false;
+					edgesHide	false;
+				}
+				Slice
+				{
+					faceHide	true;
+					edgesHide	true;
+				}
+			}
+			GasJetSmaller_nil_wall
+			{
+				color	(51 255 0);
+				transparency	0.0;
+				Model
+				{
+					faceHide	false;
+					edgesHide	false;
+				}
+				Slice
+				{
+					faceHide	true;
+					edgesHide	true;
+				}
+			}
+			GasJetSmaller_out
+			{
+				color	(0 255 178);
+				transparency	0.0;
+				Model
+				{
+					faceHide	false;
+					edgesHide	false;
+				}
+				Slice
+				{
+					faceHide	true;
+					edgesHide	true;
+				}
+			}
+		}
 	}
 	CellZonesParameters
 	{
@@ -206,7 +269,7 @@ Graphics3D
 			transparency	0.0;
 			Model
 			{
-				hide	false;
+				hide	true;
 			}
 			Slice
 			{
@@ -250,7 +313,7 @@ mesh
 meshing
 {
 	parallel	true;
-	processors	48;
+	processors	24;
 	meshingStages
 	{
 		Base	true;
