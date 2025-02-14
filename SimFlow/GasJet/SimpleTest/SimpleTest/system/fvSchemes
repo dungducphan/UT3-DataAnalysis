@@ -9,7 +9,7 @@ FoamFile
 fluxScheme	Kurganov;
 ddtSchemes
 {
-	default	Euler;
+	default	CrankNicolson 0.9;
 }
 gradSchemes
 {
