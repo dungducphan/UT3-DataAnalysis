@@ -1,0 +1,22 @@
+FoamFile
+{
+	version	2.0;
+	class	dictionary;
+	format	ascii;
+	location	"constant";
+	object	turbulenceProperties;
+}
+simulationType	RAS;
+RAS
+{
+	turbulence	true;
+	printCoeffs	true;
+	RASModel	none;
+	noneCoeffs
+	{
+	}
+	delta	cubeRootVol;
+	cubeRootVolCoeffs
+	{
+	}
+}

@@ -1,0 +1,263 @@
+materials
+{
+	regions
+	{
+	}
+}
+geometry
+{
+	GasJetSmaller
+	{
+		tessellation	Normal;
+	}
+}
+fieldInputs
+{
+	default
+	{
+	}
+}
+primitiveMesh
+{
+	type	box;
+	box
+	{
+		min	(-0.5 -0.5 -0.5);
+		max	(0.5 0.5 0.5);
+		division	(10 10 10);
+		grading	(1 1 1);
+		lockCellSize	false;
+		boundaries
+		{
+			x_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			z_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			z_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
+	}
+	cylinder
+	{
+		axis	X;
+		origin	0;
+		radius	1;
+		length	1;
+		radialFraction	0.5;
+		radialDivision	10;
+		radialGrading	1;
+		axialDivision	10;
+		axialGrading	1;
+		circumferentialDivision	10;
+		boundaries
+		{
+			cylinder
+			{
+				name	boundaries;
+				type	patch;
+			}
+			outlet
+			{
+				name	boundaries;
+				type	patch;
+			}
+			inlet
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
+	}
+	plate
+	{
+		minx	-0.5;
+		miny	-0.5;
+		maxx	0.5;
+		maxy	0.5;
+		divisionx	10;
+		divisiony	10;
+		gradingx	1;
+		gradingy	1;
+		lockCellSize	false;
+		boundaries
+		{
+			x_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
+	}
+	wedge
+	{
+		lockCellSize	false;
+		origin	0;
+		radius	1;
+		length	1;
+		radialDivision	10;
+		radialGrading	1;
+		axialDivision	10;
+		axialGrading	1;
+		boundaries
+		{
+			cylinder
+			{
+				name	boundaries;
+				type	patch;
+			}
+			inlet
+			{
+				name	boundaries;
+				type	patch;
+			}
+			outlet
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
+	}
+}
+slices
+{
+}
+probes
+{
+}
+application
+{
+	mode	normal;
+}
+parameters
+{
+}
+inputs
+{
+	default
+	{
+	}
+}
+Graphics3D
+{
+	MeshParameters
+	{
+	}
+	CellZonesParameters
+	{
+	}
+	ProbeParameters
+	{
+	}
+	View
+	{
+		SavedViews
+		{
+		}
+	}
+	PostprocessingParameters
+	{
+		ActiveTime	0;
+		ActiveField	Solid;
+	}
+	GeometryParameters
+	{
+		GasJetSmaller
+		{
+			color	(112 128 144);
+			transparency	0.0;
+			Model
+			{
+				hide	false;
+			}
+			Slice
+			{
+				hide	true;
+			}
+		}
+	}
+	postprocessingPlots
+	{
+	}
+	SectionViewParameters
+	{
+		point	(0 0 0);
+		normal	(0 0 1);
+		type	FullCell;
+		isEnabled	false;
+	}
+	SlicesParameters
+	{
+		POST
+		{
+		}
+		MODEL
+		{
+		}
+	}
+}
+regionProperties
+{
+	default
+	{
+		bafflesSplit	false;
+		cellZones
+		{
+		}
+	}
+}
+mesh
+{
+}
+meshing
+{
+	parallel	false;
+	processors	48;
+	meshingStages
+	{
+		Base	true;
+		Mesh	true;
+		Layers	true;
+	}
+}
+summary
+{
+}
