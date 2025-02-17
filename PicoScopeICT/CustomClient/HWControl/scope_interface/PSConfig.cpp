@@ -953,8 +953,7 @@ PICO_STATUS setTrigger(	UNIT * unit,
 		return status;
 	}
 
-	if ((status = ps3000aSetTriggerDelay(unit->handle, delay)) != PICO_OK)
-	{
+	if ((status = ps3000aSetTriggerDelay(unit->handle, delay)) != PICO_OK) {
 		printf("SetTrigger:ps3000aSetTriggerDelay ------ 0x%08lx \n", status);
 		return status;
 	}
