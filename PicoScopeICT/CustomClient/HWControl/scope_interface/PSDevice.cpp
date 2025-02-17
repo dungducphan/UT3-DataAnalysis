@@ -168,27 +168,23 @@ void PSDevice::CollectOneWaveform() {
         if(unit.channelSettings[i].enabled) {
             buffers[i * 2] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
             buffers[i * 2 + 1] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
-
             status = ps3000aSetDataBuffers(unit.handle, static_cast<PS3000A_CHANNEL>(i), buffers[i * 2], buffers[i * 2 + 1], sampleCount, 0, ratioMode);
-
             printf(status?"BlockDataHandler:ps3000aSetDataBuffers(channel %d) ------ 0x%08lx \n":"", i, status);
         }
     }
 
-    /* Find the maximum number of samples and the time interval (in nanoseconds) */
-    while (ps3000aGetTimebase(unit.handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, 0)) {
-        timebase++;
-    }
-    printf("\nTimebase: %lu  Sample interval: %ld ns \n", timebase, timeInterval);
+    // /* Find the maximum number of samples and the time interval (in nanoseconds) */
+    // while (ps3000aGetTimebase(unit.handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, 0)) {
+    //     timebase++;
+    // }
+    // printf("\nTimebase: %lu  Sample interval: %ld ns \n", timebase, timeInterval);
 
     /* Start the device collecting, then wait for completion*/
     g_ready = FALSE;
 
     do {
         retry = 0;
-
         status = ps3000aRunBlock(unit.handle, 0, sampleCount, timebase, oversample, &timeIndisposed, 0, callBackBlock, nullptr);
-
         if (status != PICO_OK) {
             if (status == PICO_POWER_SUPPLY_CONNECTED || status == PICO_POWER_SUPPLY_NOT_CONNECTED ||
                 status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {      // PicoScope 340XA/B/D/D MSO devices...+5 V PSU connected or removed
@@ -200,16 +196,12 @@ void PSDevice::CollectOneWaveform() {
                 }
         }
     } while (retry);
+    printf("Waiting for trigger...\n");
 
-    printf("Waiting for trigger...Press a key to abort\n");
-
-    while (!g_ready && !_kbhit()) {
-        Sleep(0);
-    }
+    while (!g_ready && !_kbhit()) Sleep(0);
 
 	if (g_ready) {
 		status = ps3000aGetValues(unit.handle, 0, reinterpret_cast<uint32_t *>(&sampleCount), 1, ratioMode, 0, nullptr);
-
 		if (status != PICO_OK) {
 			if (status == PICO_POWER_SUPPLY_CONNECTED || status == PICO_POWER_SUPPLY_NOT_CONNECTED || status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {
 				if (status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {

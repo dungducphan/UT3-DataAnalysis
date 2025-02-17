@@ -68,14 +68,14 @@ void PSControlView::Render() {
             //////////////////////////////////////////////////////////////////////////
             ImGui::SeparatorText("CHANNEL SETTINGS");
             if (ImGui::BeginTabBar("Channels")) {
-                if (ImGui::BeginTabItem("Channel 00")) {
+                if (ImGui::BeginTabItem("Channel A")) {
                     ImGui::Text("Note: Connected to PS300 Power Supply.");
                     ImGui::Dummy(ImVec2(0.0f, 30.0f));
                     ImGui::Dummy(ImVec2(0.0f, 30.0f));
-                    if (ImGui::Checkbox("Enable Channel 00", &channel_enabled[0])) isScopeStateChanged = true;
+                    if (ImGui::Checkbox("Enable Channel A", &channel_enabled[0])) isScopeStateChanged = true;
                     if (channel_enabled[0]) {
-                        if (ImGui::Combo("Channel 0 Coupling", &channel_0_coupling_current, channel_coupling, IM_ARRAYSIZE(channel_coupling))) isScopeStateChanged = true;
-                        if (ImGui::Combo("Channel 0 Vertical Range", &channel_0_range_current, channel_range, IM_ARRAYSIZE(channel_range))) isScopeStateChanged = true;
+                        if (ImGui::Combo("Channel A Coupling", &channel_0_coupling_current, channel_coupling, IM_ARRAYSIZE(channel_coupling))) isScopeStateChanged = true;
+                        if (ImGui::Combo("Channel A Vertical Range", &channel_0_range_current, channel_range, IM_ARRAYSIZE(channel_range))) isScopeStateChanged = true;
                         if (channel_0_coupling_current == 0) {
                             channel_0_AC_coupling = true;
                         } else {
@@ -84,14 +84,14 @@ void PSControlView::Render() {
                     }
                     ImGui::EndTabItem();
                 }
-                if (ImGui::BeginTabItem("Channel 01")) {
+                if (ImGui::BeginTabItem("Channel B")) {
                     ImGui::Text("Note: Connected to ICT. Tee-off with 50 Ohm terminator.");
                     ImGui::Dummy(ImVec2(0.0f, 30.0f));
                     ImGui::Dummy(ImVec2(0.0f, 30.0f));
-                    if (ImGui::Checkbox("Enable Channel 01", &channel_enabled[1])) isScopeStateChanged = true;
+                    if (ImGui::Checkbox("Enable Channel B", &channel_enabled[1])) isScopeStateChanged = true;
                     if (channel_enabled[1]) {
-                        if (ImGui::Combo("Channel 0 Coupling", &channel_1_coupling_current, channel_coupling, IM_ARRAYSIZE(channel_coupling))) isScopeStateChanged = true;
-                        if (ImGui::Combo("Channel 0 Vertical Range", &channel_1_range_current, channel_range, IM_ARRAYSIZE(channel_range))) isScopeStateChanged = true;
+                        if (ImGui::Combo("Channel B Coupling", &channel_1_coupling_current, channel_coupling, IM_ARRAYSIZE(channel_coupling))) isScopeStateChanged = true;
+                        if (ImGui::Combo("Channel B Vertical Range", &channel_1_range_current, channel_range, IM_ARRAYSIZE(channel_range))) isScopeStateChanged = true;
                         if (channel_1_coupling_current == 0) {
                             channel_1_AC_coupling = true;
                         } else {

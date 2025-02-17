@@ -17,6 +17,6 @@ private:
     const char* timebase_unit[4] = {"ns", "us", "ms", "s"};
     const char* channel_range[10] = {"20mV", "50mV", "100mV", "200mV", "500mV", "1V", "2V", "5V", "10V", "20V"};
     const char* channel_coupling[2] = {"AC", "DC"};
-    const char* trigger_sources[3] = {"Channel 0", "Channel 1", "External"};
+    const char* trigger_sources[3] = {"Channel A", "Channel B", "External"};
     const char* trigger_directions[2] = {"Rising Edge", "Falling Edge"};
 };
