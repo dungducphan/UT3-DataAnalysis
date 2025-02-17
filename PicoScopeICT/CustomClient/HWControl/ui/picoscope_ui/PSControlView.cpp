@@ -15,28 +15,30 @@ void PSControlView::Render() {
     ImGui::Begin("CONTROL PANEL");
         ImGui::SeparatorText("CONNECTION STATUS");
 
-        // Update button text based on connection status
-        bool isConnected = ps_device->IsDeviceOpen();
+        static bool isConnected = ps_device->IsDeviceOpen();
+        static int timebase_numeric_current = 0;
+        static int timebase_unit_current = 0;
+        static int channel_0_range_current = 5;
+        static int channel_0_coupling_current = 1;
+        static int channel_1_range_current = 5;
+        static int channel_1_coupling_current = 1;
+        static int trigger_source_current = 0;
+        static float trigger_threshold = 0.0f;
+        static int trigger_direction_current = 0;
+        static float pre_trigger = 0.0f;
 
         if (ImGui::Button(isConnected ? "DISCONNECT" : "CONNECT", ImVec2(250, 50))) {
             isConnected ? ps_device->CloseDevice() : ps_device->OpenDevice();
+            isConnected = ps_device->IsDeviceOpen();
         }
         ImGui::Dummy(ImVec2(0.0f, 30.0f));
 
         if (isConnected) {
             ImGui::SeparatorText("TIMEBASE SETTINGS");
-
-            static int timebase_numeric_current = 0;
-            static int timebase_unit_current = 0;
             ImGui::Combo("Timebase Numerical Value", &timebase_numeric_current, timebase_numeric, IM_ARRAYSIZE(timebase_numeric));
             ImGui::Combo("Timebase Unit", &timebase_unit_current, timebase_unit, IM_ARRAYSIZE(timebase_unit));
             ImGui::Text("Timebase: %s %s / div", timebase_numeric[timebase_numeric_current], timebase_unit[timebase_unit_current]);
             ImGui::Dummy(ImVec2(0.0f, 30.0f));
-
-            static int channel_0_range_current = 5;
-            static int channel_0_coupling_current = 1;
-            static int channel_1_range_current = 5;
-            static int channel_1_coupling_current = 1;
             ImGui::SeparatorText("CHANNEL SETTINGS");
             if (ImGui::BeginTabBar("Channels")) {
                 if (ImGui::BeginTabItem("Channel 00")) {
@@ -75,16 +77,18 @@ void PSControlView::Render() {
             ImGui::Dummy(ImVec2(0.0f, 30.0f));
 
             ImGui::SeparatorText("TRIGGER SETTINGS");
-            static int trigger_source_current = 0;
-            static float trigger_threshold = 0.0f;
-            static int trigger_direction_current = 0;
-            static float pre_trigger = 0.0f;
-
             ImGui::Combo("Trigger Source", &trigger_source_current, trigger_sources, IM_ARRAYSIZE(trigger_sources));
             ImGui::InputFloat("Trigger Threshold (mV)", &trigger_threshold);
             ImGui::Combo("Trigger Direction", &trigger_direction_current, trigger_directions, IM_ARRAYSIZE(trigger_directions));
             ImGui::SliderFloat("Pre-Trigger (%)", &pre_trigger, 0.0f, 100.0f, "%.0f%%", ImGuiSliderFlags_AlwaysClamp);
             ImGui::Dummy(ImVec2(0.0f, 30.0f));
-        }
-    ImGui::End();
+
+            // ps_device->SetTimebase(timebase_numeric_current, timebase_unit_current);
+            // int chID = 0;
+            // ps_device->SetChannel(chID, channel_enabled[0], channel_0_AC_coupling, channel_0_range, channel_0_offset);
+            // chID = 1;
+            // ps_device->SetChannel(chID, channel_enabled[1], channel_1_AC_coupling, channel_1_range, channel_1_offset);
+            // ps_device->SetTrigger(trigger_source_current, trigger_threshold, trigger_direction_current, pre_trigger);
+        } // end if (isConnected)
+    ImGui::End(); // CONTROL PANEL
 }
