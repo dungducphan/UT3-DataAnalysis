@@ -10,7 +10,23 @@ PSControlView::PSControlView(PSDevice* pdDev) : ps_device(pdDev) {}
 
 void PSControlView::Render() {
     ImGui::Begin("WAVEFORM VIEWER");
+        if (ImPlot::BeginPlot("PicoScope Waveform Viewer")) {
+            // Set multiple y-axes
+            ImPlot::SetupAxes("Time (ns)","Va (mV)",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
+            ImPlot::SetupAxis(ImAxis_Y2, "Vb (mV)", ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Opposite);
 
+            // Plot data channel A
+            ImPlot::SetAxes(ImAxis_X1, ImAxis_Y1);
+            ImPlot::PlotLine("A", ps_device->currentTimeArray, ps_device->currentWaveformChannelA, BUFFER_SIZE);
+
+            // Plot data channel B
+            ImPlot::SetAxes(ImAxis_X1, ImAxis_Y2);
+
+            ImPlot::PlotLine("B", ps_device->currentTimeArray, ps_device->currentWaveformChannelB, BUFFER_SIZE);
+
+            // End plot
+            ImPlot::EndPlot();
+        }
     ImGui::End();
 
     ImGui::Begin("CONTROL PANEL");

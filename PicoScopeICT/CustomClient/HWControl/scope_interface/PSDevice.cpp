@@ -107,7 +107,7 @@ void PSDevice::SetTrigger(int &triggerSource, float &triggerThreshold, int &trig
                             PS3000A_NONE};
         }
     } else {
-        triggerVoltage =16000;
+        triggerVoltage = 16000;
         sourceDetails = {	triggerVoltage,
                             256 * 10,
                             triggerVoltage,
@@ -169,15 +169,14 @@ void PSDevice::CollectOneWaveform() {
             buffers[i * 2] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
             buffers[i * 2 + 1] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
             status = ps3000aSetDataBuffers(unit.handle, static_cast<PS3000A_CHANNEL>(i), buffers[i * 2], buffers[i * 2 + 1], sampleCount, 0, ratioMode);
-            printf(status?"BlockDataHandler:ps3000aSetDataBuffers(channel %d) ------ 0x%08lx \n":"", i, status);
+            // printf(status?"BlockDataHandler:ps3000aSetDataBuffers(channel %d) ------ 0x%08lx \n":"", i, status);
         }
     }
 
-    // /* Find the maximum number of samples and the time interval (in nanoseconds) */
-    // while (ps3000aGetTimebase(unit.handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, 0)) {
-    //     timebase++;
-    // }
-    // printf("\nTimebase: %lu  Sample interval: %ld ns \n", timebase, timeInterval);
+    /* Find the maximum number of samples and the time interval (in nanoseconds) */
+    while (ps3000aGetTimebase(unit.handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, 0)) {
+        timebase++;
+    }
 
     /* Start the device collecting, then wait for completion*/
     g_ready = FALSE;
@@ -196,7 +195,7 @@ void PSDevice::CollectOneWaveform() {
                 }
         }
     } while (retry);
-    printf("Waiting for trigger...\n");
+    // printf("Waiting for trigger...\n");
 
     while (!g_ready && !_kbhit()) Sleep(0);
 
@@ -213,32 +212,29 @@ void PSDevice::CollectOneWaveform() {
 				printf("BlockDataHandler:ps3000aGetValues ------ 0x%08lx \n", status);
 			}
 		} else {
-			printf("Channels are in %s\n\n", ( scaleVoltages ) ? ("mV") : ("ADC Counts"));
-
-			for (j = 0; j < unit.channelCount; j++) {
-				if (unit.channelSettings[j].enabled) printf("Channel %c:    ", 'A' + j);
-			}
-			printf("\n");
-
+		    // Actual readout code
+		    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			for (j = 0; j < unit.channelCount; j++) {
 				if (unit.channelSettings[j].enabled) {
-					printf("  %d     ", scaleVoltages ?
-						adc_to_mv(buffers[j * 2][i], unit.channelSettings[PS3000A_CHANNEL_A + j].range, &unit)	// If scaleVoltages, print mV value
-						: buffers[j * 2][i]);																	// else print ADC Count
+				    for (i = 0; i < BUFFER_SIZE; i++) {
+				        currentTimeArray[i] = i * timeInterval;
+				        if (j == 0) {
+				            currentWaveformChannelA[i] = adc_to_mv(buffers[j * 2][i], unit.channelSettings[PS3000A_CHANNEL_A + j].range, &unit);
+				        } else {
+				            currentWaveformChannelB[i] = adc_to_mv(buffers[j * 2][i], unit.channelSettings[PS3000A_CHANNEL_A + j].range, &unit);
+				        }
+                    }
 				}
 			}
-			printf("\n");
-
 		    sampleCount = min(sampleCount, BUFFER_SIZE);
-		    std::cout << "Starting data capture for " << sampleCount << " samples..." << std::endl;
+		    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 	} else {
 		printf("\nData collection aborted.\n");
 		_getch();
 	}
 
-    if ((status = ps3000aStop(unit.handle)) != PICO_OK)
-        printf("BlockDataHandler:ps3000aStop ------ 0x%08lx \n", status);
+    if ((status = ps3000aStop(unit.handle)) != PICO_OK) printf("BlockDataHandler:ps3000aStop ------ 0x%08lx \n", status);
 
     for (i = 0; i < unit.channelCount; i++) {
         if (unit.channelSettings[i].enabled) {
@@ -248,8 +244,6 @@ void PSDevice::CollectOneWaveform() {
     }
 
     clearDataBuffers(&unit);
-
-    std::cout << "Data capture complete." << std::endl;
 }
 
 
