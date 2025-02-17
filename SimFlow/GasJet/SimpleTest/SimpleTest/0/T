@@ -20,10 +20,8 @@ boundaryField
 	}
 	GasJetSmaller_out
 	{
-		type	totalTemperature;
-		T0	uniform 300;
-		gamma	1.668;
-		psi	thermo:psi;
+		type	inletOutlet;
+		inletValue	uniform 300;
 	}
 	GasJetSmaller_dyn_wall
 	{

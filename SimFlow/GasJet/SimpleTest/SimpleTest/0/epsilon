@@ -19,9 +19,7 @@ boundaryField
 	}
 	GasJetSmaller_out
 	{
-		type	turbulentMixingLengthDissipationRateInlet;
-		value	uniform 1;
-		mixingLength	0.001;
+		type	zeroGradient;
 	}
 	GasJetSmaller_dyn_wall
 	{

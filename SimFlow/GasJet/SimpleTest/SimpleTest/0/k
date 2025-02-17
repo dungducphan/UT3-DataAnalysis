@@ -19,9 +19,7 @@ boundaryField
 	}
 	GasJetSmaller_out
 	{
-		type	turbulentIntensityKineticEnergyInlet;
-		value	uniform 0.009999999776482582;
-		intensity	0.05;
+		type	zeroGradient;
 	}
 	GasJetSmaller_dyn_wall
 	{

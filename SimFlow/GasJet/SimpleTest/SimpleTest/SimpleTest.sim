@@ -33,9 +33,8 @@ fieldInputs
 				}
 				GasJetSmaller_out
 				{
-					type	totalPressure;
-					p0	"uniform 100000";
-					gamma	1.668;
+					type	fixedValue;
+					value	"uniform 100000";
 				}
 				GasJetSmaller_dyn_wall
 				{
@@ -86,10 +85,8 @@ fieldInputs
 				}
 				GasJetSmaller_out
 				{
-					type	totalTemperature;
-					T0	"uniform 300";
-					gamma	1.668;
-					psi	thermo:psi;
+					type	inletOutlet;
+					inletValue	"uniform 300";
 				}
 				GasJetSmaller_dyn_wall
 				{
@@ -113,8 +110,7 @@ fieldInputs
 				}
 				GasJetSmaller_out
 				{
-					type	turbulentIntensityKineticEnergyInlet;
-					intensity	0.05;
+					type	zeroGradient;
 				}
 				GasJetSmaller_dyn_wall
 				{
@@ -138,8 +134,7 @@ fieldInputs
 				}
 				GasJetSmaller_out
 				{
-					type	turbulentMixingLengthDissipationRateInlet;
-					mixingLength	1e-03;
+					type	zeroGradient;
 				}
 				GasJetSmaller_dyn_wall
 				{
