@@ -1,0 +1,202 @@
+FoamFile
+{
+	version	2.0;
+	class	dictionary;
+	format	ascii;
+	location	"system";
+	object	snappyHexMeshDict;
+}
+castellatedMesh	true;
+snap	true;
+addLayers	true;
+geometry
+{
+	GasJetSmaller.stl
+	{
+		type	triSurfaceMesh;
+		simflowType	brep;
+		topoType	solid;
+		name	GasJetSmaller;
+		faceGroups
+		{
+			face_4
+			{
+				name	GasJetSmaller_in;
+			}
+			face_5
+			{
+				name	GasJetSmaller_out;
+			}
+			face_6
+			{
+				name	GasJetSmaller_out;
+			}
+			face_7
+			{
+				name	GasJetSmaller_out;
+			}
+			face_1
+			{
+				name	GasJetSmaller_dyn_wall;
+			}
+			face_2
+			{
+				name	GasJetSmaller_dyn_wall;
+			}
+			face_3
+			{
+				name	GasJetSmaller_dyn_wall;
+			}
+			face_8
+			{
+				name	GasJetSmaller_nil_wall;
+			}
+			face_9
+			{
+				name	GasJetSmaller_nil_wall;
+			}
+			face_10
+			{
+				name	GasJetSmaller_nil_wall;
+			}
+		}
+	}
+}
+castellatedMeshControls
+{
+	locationInMesh	(0.001 0 0);
+	refinementSurfaces
+	{
+		GasJetSmaller
+		{
+			level	( 1 3 );
+			patchInfo
+			{
+				type	wall;
+			}
+		}
+	}
+	refinementRegions
+	{
+		GasJetSmaller
+		{
+			mode	inside;
+			levels	((1.0E30 3));
+		}
+	}
+	limitRegions
+	{
+	}
+	features	
+	(
+	{
+		file	"GasJetSmaller.eMesh";
+		levels	((0 0));
+	}
+	);
+	maxLocalCells	1000000;
+	maxGlobalCells	10000000;
+	nCellsBetweenLevels	4;
+	maxLoadUnbalance	0.1;
+	minRefinementCells	10;
+	resolveFeatureAngle	30.0;
+	allowFreeStandingZoneFaces	true;
+}
+snapControls
+{
+	tolerance	1.0;
+	nSmoothPatch	3;
+	nSolveIter	500;
+	nRelaxIter	5;
+	nFeatureSnapIter	10;
+	implicitFeatureSnap	false;
+	explicitFeatureSnap	true;
+	multiRegionFeatureSnap	true;
+	nFaceSplitInterval	5;
+}
+addLayersControls
+{
+	layers
+	{
+		GasJetSmaller_face_1
+		{
+			nSurfaceLayers	5;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJetSmaller_face_2
+		{
+			nSurfaceLayers	5;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJetSmaller_face_3
+		{
+			nSurfaceLayers	5;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJetSmaller_face_8
+		{
+			nSurfaceLayers	5;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJetSmaller_face_9
+		{
+			nSurfaceLayers	5;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+		GasJetSmaller_face_10
+		{
+			nSurfaceLayers	5;
+			expansionRatio	1.25;
+			firstLayerThickness	0.2;
+		}
+	}
+	relativeSizes	true;
+	minThickness	0.1;
+	firstLayerThickness	0.2;
+	expansionRatio	1.25;
+	nGrow	0;
+	featureAngle	180.0;
+	maxFaceThicknessRatio	0.5;
+	nSmoothSurfaceNormals	5;
+	nSmoothThickness	10;
+	minMedialAxisAngle	90.0;
+	maxThicknessToMedialRatio	0.5;
+	nMedialAxisIter	100;
+	nSmoothNormals	3;
+	slipFeatureAngle	30.0;
+	nRelaxIter	5;
+	nBufferCellsNoExtrude	0;
+	nLayerIter	50;
+	nRelaxedIter	20;
+	detectExtrusionIsland	true;
+	nOuterIter	1;
+}
+meshQualityControls
+{
+	maxNonOrtho	65.0;
+	maxBoundarySkewness	20.0;
+	maxInternalSkewness	4.0;
+	maxConcave	80.0;
+	minVol	1.0E-14;
+	minTetQuality	1.0E-20;
+	minArea	-1.0;
+	minTwist	0.02;
+	minTriangleTwist	-1.0;
+	minDeterminant	0.01;
+	minFaceWeight	0.05;
+	minVolRatio	0.01;
+	minVolCollapseRatio	0.1;
+	nSmoothScale	4;
+	errorReduction	0.75;
+	relaxed
+	{
+		maxNonOrtho	75.0;
+	}
+}
+mergeTolerance	1.0E-6;
+debug	0;

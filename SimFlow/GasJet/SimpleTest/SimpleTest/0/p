@@ -1,0 +1,34 @@
+FoamFile
+{
+	version	2.0;
+	format	binary;
+	class	volScalarField;
+	location	"0";
+	object	p;
+	arch	"LSB;label=32;scalar=64";
+}
+dimensions	[1 -1 -2 0 0 0 0];
+internalField	uniform 100000;
+boundaryField
+{
+	GasJetSmaller_in
+	{
+		type	totalPressure;
+		p0	uniform 100000;
+		gamma	1.668;
+	}
+	GasJetSmaller_out
+	{
+		type	totalPressure;
+		p0	uniform 100000;
+		gamma	1.668;
+	}
+	GasJetSmaller_dyn_wall
+	{
+		type	zeroGradient;
+	}
+	GasJetSmaller_nil_wall
+	{
+		type	zeroGradient;
+	}
+}

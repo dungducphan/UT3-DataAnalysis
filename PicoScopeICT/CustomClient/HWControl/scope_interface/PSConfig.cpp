@@ -63,7 +63,7 @@ int32_t _kbhit() {
 int32_t fopen_s(FILE ** a, const char * b, const char * c) {
     FILE * fp = fopen(b,c);
     *a = fp;
-    return (fp>0)?0:-1;
+    return fp != nullptr ? 0 : -1;
 }
 
 #endif
@@ -1253,16 +1253,14 @@ void collectRapidBlock(UNIT * unit) {
 	}
 	while(retry);
 
-	//Wait until data ready
-	g_ready = 0;
+	// Wait until data ready
+	g_ready = FALSE;
 
-	while(!g_ready && !_kbhit())
-	{
+	while(!g_ready && !_kbhit()) {
 		Sleep(0);
 	}
 
-	if (!g_ready)
-	{
+	if (!g_ready) {
 		_getch();
 		status = ps3000aStop(unit->handle);
 		status = ps3000aGetNoOfCaptures(unit->handle, &nCompletedCaptures);
@@ -1270,8 +1268,7 @@ void collectRapidBlock(UNIT * unit) {
 		printf("\nPress any key...\n\n");
 		_getch();
 
-		if(nCompletedCaptures == 0)
-		{
+		if(nCompletedCaptures == 0) {
 			return;
 		}
 

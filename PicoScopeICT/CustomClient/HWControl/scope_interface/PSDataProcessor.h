@@ -46,5 +46,5 @@ private:
     static TGraph* WaveformToTGraph(const Waveform_t& wf);
     static void BackgroundSubtraction(TGraph* gr);
     static double IntegrateTGraph(TGraph* gr);
-    static std::vector<std::string> PSDataProcessor::GetCSVFiles(const std::string& directoryPath);
+    static std::vector<std::string> GetCSVFiles(const std::string& directoryPath);
 };
