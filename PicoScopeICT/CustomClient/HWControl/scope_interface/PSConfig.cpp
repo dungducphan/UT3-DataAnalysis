@@ -2,6 +2,26 @@
 
 #include "PSConfig.h"
 
+int32_t     cycles = 0;
+uint32_t	timebase = 8;
+int16_t     oversample = 1;
+BOOL		scaleVoltages = TRUE;
+
+uint16_t inputRanges [PS3000A_MAX_RANGES] = {10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000};
+
+BOOL     	g_ready = FALSE;
+int32_t 	g_times [PS3000A_MAX_CHANNELS] = {0, 0, 0, 0};
+int16_t     g_timeUnit;
+int32_t     g_sampleCount;
+uint32_t	g_startIndex;
+int16_t		g_autoStopped;
+int16_t		g_trig = 0;
+uint32_t	g_trigAt = 0;
+
+char BlockFile[20]		= "block.txt";
+char DigiBlockFile[20]	= "digiBlock.txt";
+char StreamFile[20]		= "stream.txt";
+
 #ifdef WIN32
 
 #else
@@ -1370,7 +1390,7 @@ void collectRapidBlock(UNIT * unit) {
 /****************************************************************************
 * Initialise unit structure with Variant specific defaults
 ****************************************************************************/
-void get_info(UNIT * unit)
+void get_info(UNIT* unit)
 {
 	char description [11][25]= { "Driver Version",
 		"USB Version",
@@ -1565,10 +1585,9 @@ void setTimebase(UNIT unit)
 *	or 16384 samples long (PicoScope 3x06B),
 *   or 32768 samples long (PicoScope 3207B, 3X0X D & D MSO devices)
 ******************************************************************************/
-void setSignalGenerator(UNIT unit)
-{
+void setSignalGenerator(UNIT unit) {
 	char ch;
-	char fileName [128];
+	char fileName[128];
 
 	int16_t waveform;
 	int16_t choice;
@@ -1586,19 +1605,16 @@ void setSignalGenerator(UNIT unit)
 	PICO_STATUS status;
 
 
-	while (_kbhit())			// use up keypress
-	{
+	while (_kbhit()) {			// use up keypress
 		_getch();
 	}
 
-	do
-	{
+	do {
 		printf("\nSignal Generator\n================\n");
 		printf("0 - SINE         1 - SQUARE\n");
 		printf("2 - TRIANGLE     3 - DC VOLTAGE\n");
 
-		if(unit.sigGen == SIGGEN_AWG)
-		{
+		if (unit.sigGen == SIGGEN_AWG) {
 			printf("4 - RAMP UP      5 - RAMP DOWN\n");
 			printf("6 - SINC         7 - GAUSSIAN\n");
 			printf("8 - HALF SINE    A - AWG WAVEFORM\n");
@@ -1608,29 +1624,21 @@ void setSignalGenerator(UNIT unit)
 
 		ch = _getch();
 
-		if (ch >= '0' && ch <='9')
-		{
+		if (ch >= '0' && ch <='9') {
 			choice = ch -'0';
-		}
-		else
-		{
+		} else {
 			ch = toupper(ch);
 		}
-	}
-	while(unit.sigGen == SIGGEN_FUNCTGEN && ch != 'F' && (ch < '0' || ch > '3') ||
+	} while(unit.sigGen == SIGGEN_FUNCTGEN && ch != 'F' && (ch < '0' || ch > '3') ||
 			unit.sigGen == SIGGEN_AWG && ch != 'A' && ch != 'F' && (ch < '0' || ch > '8')  );
 
-	if (ch == 'F')	// If we're going to turn off siggen
-	{
+	if (ch == 'F') {	// If we're going to turn off siggen
 		printf("Signal generator Off\n");
 		waveform = 8;		// DC Voltage
 		pkpk = 0;			// 0 V
 		waveformSize = 0;
-	}
-	else
-	{
-		if (ch == 'A' && unit.sigGen == SIGGEN_AWG)		// Set the AWG
-		{
+	} else {
+		if (ch == 'A' && unit.sigGen == SIGGEN_AWG)	{	// Set the AWG
 			arbitraryWaveform = (int16_t*) malloc( unit.AWGFileSize * sizeof(int16_t));
 			memset(arbitraryWaveform, 0, unit.AWGFileSize * sizeof(int16_t));
 
@@ -1639,25 +1647,19 @@ void setSignalGenerator(UNIT unit)
 			printf("Select a waveform file to load: ");
 			scanf_s("%s", fileName, 128);
 
-			if (fopen_s(&fp, fileName, "r") == 0)
-			{
+			if (fopen_s(&fp, fileName, "r") == 0) {
 				// Having opened file, read in data - one number per line (max 8192 lines for
 				// PicoScope 3X04B & 3X05B devices, 16384 for PicoScope 3X06B devices, 32768 for PicoScope 3207B,
 				// 3X0XD and 3X0XD MSO devices), with values in the range -32768..+32767
-				while (EOF != fscanf_s(fp, "%hi", (arbitraryWaveform + waveformSize))&& waveformSize++ < unit.AWGFileSize - 1);
+				while (EOF != fscanf_s(fp, "%hi", (arbitraryWaveform + waveformSize))&& waveformSize++ < unit.AWGFileSize - 1) {}
 				fclose(fp);
 				printf("File successfully loaded\n");
-			}
-			else
-			{
+			} else {
 				printf("Invalid filename\n");
 				return;
 			}
-		}
-		else			// Set one of the built-in waveforms
-		{
-			switch (choice)
-			{
+		} else {			// Set one of the built-in waveforms
+			switch (choice) {
 				case 0:
 					waveform = PS3000A_SINE;
 					break;
@@ -1672,8 +1674,7 @@ void setSignalGenerator(UNIT unit)
 
 				case 3:
 					waveform = PS3000A_DC_VOLTAGE;
-					do
-					{
+					do {
 						printf("\nEnter offset in uV: (0 to 2000000)\n"); // Ask user to enter DC offset level;
 						scanf_s("%lu", &offset);
 					} while (offset < 0 || offset > 2000000);
@@ -1705,17 +1706,14 @@ void setSignalGenerator(UNIT unit)
 			}
 		}
 
-		if(waveform < 8 || (ch == 'A' && unit.sigGen == SIGGEN_AWG))	// Find out frequency if required
-		{
-			do
-			{
+		if (waveform < 8 || (ch == 'A' && unit.sigGen == SIGGEN_AWG)) {	// Find out frequency if required
+			do {
 				printf("\nEnter frequency in Hz: (1 to 1000000)\n");	// Ask user to enter signal frequency;
 				scanf_s("%lf", &frequency);
 			} while (frequency <= 0 || frequency > 1000000);
 		}
 
-		if (waveformSize > 0)
-		{
+		if (waveformSize > 0) {
 			ps3000aSigGenFrequencyToPhase(unit.handle, frequency, PS3000A_SINGLE, waveformSize, &delta);
 
 			status = ps3000aSetSigGenArbitrary(	unit.handle,
@@ -1738,9 +1736,7 @@ void setSignalGenerator(UNIT unit)
 
 			// If status != PICO_OK, show the error
 			printf(status? "\nps3000aSetSigGenArbitrary: Status Error 0x%x \n":"", (uint32_t) status);
-		}
-		else
-		{
+		} else {
 			status = ps3000aSetSigGenBuiltInV2(unit.handle,
 				offset,
 				pkpk,
@@ -1763,14 +1759,12 @@ void setSignalGenerator(UNIT unit)
 	}
 }
 
-
 /****************************************************************************
 * collectStreamingImmediate
 *  this function demonstrates how to collect a stream of data
 *  from the unit (start collecting immediately)
 ***************************************************************************/
-void collectStreamingImmediate(UNIT * unit)
-{
+void collectStreamingImmediate(UNIT * unit) {
 	struct tPwq pulseWidth;
 	struct tTriggerDirections directions;
 
@@ -1849,30 +1843,20 @@ void collectStreamingTriggered(UNIT * unit)
 *
 * Returns       none
 ***************************************************************************/
-void displaySettings(UNIT *unit)
-{
-	int32_t ch;
-	int32_t voltage;
-
+void displaySettings(UNIT *unit) {
 	printf("\n\nReadings will be scaled in (%s)\n\n", (scaleVoltages)? ("mV") : ("ADC counts"));
 
-	for (ch = 0; ch < unit->channelCount; ch++)
-	{
-		if (!(unit->channelSettings[ch].enabled))
-		{
+	int32_t voltage;
+	for (int32_t ch = 0; ch < unit->channelCount; ch++) {
+		if (!(unit->channelSettings[ch].enabled)) {
 			printf("Channel %c Voltage Range = Off\n", 'A' + ch);
-		}
-		else
-		{
+		} else {
 			voltage = inputRanges[unit->channelSettings[ch].range];
 			printf("Channel %c Voltage Range = ", 'A' + ch);
 
-			if (voltage < 1000)
-			{
+			if (voltage < 1000) {
 				printf("%dmV\n", voltage);
-			}
-			else
-			{
+			} else {
 				printf("%dV\n", voltage / 1000);
 			}
 		}
@@ -1881,9 +1865,7 @@ void displaySettings(UNIT *unit)
 	printf("\n");
 
 	if(unit->digitalPorts > 0)
-	{
 		printf("Digital ports switched off.");
-	}
 
 	printf("\n");
 }
@@ -1896,27 +1878,24 @@ void displaySettings(UNIT *unit)
 * Returns
 * - PICO_STATUS to indicate success, or if an error occurred
 ***************************************************************************/
-PICO_STATUS openDevice(UNIT *unit)
-{
+PICO_STATUS openDevice(UNIT *unit) {
 	int16_t value = 0;
-	int32_t i;
-	struct tPwq pulseWidth;
-	struct tTriggerDirections directions;
+	struct tPwq pulseWidth{};
+	struct tTriggerDirections directions{};
 
 	PICO_STATUS status = ps3000aOpenUnit(&(unit->handle), nullptr);
 
-	if (status == PICO_POWER_SUPPLY_NOT_CONNECTED || status == PICO_USB3_0_DEVICE_NON_USB3_0_PORT )
-	{
+	// Check if the device is powered sufficiently and connected to a USB 3.0 port
+	if (status == PICO_POWER_SUPPLY_NOT_CONNECTED || status == PICO_USB3_0_DEVICE_NON_USB3_0_PORT ) {
 		status = changePowerSource(unit->handle, status);
 	}
 
 	printf("\nHandle: %d\n", unit->handle);
 
-	if (status != PICO_OK)
-	{
+	if (status != PICO_OK) {
 		printf("Unable to open device\n");
 		printf("Error code : 0x%08lx\n", status);
-		while(!_kbhit());
+		while(!_kbhit()) {}
 		exit(99); // exit program
 	}
 
@@ -1926,16 +1905,18 @@ PICO_STATUS openDevice(UNIT *unit)
 	get_info(unit);
 	timebase = 1;
 
+	// Get and set maximum allowed sample value
 	ps3000aMaximumValue(unit->handle, &value);
 	unit->maxValue = value;
 
-	for ( i = 0; i < unit->channelCount; i++)
-	{
-		unit->channelSettings[i].enabled = TRUE;
-		unit->channelSettings[i].DCcoupled = TRUE;
-		unit->channelSettings[i].range = PS3000A_5V;
+	// Set up channels
+	for (int32_t i = 0; i < unit->channelCount; i++) {
+		unit->channelSettings[i].enabled = TRUE;     // Enable
+		unit->channelSettings[i].DCcoupled = TRUE;   // DC Coupled
+		unit->channelSettings[i].range = PS3000A_5V; // Range = 5V
 	}
 
+	// Set up structs for triggering
 	memset(&directions, 0, sizeof(struct tTriggerDirections));
 	memset(&pulseWidth, 0, sizeof(struct tPwq));
 
@@ -1946,7 +1927,6 @@ PICO_STATUS openDevice(UNIT *unit)
 
 	return status;
 }
-
 
 /****************************************************************************
 * closeDevice

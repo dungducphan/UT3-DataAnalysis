@@ -25,7 +25,7 @@ void PSPostProcessingView::Render() {
 }
 
 void PSPostProcessingView::RenderDatasetView() {
-    ImGui::SeparatorText("ADD DATASET");
+    ImGui::SeparatorText("ADD SAVED DATASET");
 
     static std::string selectedFolderPath;
     static char path[128] = "";
@@ -52,6 +52,20 @@ void PSPostProcessingView::RenderDatasetView() {
         ps_data_processor->AddDataset(path);
     }
 
+    ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+
+    ImGui::SeparatorText("LIVE DATASET");
+    if (ImGui::Button("START ACQUISITION", ImVec2(250, 50))) {
+        // Start the acquisition
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("STOP ACQUISITION", ImVec2(250, 50))) {
+        // Stop the acquisition
+    }
+    ImGui::Dummy(ImVec2(0.0f, 20.0f));
+    ImGui::Text("Scan %i", 0);
+    ImGui::Text("Acquired %i waveforms.", 0);
 
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
 

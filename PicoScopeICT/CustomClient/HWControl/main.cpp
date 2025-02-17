@@ -1,8 +1,10 @@
 #include "PCH.h"
 
+// opengl backend
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+// imgui
 #include "imgui.h"
 #include "implot.h"
 #include "backends/imgui_impl_glfw.h"
@@ -10,14 +12,14 @@
 
 // scope
 #include "PSDataProcessor.h"
-#include "PSConfig.h"
+#include "PSDevice.h"
 
 // ui
 #include "ImGuiConfig.h"
 #include "PSPostProcessingView.h"
+#include "PSControlView.h"
 
 int main() {
-
     // Initialize GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -50,8 +52,11 @@ int main() {
     // Create ImPlot context
     ImPlot::CreateContext();
 
+    // Scope
     auto processor = new PSDataProcessor();
-    PSPostProcessingView view(processor);
+    PSPostProcessingView dataView(processor);
+    auto device = new PSDevice();
+    PSControlView controlView(device);
 
     // Frame Update Loop
     while (!glfwWindowShouldClose(window)) {
@@ -70,7 +75,8 @@ int main() {
 
         // Show the PicoScope Control View
         // Anything in Render() will be executed every frame
-        view.Render();
+        dataView.Render();
+        controlView.Render();
 
         // Rendering
         ImGui::Render();

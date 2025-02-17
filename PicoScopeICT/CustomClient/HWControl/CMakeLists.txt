@@ -64,10 +64,13 @@ else()
 endif()
 
 # Copy fonts
+
 if (WIN32)
     file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+    file(COPY "resources/icons/tau.ico"                    DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 else ()
     file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION ${CMAKE_BINARY_DIR}/bin)
+    file(COPY "resources/icons/tau.ico"                    DESTINATION ${CMAKE_BINARY_DIR}/bin)
 endif ()
 
 # ===================================================================
@@ -87,6 +90,7 @@ add_library(hw_interface STATIC
         # scope
         scope_interface/PSDataProcessor.cpp
         scope_interface/PSConfig.cpp
+        scope_interface/PSDevice.cpp
 )
 
 # Specify include directories for hw_interface
@@ -153,12 +157,17 @@ add_executable(HardwareControl
         ui/camera_ui/CameraControlView.h
         ui/picoscope_ui/PSPostProcessingView.cpp
         ui/picoscope_ui/PSPostProcessingView.h
+        ui/picoscope_ui/PSControlView.cpp
+        ui/picoscope_ui/PSControlView.h
 
         # Entrypoint
         main.cpp
 
         # PCH
         PCH.h
+
+        # resources
+        resources/app.rc
 )
 
 # Specify include directories
