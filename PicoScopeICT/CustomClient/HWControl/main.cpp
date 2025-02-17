@@ -54,8 +54,8 @@ int main() {
 
     // Scope
     auto processor = new PSDataProcessor();
-    PSPostProcessingView dataView(processor);
     auto device = new PSDevice();
+    PSPostProcessingView dataView(processor, device);
     PSControlView controlView(device);
 
     // Frame Update Loop

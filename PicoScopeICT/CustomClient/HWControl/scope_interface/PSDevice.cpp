@@ -107,7 +107,7 @@ void PSDevice::SetTrigger(int &triggerSource, float &triggerThreshold, int &trig
                             PS3000A_NONE};
         }
     } else {
-        triggerVoltage = mv_to_adc(1000, unit.channelSettings[PS3000A_EXTERNAL].range, &unit);
+        triggerVoltage =16000;
         sourceDetails = {	triggerVoltage,
                             256 * 10,
                             triggerVoltage,
@@ -141,4 +141,123 @@ void PSDevice::SetTrigger(int &triggerSource, float &triggerThreshold, int &trig
     memset(&pulseWidth, 0, sizeof(struct tPwq));
     setTrigger(&unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
 }
+
+void PSDevice::CollectOneWaveform() {
+    int16_t retry;
+    int16_t bit;
+
+    uint16_t bitValue;
+    uint16_t digiValue;
+
+    int16_t * buffers[PS3000A_MAX_CHANNEL_BUFFERS];
+    int16_t * digiBuffer[PS3000A_MAX_DIGITAL_PORTS];
+
+    int32_t i, j;
+    int32_t timeInterval;
+    int32_t sampleCount = BUFFER_SIZE;
+    int32_t maxSamples;
+    int32_t timeIndisposed;
+
+    FILE * fp = nullptr;
+    FILE * digiFp = nullptr;
+
+    PICO_STATUS status;
+    PS3000A_RATIO_MODE ratioMode = PS3000A_RATIO_MODE_NONE;
+
+    for (i = 0; i < unit.channelCount; i++) {
+        if(unit.channelSettings[i].enabled) {
+            buffers[i * 2] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
+            buffers[i * 2 + 1] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
+
+            status = ps3000aSetDataBuffers(unit.handle, static_cast<PS3000A_CHANNEL>(i), buffers[i * 2], buffers[i * 2 + 1], sampleCount, 0, ratioMode);
+
+            printf(status?"BlockDataHandler:ps3000aSetDataBuffers(channel %d) ------ 0x%08lx \n":"", i, status);
+        }
+    }
+
+    /* Find the maximum number of samples and the time interval (in nanoseconds) */
+    while (ps3000aGetTimebase(unit.handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, 0)) {
+        timebase++;
+    }
+    printf("\nTimebase: %lu  Sample interval: %ld ns \n", timebase, timeInterval);
+
+    /* Start the device collecting, then wait for completion*/
+    g_ready = FALSE;
+
+    do {
+        retry = 0;
+
+        status = ps3000aRunBlock(unit.handle, 0, sampleCount, timebase, oversample, &timeIndisposed, 0, callBackBlock, nullptr);
+
+        if (status != PICO_OK) {
+            if (status == PICO_POWER_SUPPLY_CONNECTED || status == PICO_POWER_SUPPLY_NOT_CONNECTED ||
+                status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {      // PicoScope 340XA/B/D/D MSO devices...+5 V PSU connected or removed
+                status = changePowerSource(unit.handle, status);
+                retry = 1;
+                } else {
+                    printf("BlockDataHandler:ps3000aRunBlock ------ 0x%08lx \n", status);
+                    return;
+                }
+        }
+    } while (retry);
+
+    printf("Waiting for trigger...Press a key to abort\n");
+
+    while (!g_ready && !_kbhit()) {
+        Sleep(0);
+    }
+
+	if (g_ready) {
+		status = ps3000aGetValues(unit.handle, 0, reinterpret_cast<uint32_t *>(&sampleCount), 1, ratioMode, 0, nullptr);
+
+		if (status != PICO_OK) {
+			if (status == PICO_POWER_SUPPLY_CONNECTED || status == PICO_POWER_SUPPLY_NOT_CONNECTED || status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {
+				if (status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {
+					changePowerSource(unit.handle, status);
+				} else {
+					printf("\nPower Source Changed. Data collection aborted.\n");
+				}
+			} else {
+				printf("BlockDataHandler:ps3000aGetValues ------ 0x%08lx \n", status);
+			}
+		} else {
+			printf("Channels are in %s\n\n", ( scaleVoltages ) ? ("mV") : ("ADC Counts"));
+
+			for (j = 0; j < unit.channelCount; j++) {
+				if (unit.channelSettings[j].enabled) printf("Channel %c:    ", 'A' + j);
+			}
+			printf("\n");
+
+			for (j = 0; j < unit.channelCount; j++) {
+				if (unit.channelSettings[j].enabled) {
+					printf("  %d     ", scaleVoltages ?
+						adc_to_mv(buffers[j * 2][i], unit.channelSettings[PS3000A_CHANNEL_A + j].range, &unit)	// If scaleVoltages, print mV value
+						: buffers[j * 2][i]);																	// else print ADC Count
+				}
+			}
+			printf("\n");
+
+		    sampleCount = min(sampleCount, BUFFER_SIZE);
+		    std::cout << "Starting data capture for " << sampleCount << " samples..." << std::endl;
+		}
+	} else {
+		printf("\nData collection aborted.\n");
+		_getch();
+	}
+
+    if ((status = ps3000aStop(unit.handle)) != PICO_OK)
+        printf("BlockDataHandler:ps3000aStop ------ 0x%08lx \n", status);
+
+    for (i = 0; i < unit.channelCount; i++) {
+        if (unit.channelSettings[i].enabled) {
+            free(buffers[i * 2]);
+            free(buffers[i * 2 + 1]);
+        }
+    }
+
+    clearDataBuffers(&unit);
+
+    std::cout << "Data capture complete." << std::endl;
+}
+
 

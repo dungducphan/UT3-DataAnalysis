@@ -15,6 +15,8 @@ public:
     void SetChannel(int& channelID, bool& isChannelEnabled, bool& isACCoupled, int& channelRange);
     void SetTrigger(int& triggerSource, float& triggerThreshold, int& triggerDirection, int& triggerDelay);
 
+    void CollectOneWaveform();
+
 private:
     PICO_STATUS status{};
     UNIT unit{};

@@ -10,6 +10,7 @@ PSControlView::PSControlView(PSDevice* pdDev) : ps_device(pdDev) {}
 
 void PSControlView::Render() {
     ImGui::Begin("WAVEFORM VIEWER");
+
     ImGui::End();
 
     ImGui::Begin("CONTROL PANEL");
@@ -36,7 +37,7 @@ void PSControlView::Render() {
 
         // Trigger settings
         static int   trigger_source_current = 2;
-        static float trigger_threshold = 1.5f;
+        static float trigger_threshold = 1500;
         static int   trigger_direction_current = 0;
         static int   triggerDelay = 0;
 

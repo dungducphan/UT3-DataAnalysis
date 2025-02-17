@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <variant>
+#include <thread>
 
 // Pre-compile the std library headers
 #include <cstdlib>

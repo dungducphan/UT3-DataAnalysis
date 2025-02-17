@@ -6,9 +6,10 @@
 
 #include "PSPostProcessingView.h"
 #include "PSDataProcessor.h"
+#include "PSDevice.h"
 
-PSPostProcessingView::PSPostProcessingView(PSDataProcessor* ps_data_processor)
-    : ps_data_processor(ps_data_processor), selectedDataset(-1) {}
+PSPostProcessingView::PSPostProcessingView(PSDataProcessor* ps_data_processor, PSDevice* device)
+    : ps_device(device), ps_data_processor(ps_data_processor), selectedDataset(-1) {}
 
 void PSPostProcessingView::Render() {
     ImGui::Begin("Dataset Configuration");
@@ -25,6 +26,8 @@ void PSPostProcessingView::Render() {
 }
 
 void PSPostProcessingView::RenderDatasetView() {
+    static int scanNumber = 0;
+
     ImGui::SeparatorText("ADD SAVED DATASET");
 
     static std::string selectedFolderPath;
@@ -56,16 +59,31 @@ void PSPostProcessingView::RenderDatasetView() {
 
 
     ImGui::SeparatorText("LIVE DATASET");
+    static int numberOfWaveforms = 10;
+    static int numberOfWaveformsCollectedInScan = 0;
+    if (!ps_device->IsDeviceOpen()) {
+        ImGui::Text("Device is not connected.");
+    }
+    if (ImGui::InputInt("Number of Waveforms", &numberOfWaveforms)) {
+        if (numberOfWaveforms < 1) numberOfWaveforms = 1;
+    }
     if (ImGui::Button("START ACQUISITION", ImVec2(250, 50))) {
-        // Start the acquisition
+        scanNumber++;
+        numberOfWaveformsCollectedInScan = 0;
+        if (ps_device->IsDeviceOpen()) {
+            acquisitionThread = std::thread([this]() {
+                for (int i = 0; i < numberOfWaveforms; i++) {
+                    ps_device->CollectOneWaveform();
+                    numberOfWaveformsCollectedInScan++;
+                }
+            });
+            acquisitionThread.detach();
+        }
     }
-    ImGui::SameLine();
-    if (ImGui::Button("STOP ACQUISITION", ImVec2(250, 50))) {
-        // Stop the acquisition
-    }
+
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
-    ImGui::Text("Scan %i", 0);
-    ImGui::Text("Acquired %i waveforms.", 0);
+    ImGui::Text("Scan %i", scanNumber);
+    ImGui::Text("Acquired %i waveforms.", numberOfWaveformsCollectedInScan);
 
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
