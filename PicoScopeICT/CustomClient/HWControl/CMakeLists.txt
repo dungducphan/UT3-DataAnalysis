@@ -63,8 +63,7 @@ else()
     link_directories("${picosdk_DIR}/lib")
 endif()
 
-# Copy fonts
-
+# Copy fonts and icons to binary directory
 if (WIN32)
     file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
     file(COPY "resources/icons/tau.ico"                    DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})

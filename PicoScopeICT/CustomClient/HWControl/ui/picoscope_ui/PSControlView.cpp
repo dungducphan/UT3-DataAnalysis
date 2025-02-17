@@ -17,6 +17,7 @@ void PSControlView::Render() {
 
         // Update button text based on connection status
         bool isConnected = ps_device->IsDeviceOpen();
+
         if (ImGui::Button(isConnected ? "DISCONNECT" : "CONNECT", ImVec2(250, 50))) {
             isConnected ? ps_device->CloseDevice() : ps_device->OpenDevice();
         }
@@ -32,17 +33,57 @@ void PSControlView::Render() {
             ImGui::Text("Timebase: %s %s / div", timebase_numeric[timebase_numeric_current], timebase_unit[timebase_unit_current]);
             ImGui::Dummy(ImVec2(0.0f, 30.0f));
 
+            static int channel_0_range_current = 5;
+            static int channel_0_coupling_current = 1;
+            static int channel_1_range_current = 5;
+            static int channel_1_coupling_current = 1;
             ImGui::SeparatorText("CHANNEL SETTINGS");
-            static bool channel_enabled[4] = {false, false, false, false};
-            for (int i = 0; i < 4; i++) {
-                ImGui::Checkbox(("Channel " + std::to_string(i)).c_str(), &channel_enabled[i]);
-                ImGui::SameLine();
+            if (ImGui::BeginTabBar("Channels")) {
+                if (ImGui::BeginTabItem("Channel 00")) {
+                    ImGui::Checkbox("Enable Channel 00", &channel_enabled[0]);
+                    if (channel_enabled[0]) {
+                        ImGui::Combo("Channel 0 Coupling", &channel_0_coupling_current, channel_coupling, IM_ARRAYSIZE(channel_coupling));
+                        ImGui::Combo("Channel 0 Vertical Range", &channel_0_range_current, channel_range, IM_ARRAYSIZE(channel_range));
+                        ImGui::InputFloat("Offset", &channel_0_offset);
+                        channel_0_range = std::stof(channel_range[channel_0_range_current]);
+                        if (channel_0_coupling_current == 0) {
+                            channel_0_AC_coupling = true;
+                        } else {
+                            channel_0_AC_coupling = false;
+                        }
+                    }
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Channel 01")) {
+                    ImGui::Checkbox("Enable Channel 01", &channel_enabled[1]);
+                    if (channel_enabled[1]) {
+                        ImGui::Combo("Channel 0 Coupling", &channel_1_coupling_current, channel_coupling, IM_ARRAYSIZE(channel_coupling));
+                        ImGui::Combo("Channel 0 Vertical Range", &channel_1_range_current, channel_range, IM_ARRAYSIZE(channel_range));
+                        ImGui::InputFloat("Offset", &channel_1_offset);
+                        channel_1_range = std::stof(channel_range[channel_1_range_current]);
+                        if (channel_1_coupling_current == 0) {
+                            channel_1_AC_coupling = true;
+                        } else {
+                            channel_1_AC_coupling = false;
+                        }
+                    }
+                    ImGui::EndTabItem();
+                }
+                ImGui::EndTabBar();
             }
-            ImGui::Dummy(ImVec2(0.0f, 30.0f));
             
             ImGui::Dummy(ImVec2(0.0f, 30.0f));
 
             ImGui::SeparatorText("TRIGGER SETTINGS");
+            static int trigger_source_current = 0;
+            static float trigger_threshold = 0.0f;
+            static int trigger_direction_current = 0;
+            static float pre_trigger = 0.0f;
+
+            ImGui::Combo("Trigger Source", &trigger_source_current, trigger_sources, IM_ARRAYSIZE(trigger_sources));
+            ImGui::InputFloat("Trigger Threshold (mV)", &trigger_threshold);
+            ImGui::Combo("Trigger Direction", &trigger_direction_current, trigger_directions, IM_ARRAYSIZE(trigger_directions));
+            ImGui::SliderFloat("Pre-Trigger (%)", &pre_trigger, 0.0f, 100.0f, "%.0f%%", ImGuiSliderFlags_AlwaysClamp);
             ImGui::Dummy(ImVec2(0.0f, 30.0f));
         }
     ImGui::End();
