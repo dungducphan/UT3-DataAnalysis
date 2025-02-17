@@ -54,11 +54,21 @@ include_directories(SYSTEM "external/glfw-3.4/include")
 add_subdirectory(external/glfw-3.4)
 
 # picoscope sdk
-include_directories(SYSTEM "external/pico_sdk/inc")
-link_directories("external/pico_sdk/lib")
+if (WIN32)
+    include_directories(SYSTEM "external/pico_sdk/inc")
+    link_directories("external/pico_sdk/lib")
+else()
+    set(picosdk_DIR "/opt/picoscope")
+    include_directories(SYSTEM "${picosdk_DIR}/include")
+    link_directories("${picosdk_DIR}/lib")
+endif()
 
 # Copy fonts
-file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+if (WIN32)
+    file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+else ()
+    file(COPY "external/fonts/FiraMonoNerdFont-Medium.otf" DESTINATION ${CMAKE_BINARY_DIR}/bin)
+endif ()
 
 # ===================================================================
 # hw_interface library
@@ -91,7 +101,7 @@ target_include_directories(hw_interface PRIVATE
 
 # Set library output name
 set_target_properties(hw_interface PROPERTIES OUTPUT_NAME "hw_interface")
-target_link_libraries(hw_interface PRIVATE ps3000a.lib)
+target_link_libraries(hw_interface PRIVATE ps3000a)
 
 # ===================================================================
 # HardwareControl executable
