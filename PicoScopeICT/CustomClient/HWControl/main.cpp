@@ -56,7 +56,7 @@ int main() {
     auto processor = new PSDataProcessor();
     auto device = new PSDevice();
     PSPostProcessingView dataView(processor, device);
-    PSControlView controlView(device);
+    PSControlView controlView(processor, device);
 
     // Frame Update Loop
     while (!glfwWindowShouldClose(window)) {

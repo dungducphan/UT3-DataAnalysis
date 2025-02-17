@@ -1,15 +1,17 @@
 #pragma once
 
 #include <PSDevice.h>
+#include <PSDataProcessor.h>
 
 class PSControlView {
 public:
-    explicit PSControlView(PSDevice* pdDev);
+    explicit PSControlView(PSDataProcessor* dataProp, PSDevice* pdDev);
 
     // Main method to render the GUI
     void Render();
 
 private:
+    PSDataProcessor* ps_data_processor;
     PSDevice* ps_device;
 
     // Constants

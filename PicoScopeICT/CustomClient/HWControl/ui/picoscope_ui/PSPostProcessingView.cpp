@@ -74,6 +74,7 @@ void PSPostProcessingView::RenderDatasetView() {
             acquisitionThread = std::thread([this]() {
                 for (int i = 0; i < numberOfWaveforms; i++) {
                     ps_device->CollectOneWaveform();
+                    ps_data_processor->ReadSingleWaveformLive(ps_device->currentTimeArray, ps_device->currentWaveformChannelB, BUFFER_SIZE);
                     numberOfWaveformsCollectedInScan++;
                 }
             });

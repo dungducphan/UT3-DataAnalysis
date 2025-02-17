@@ -6,7 +6,7 @@
 
 #include "PSControlView.h"
 
-PSControlView::PSControlView(PSDevice* pdDev) : ps_device(pdDev) {}
+PSControlView::PSControlView(PSDataProcessor* psDataProp, PSDevice* pdDev) : ps_data_processor(psDataProp), ps_device(pdDev) {}
 
 void PSControlView::Render() {
     ImGui::Begin("WAVEFORM VIEWER");

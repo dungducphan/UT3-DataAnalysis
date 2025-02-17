@@ -71,6 +71,10 @@ Dataset PSDataProcessor::GetDataset(int datasetID) const {
     return datasets.at(datasetID);
 }
 
+Waveform_t PSDataProcessor::ReadSingleWaveformLive(const int32_t* t, const int32_t* w, size_t size) {
+    return std::make_pair(std::vector<double>(t, t + size), std::vector<double>(w, w + size));
+}
+
 Waveform_t PSDataProcessor::ReadSingleWaveform(const std::string& filename) {
     std::vector<double> x, y;
 
