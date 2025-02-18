@@ -469,7 +469,7 @@ void blockDataHandler(const UNIT* unit, char * text, int32_t offset, MODE mode) 
 			}
 
 			if (mode == ANALOGUE || mode == MIXED) {	// If we're doing analogue or MIXED
-				sampleCount = min(sampleCount, BUFFER_SIZE);
+				sampleCount = ps_min(sampleCount, BUFFER_SIZE);
 
 				fopen_s(&fp, BlockFile, "w");
 

@@ -225,7 +225,7 @@ void PSDevice::CollectOneWaveform() {
                     }
 				}
 			}
-		    sampleCount = min(sampleCount, BUFFER_SIZE);
+		    sampleCount = ps_min(sampleCount, BUFFER_SIZE);
 		    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 	} else {

@@ -35,8 +35,8 @@ int32_t _kbhit();
 int32_t fopen_s(FILE ** a, const char * b, const char * c);
 
 /* A function to get a single character on Linux */
-#define max(a,b) ((a) > (b) ? a : b)
-#define min(a,b) ((a) < (b) ? a : b)
+#define ps_max(a,b) ((a) > (b) ? a : b)
+#define ps_min(a,b) ((a) < (b) ? a : b)
 #endif
 
 #define PREF4 __stdcall
@@ -132,8 +132,8 @@ typedef struct tBufferInfo {
 
 } BUFFER_INFO;
 
-#ifndef min
-#define min(a,b) ((a) < (b) ? (a) : (b))
+#ifndef ps_min
+#define ps_min(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
 
