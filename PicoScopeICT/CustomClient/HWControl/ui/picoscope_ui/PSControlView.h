@@ -33,4 +33,6 @@ private:
 
     // Dataset to show histogram
     int selectedDataset;
+
+    Waveform_t currentWaveform;
 };

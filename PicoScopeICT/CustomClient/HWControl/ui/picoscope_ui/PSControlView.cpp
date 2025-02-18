@@ -22,7 +22,7 @@ void PSControlView::Render() {
 void PSControlView::RenderDatasetView() {
     ImGui::Begin("Dataset Configuration");
 
-    static int scanNumber = 0;
+    static int scanNumber = -1;
 
     ImGui::SeparatorText("ADD SAVED DATASET");
 
@@ -64,12 +64,14 @@ void PSControlView::RenderDatasetView() {
     }
     if (ImGui::Button("START ACQUISITION", ImVec2(250, 50))) {
         scanNumber++;
+        ps_data_processor->AddLiveDataset(scanNumber);
         numberOfWaveformsCollectedInScan = 0;
         if (ps_device->IsDeviceOpen()) {
             acquisitionThread = std::thread([this]() {
                 for (int i = 0; i < numberOfWaveforms; i++) {
                     ps_device->CollectOneWaveform();
-                    ps_data_processor->ReadSingleWaveformLive(ps_device->currentTimeArray, ps_device->currentWaveformChannelB, BUFFER_SIZE);
+                    currentWaveform = PSDataProcessor::ReadSingleWaveformLive(ps_device->currentTimeArray, ps_device->currentWaveformChannelB, BUFFER_SIZE);
+                    ps_data_processor->AddWaveformToLiveDataset(scanNumber, currentWaveform, numberOfWaveforms);
                     numberOfWaveformsCollectedInScan++;
                 }
             });
@@ -80,9 +82,7 @@ void PSControlView::RenderDatasetView() {
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
     ImGui::Text("Scan %i", scanNumber);
     ImGui::Text("Acquired %i waveforms.", numberOfWaveformsCollectedInScan);
-
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
-
 
     ImGui::SeparatorText("LIST OF DATASETS");
     if (ImGui::TreeNode("root")) {
@@ -139,7 +139,7 @@ void PSControlView::RenderHistogramView() const {
         for (int i = 0; i < count; ++i) {
             data[i] = dataset.waveforms[i].chargeValue;
         }
-
+        // FIXME: Fix the x-axis range of the histogram so that operators can easily see the distribution evolution
         ImPlot::SetupAxes("ICT Charge (pc)","Counts",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
         ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
         ImPlot::PlotHistogram(Form("Scan %d", selectedDataset), data, count, bins);

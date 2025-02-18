@@ -6,6 +6,32 @@ PSDataProcessor::PSDataProcessor() {
     datasets.clear();
 }
 
+void PSDataProcessor::AddLiveDataset(int scanID) {
+    Dataset dataset{};
+    dataset.path = "";
+    dataset.name = "LiveScan_" + std::to_string(scanID);
+    dataset.meanCharge = 0;
+    dataset.stdDevCharge = 0;
+    datasets.push_back(dataset);
+}
+
+void PSDataProcessor::AddWaveformToLiveDataset(int scanID, const Waveform_t& wf, int expectedNoOfWaveforms) {
+    Waveform waveform{};
+    waveform.wfID = static_cast<int>(datasets.at(scanID).waveforms.size());
+    waveform.chargeValue = IntegrateTGraph(WaveformToTGraph(wf)) * 1E12 / 50;
+    std::cout << "Charge: " << waveform.chargeValue << "pC." << std::endl;
+    datasets.at(scanID).waveforms.push_back(waveform);
+
+    if (datasets.at(scanID).waveforms.size() == expectedNoOfWaveforms) {
+        auto h = new TH1D(Form("h_%03i", scanID), Form("h_%03i", scanID), 1000, 0, 200);
+        for (const auto& wf : datasets.at(scanID).waveforms) {
+            h->Fill(wf.chargeValue);
+        }
+        datasets.at(scanID).meanCharge = h->GetMean();
+        datasets.at(scanID).stdDevCharge = h->GetStdDev();
+        delete h;
+    }
+}
 
 void PSDataProcessor::AddDataset(const std::string& path) {
     // Get list of all .csv files in the directory

@@ -31,6 +31,8 @@ class PSDataProcessor {
 public:
     PSDataProcessor();
     void AddDataset(const std::string& path);
+    void AddLiveDataset(int scanID);
+    void AddWaveformToLiveDataset(int scanID, const Waveform_t& wf, int expectedNoOfWaveforms);
 
     int GetDatasetSize() const;
     int GetScanSize(int datasetID) const;
