@@ -59,10 +59,10 @@ void PSDataProcessor::AddDataset(const std::string& path) {
         TGraph* gr = WaveformToTGraph(wf);
         BackgroundSubtraction(gr);
         double integral = IntegrateTGraph(gr);
-        h->Fill(integral * 1E12 / 50);
+        h->Fill(integral / 50);
         Waveform waveform{};
         waveform.wfID = i;
-        waveform.chargeValue = integral * 1E12 / 50;
+        waveform.chargeValue = integral / 50;
         dataset.waveforms.push_back(waveform);
     }
 
@@ -135,8 +135,8 @@ Waveform_t PSDataProcessor::ReadSingleWaveform(const std::string& filename) {
         if (std::getline(ss, x_str, ',') && std::getline(ss, y_str, ',')) {
             double x_val = std::stod(x_str);
             double y_val = std::stod(y_str);
-            x.push_back(x_val * 1E-9); // ns
-            y.push_back(y_val * 1E-3); // mV
+            x.push_back(x_val); // ns
+            y.push_back(y_val); // mV
         }
         counter++;
     }
