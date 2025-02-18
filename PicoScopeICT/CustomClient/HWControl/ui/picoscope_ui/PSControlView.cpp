@@ -89,26 +89,27 @@ void PSControlView::RenderDatasetView() {
     }
     if (ImGui::Button("START ACQUISITION", ImVec2(250, 50))) {
         scanNumber++;
+
+        std::string baseSavePath = selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber);
         try {
-            if (std::filesystem::create_directory(selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber))) {
-                std::cout << "Directory created successfully: " << selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber) << std::endl;
-            } else {
-                std::cout << "Directory already exists or could not be created: " << selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber) << std::endl;
-            }
+            std::filesystem::create_directory(baseSavePath);
+            std::filesystem::create_directory(baseSavePath + "\\ChannelA");
+            std::filesystem::create_directory(baseSavePath + "\\ChannelB");
         } catch (const std::filesystem::filesystem_error& e) {
             std::cerr << "Filesystem error: " << e.what() << std::endl;
         }
+
         ps_data_processor->AddLiveDataset(scanNumber);
         numberOfWaveformsCollectedInScan = 0;
         if (ps_device->IsDeviceOpen()) {
-            acquisitionThread = std::thread([this]() {
+            acquisitionThread = std::thread([this, baseSavePath]() {
                 for (int i = 0; i < numberOfWaveforms; i++) {
                     ps_device->CollectOneWaveform();
                     currentWaveform = PSDataProcessor::ReadSingleWaveformLive(ps_device->currentTimeArray, ps_device->currentWaveformChannelB, BUFFER_SIZE);
                     ps_data_processor->AddWaveformToLiveDataset(scanNumber, currentWaveform, numberOfWaveforms);
-                    PSDataProcessor::SaveWaveformToCSV(currentWaveform, selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber) + "\\ChannelB\\wf_" + std::to_string(i) + ".csv");
+                    PSDataProcessor::SaveWaveformToCSV(currentWaveform, baseSavePath + "\\ChannelB\\wf_" + std::to_string(i) + ".csv");
                     auto ps300Waveform = PSDataProcessor::ReadSingleWaveformLive(ps_device->currentTimeArray, ps_device->currentWaveformChannelA, BUFFER_SIZE);
-                    PSDataProcessor::SaveWaveformToCSV(ps300Waveform, selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber) + "\\ChannelA\\wf_" + std::to_string(i) + ".csv");
+                    PSDataProcessor::SaveWaveformToCSV(ps300Waveform, baseSavePath + "\\ChannelA\\wf_" + std::to_string(i) + ".csv");
                     numberOfWaveformsCollectedInScan++;
                 }
             });
