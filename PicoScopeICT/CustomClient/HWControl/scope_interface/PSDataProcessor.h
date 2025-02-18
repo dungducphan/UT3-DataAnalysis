@@ -44,7 +44,7 @@ public:
     std::vector<Dataset> datasets;
 
     static Waveform_t ReadSingleWaveform(const std::string& filename);
-    static Waveform_t ReadSingleWaveformLive(const int32_t*, const int32_t*, size_t size);
+    static Waveform_t ReadSingleWaveformLive(const float*, const float*, size_t size);
     static TGraph* WaveformToTGraph(const Waveform_t& wf);
     static void BackgroundSubtraction(TGraph* gr);
     static double IntegrateTGraph(TGraph* gr);

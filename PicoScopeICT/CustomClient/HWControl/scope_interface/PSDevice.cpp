@@ -92,7 +92,7 @@ void PSDevice::CollectOneWaveform() {
     int16_t * digiBuffer[PS3000A_MAX_DIGITAL_PORTS];
 
     int32_t i, j;
-    int32_t timeInterval;
+    float timeInterval;
     int32_t sampleCount = BUFFER_SIZE;
     int32_t maxSamples;
     int32_t timeIndisposed;
@@ -107,12 +107,12 @@ void PSDevice::CollectOneWaveform() {
         if (unit.channelSettings[i].enabled) {
             buffers[i * 2] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
             buffers[i * 2 + 1] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
-            status = ps3000aSetDataBuffers(unit.handle, static_cast<PS3000A_CHANNEL>(i), buffers[i * 2], buffers[i * 2 + 1], sampleCount, 0, ratioMode);
+            ps3000aSetDataBuffers(unit.handle, static_cast<PS3000A_CHANNEL>(i), buffers[i * 2], buffers[i * 2 + 1], sampleCount, 0, ratioMode);
         }
     }
 
     // Calculate time interval (in nanoseconds)
-    ps3000aGetTimebase(unit.handle, timebase_, sampleCount, &timeInterval, 0, &maxSamples, 0);
+    ps3000aGetTimebase2(unit.handle, timebase_, sampleCount, &timeInterval, 0, &maxSamples, 0);
 
     /* Start the device collecting, then wait for completion*/
     g_ready = FALSE;
@@ -153,11 +153,11 @@ void PSDevice::CollectOneWaveform() {
 			for (j = 0; j < unit.channelCount; j++) {
 				if (unit.channelSettings[j].enabled) {
 				    for (i = 0; i < BUFFER_SIZE; i++) {
-				        currentTimeArray[i] = i * timeInterval;
+				        currentTimeArray[i] = static_cast<float>(i) * timeInterval;
 				        if (j == 0) {
-				            currentWaveformChannelA[i] = adc_to_mv(buffers[j * 2][i], unit.channelSettings[PS3000A_CHANNEL_A + j].range, &unit);
+				            currentWaveformChannelA[i] = adc_to_mv_float(buffers[j * 2][i], unit.channelSettings[PS3000A_CHANNEL_A + j].range, &unit);
 				        } else {
-				            currentWaveformChannelB[i] = adc_to_mv(buffers[j * 2][i], unit.channelSettings[PS3000A_CHANNEL_A + j].range, &unit);
+				            currentWaveformChannelB[i] = adc_to_mv_float(buffers[j * 2][i], unit.channelSettings[PS3000A_CHANNEL_A + j].range, &unit);
 				        }
                     }
 				}

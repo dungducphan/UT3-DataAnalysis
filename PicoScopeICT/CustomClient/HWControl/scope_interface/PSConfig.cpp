@@ -239,6 +239,15 @@ int32_t adc_to_mv(const int32_t raw, const int32_t ch, const UNIT* unit) {
 }
 
 /****************************************************************************
+* adc_to_mv_float
+*
+* Convert an 16-bit ADC count into float millivolts
+****************************************************************************/
+float adc_to_mv_float(const int32_t raw, const int32_t ch, const UNIT* unit) {
+	return ((float) raw * (float) inputRanges[ch]) / (float) unit->maxValue;
+}
+
+/****************************************************************************
 * mv_to_adc
 *
 * Convert a millivolt value into a 16-bit ADC count

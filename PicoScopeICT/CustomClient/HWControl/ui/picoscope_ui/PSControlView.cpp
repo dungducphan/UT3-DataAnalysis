@@ -179,8 +179,8 @@ void PSControlView::RenderHistogramView() const {
         for (int i = 0; i < count; ++i) {
             data[i] = dataset.waveforms[i].chargeValue;
         }
-        // FIXME: Fix the x-axis range of the histogram so that operators can easily see the distribution evolution
-        ImPlot::SetupAxes("ICT Charge (pc)","Counts",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
+        ImPlot::SetupAxes("ICT Charge (pc)","Counts",ImPlotAxisFlags_Lock ,ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_NoGridLines);
+        ImPlot::SetupAxisLimits(ImAxis_X1, 0, 100);
         ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
         ImPlot::PlotHistogram(Form("Scan %d", selectedDataset), data, count, bins);
         ImPlot::EndPlot();
@@ -197,9 +197,14 @@ void PSControlView::RenderErrorBarPlotView() const {
     if (ImPlot::BeginPlot("Scan Evolution of ICT Charge")) {
         // Extract from all scans (all dataset)
         ps_data_processor->CreateDataForErrorBarPlot(scan_evolution_scanID, scan_evolution_meanCharge, scan_evolution_stdDevCharge);
-        ImPlot::SetupAxes("Scan No.","ICT Charge (pC)",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
-        ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
+        ImPlot::SetupAxes("Scan No.","ICT Charge (pC)",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_Lock);
+        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 150);
+        ImPlot::SetNextErrorBarStyle(ImPlot::GetColormapColor(2), 0);
+        ImPlot::SetNextLineStyle(ImPlot::GetColormapColor(2), 0);
+        // ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
+        ImPlot::SetNextMarkerStyle(ImPlotMarker_Square);
         ImPlot::PlotErrorBars("ICT Charge vs. Scan No.", scan_evolution_scanID, scan_evolution_meanCharge, scan_evolution_stdDevCharge, ps_data_processor->GetDatasetSize());
+        ImPlot::PlotLine("ICT Charge vs. Scan No.", scan_evolution_scanID, scan_evolution_meanCharge, ps_data_processor->GetDatasetSize());
         ImPlot::EndPlot();
     }
     ImGui::End();
@@ -210,8 +215,8 @@ void PSControlView::RenderWaveformViewer() {
     ImGui::Begin("WAVEFORM VIEWER");
         if (ImPlot::BeginPlot("PicoScope Waveform Viewer")) {
             // Set multiple y-axes
-            ImPlot::SetupAxes("Time (ns)","Va (mV)",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
-            ImPlot::SetupAxis(ImAxis_Y2, "Vb (mV)", ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Opposite);
+            ImPlot::SetupAxes("Time (ns)","Va (mV)",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_NoGridLines);
+            ImPlot::SetupAxis(ImAxis_Y2, "Vb (mV)", ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Opposite | ImPlotAxisFlags_NoGridLines);
 
             // Plot data channel A
             ImPlot::SetAxes(ImAxis_X1, ImAxis_Y1);

@@ -18,13 +18,14 @@ void PSDataProcessor::AddLiveDataset(int scanID) {
 void PSDataProcessor::AddWaveformToLiveDataset(int scanID, const Waveform_t& wf, int expectedNoOfWaveforms) {
     Waveform waveform{};
     waveform.wfID = static_cast<int>(datasets.at(scanID).waveforms.size());
-    // FIXME: brute force calculation of charge here, dont use ROOT
-    waveform.chargeValue = IntegrateTGraph(WaveformToTGraph(wf)) / 50;
+    auto grWf = WaveformToTGraph(wf);
+    BackgroundSubtraction(grWf);
+    waveform.chargeValue = IntegrateTGraph(grWf) / 50;
+    delete grWf;
     std::cout << "Charge: " << waveform.chargeValue << "pC." << std::endl;
     datasets.at(scanID).waveforms.push_back(waveform);
 
     if (datasets.at(scanID).waveforms.size() == expectedNoOfWaveforms) {
-        // FIXME: brute force calculation of mean and std dev here, dont use ROOT
         double meanCharge = 0;
         for (const auto& w : datasets.at(scanID).waveforms) {
             meanCharge += w.chargeValue;
@@ -105,7 +106,7 @@ Dataset PSDataProcessor::GetDataset(int datasetID) const {
     return datasets.at(datasetID);
 }
 
-Waveform_t PSDataProcessor::ReadSingleWaveformLive(const int32_t* t, const int32_t* w, size_t size) {
+Waveform_t PSDataProcessor::ReadSingleWaveformLive(const float* t, const float* w, size_t size) {
     return std::make_pair(std::vector<double>(t, t + size), std::vector<double>(w, w + size));
 }
 

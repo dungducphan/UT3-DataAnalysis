@@ -186,6 +186,12 @@ PICO_STATUS restoreAnalogueSettings(UNIT* unit);
 int32_t adc_to_mv(int32_t raw, int32_t ch, const UNIT* unit);
 
 /****************************************************************************
+* adc_to_mv_float
+* Convert an 16-bit ADC count into float millivolts
+****************************************************************************/
+float adc_to_mv_float(int32_t raw, int32_t ch, const UNIT* unit);
+
+/****************************************************************************
 * mv_to_adc
 * Convert a millivolt value into a 16-bit ADC count
 *  (useful for setting trigger thresholds)
