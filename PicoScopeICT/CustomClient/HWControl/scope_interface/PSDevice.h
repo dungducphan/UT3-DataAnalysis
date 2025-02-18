@@ -21,6 +21,7 @@ public:
 
     void CollectOneWaveform();
     void GetTimebaseInfo(const int& timebase, int& samplingDurationInNanoseconds, int& samplingIntervalInNanoseconds);
+    [[nodiscard]] int32_t GetSamplingDurationInNanoseconds() const;
 
     float currentWaveformChannelA[BUFFER_SIZE];
     float currentWaveformChannelB[BUFFER_SIZE];
@@ -28,6 +29,8 @@ public:
 
 private:
     int32_t timebase_{};
+    int32_t samplingDurationInNanoseconds_{};
+
     PICO_STATUS status{};
     UNIT unit{};
 };

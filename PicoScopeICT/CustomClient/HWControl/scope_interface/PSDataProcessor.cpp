@@ -153,36 +153,59 @@ TGraph* PSDataProcessor::WaveformToTGraph(const Waveform_t& wf) {
     return gr;
 }
 
-void PSDataProcessor::BackgroundSubtraction(TGraph* gr) {
-    TH1D* bkgd = new TH1D("bkgd", "bkgd", 100, gr->GetMinimum(), gr->GetMaximum());
-    for (int i = 0; i < gr->GetN(); i++) {
-        double x, y;
-        gr->GetPoint(i, x, y);
-        bkgd->Fill(y);
-    }
+void PSDataProcessor::BackgroundSubtraction(TGraph* gr) const {
+    if (cursorLeft > 0 && cursorRight > 0) {
+        auto bkgd = new TH1D("bkgd", "bkgd", 100, gr->GetMinimum(), gr->GetMaximum());
+        for (int i = 0; i < gr->GetN(); i++) {
+            double x, y;
+            gr->GetPoint(i, x, y);
+            if (x < cursorLeft || x > cursorRight) bkgd->Fill(y);
+        }
+        double mean = bkgd->GetMean();
+        delete bkgd;
 
-    double mean = bkgd->GetMean();
-    double stdDev = bkgd->GetStdDev();
-    delete bkgd;
+        for (int i = 0; i < gr->GetN(); i++) {
+            double x, y;
+            gr->GetPoint(i, x, y);
+            gr->SetPoint(i, x, y - mean);
+        }
+    } else {
+        auto bkgd = new TH1D("bkgd", "bkgd", 100, gr->GetMinimum(), gr->GetMaximum());
+        for (int i = 0; i < gr->GetN(); i++) {
+            double x, y;
+            gr->GetPoint(i, x, y);
+            bkgd->Fill(y);
+        }
 
-    TH1D* bkgd_refined = new TH1D("bkgd_refined", "bkgd_refined", 100, gr->GetMinimum(), gr->GetMaximum());
-    for (int i = 0; i < gr->GetN(); i++) {
-        double x, y;
-        gr->GetPoint(i, x, y);
-        if (TMath::Abs(y - mean) < 3 * stdDev) bkgd_refined->Fill(y);
-    }
-    mean = bkgd_refined->GetMean();
-    delete bkgd_refined;
+        double mean = bkgd->GetMean();
+        double stdDev = bkgd->GetStdDev();
+        delete bkgd;
 
-    for (int i = 0; i < gr->GetN(); i++) {
-        double x, y;
-        gr->GetPoint(i, x, y);
-        gr->SetPoint(i, x, y - mean);
+        auto bkgd_refined = new TH1D("bkgd_refined", "bkgd_refined", 100, gr->GetMinimum(), gr->GetMaximum());
+        for (int i = 0; i < gr->GetN(); i++) {
+            double x, y;
+            gr->GetPoint(i, x, y);
+            if (TMath::Abs(y - mean) < 3 * stdDev) bkgd_refined->Fill(y);
+        }
+        mean = bkgd_refined->GetMean();
+        delete bkgd_refined;
+
+        for (int i = 0; i < gr->GetN(); i++) {
+            double x, y;
+            gr->GetPoint(i, x, y);
+            gr->SetPoint(i, x, y - mean);
+        }
     }
 }
 
 double PSDataProcessor::IntegrateTGraph(TGraph* gr) {
-    return gr->Integral();
+    if (cursorLeft > 0 && cursorRight > 0) {
+        int cursorLeftIndex = gr->GetXaxis()->FindBin(cursorLeft);
+        int cursorRightIndex = gr->GetXaxis()->FindBin(cursorRight);
+        return gr->Integral(cursorLeftIndex, cursorRightIndex);
+    } else {
+        return gr->Integral();
+    }
 }
 
 std::vector<std::string> PSDataProcessor::GetCSVFiles(const std::string& directoryPath) {

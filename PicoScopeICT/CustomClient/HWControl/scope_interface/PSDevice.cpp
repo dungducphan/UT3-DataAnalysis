@@ -76,9 +76,14 @@ void PSDevice::SetSimpleTrigger(
 
 }
 
+int32_t PSDevice::GetSamplingDurationInNanoseconds() const {
+    return samplingDurationInNanoseconds_;
+}
+
 void PSDevice::GetTimebaseInfo(const int& TIME_BASE, int& samplingDurationInNanoseconds, int& samplingIntervalInNanoseconds) {
     status = ps3000aGetTimebase(unit.handle, TIME_BASE, BUFFER_SIZE, &samplingIntervalInNanoseconds, 0, nullptr, 0);
     samplingDurationInNanoseconds = BUFFER_SIZE * samplingIntervalInNanoseconds;
+    samplingDurationInNanoseconds_ = samplingDurationInNanoseconds;
 }
 
 void PSDevice::CollectOneWaveform() {

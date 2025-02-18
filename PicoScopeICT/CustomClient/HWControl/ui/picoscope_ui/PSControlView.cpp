@@ -124,6 +124,11 @@ void PSControlView::RenderDatasetView() {
     }
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
+    ImGui::SeparatorText("INTEGRATION CURSORS");
+    ImGui::Text("Cursor Left: %.2f ns", ps_data_processor->cursorLeft);
+    ImGui::Text("Cursor Right: %.2f ns", ps_data_processor->cursorRight);
+    ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
     ImGui::SeparatorText("LIST OF DATASETS");
     if (ImGui::TreeNode("root")) {
         for (int i = 0; i < ps_data_processor->GetDatasetSize(); i++) {
@@ -201,7 +206,6 @@ void PSControlView::RenderErrorBarPlotView() const {
         ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 150);
         ImPlot::SetNextErrorBarStyle(ImPlot::GetColormapColor(2), 0);
         ImPlot::SetNextLineStyle(ImPlot::GetColormapColor(2), 0);
-        // ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL,0.5f);
         ImPlot::SetNextMarkerStyle(ImPlotMarker_Square);
         ImPlot::PlotErrorBars("ICT Charge vs. Scan No.", scan_evolution_scanID, scan_evolution_meanCharge, scan_evolution_stdDevCharge, ps_data_processor->GetDatasetSize());
         ImPlot::PlotLine("ICT Charge vs. Scan No.", scan_evolution_scanID, scan_evolution_meanCharge, ps_data_processor->GetDatasetSize());
@@ -212,10 +216,13 @@ void PSControlView::RenderErrorBarPlotView() const {
 
 
 void PSControlView::RenderWaveformViewer() {
+    static double cursorLeft = 0.0f;
+    static double cursorRight = 2048.0f;
     ImGui::Begin("WAVEFORM VIEWER");
         if (ImPlot::BeginPlot("PicoScope Waveform Viewer")) {
             // Set multiple y-axes
-            ImPlot::SetupAxes("Time (ns)","Va (mV)",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_NoGridLines);
+            ImPlot::SetupAxes("Time (ns)","Va (mV)",ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit |
+            ImPlotAxisFlags_NoGridLines);
             ImPlot::SetupAxis(ImAxis_Y2, "Vb (mV)", ImPlotAxisFlags_AutoFit | ImPlotAxisFlags_Opposite | ImPlotAxisFlags_NoGridLines);
 
             // Plot data channel A
@@ -227,6 +234,13 @@ void PSControlView::RenderWaveformViewer() {
 
             ImPlot::PlotLine("B", ps_device->currentTimeArray, ps_device->currentWaveformChannelB, BUFFER_SIZE);
 
+            // FIXME: Dragline to select a region
+            if (ImPlot::DragLineX(0, &cursorLeft, ImVec4(1,1,1,1), 1, ImPlotDragToolFlags_None)) {
+                ps_data_processor->cursorLeft = cursorLeft;
+            }
+            if (ImPlot::DragLineX(1, &cursorRight, ImVec4(1,1,1,1), 1, ImPlotDragToolFlags_None)) {
+                ps_data_processor->cursorRight = cursorRight;
+            }
             // End plot
             ImPlot::EndPlot();
         }
