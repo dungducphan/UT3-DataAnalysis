@@ -185,3 +185,25 @@ std::vector<std::string> PSDataProcessor::GetCSVFiles(const std::string& directo
     }
     return csvFiles;
 }
+
+void PSDataProcessor::SaveWaveformToCSV(const Waveform_t& wf, const std::string& filename) {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file " << filename << std::endl;
+        return;
+    }
+
+    // Write header
+    file << "Time,Voltage\n";
+    file << "(ns),(mV)\n";
+    file << "\n";
+
+    // Write data
+    const auto& times = wf.first;
+    const auto& voltages = wf.second;
+    for (size_t i = 0; i < times.size(); ++i) {
+        file << times[i] << "," << voltages[i] << "\n";
+    }
+
+    file.close();
+}

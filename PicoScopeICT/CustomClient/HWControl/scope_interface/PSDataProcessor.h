@@ -34,11 +34,11 @@ public:
     void AddLiveDataset(int scanID);
     void AddWaveformToLiveDataset(int scanID, const Waveform_t& wf, int expectedNoOfWaveforms);
 
-    int GetDatasetSize() const;
-    int GetScanSize(int datasetID) const;
-    double GetScanMeanCharge(int datasetID) const;
-    double GetScanStdDevCharge(int datasetID) const;
-    Dataset GetDataset(int datasetID) const;
+    [[nodiscard]] int GetDatasetSize() const;
+    [[nodiscard]] int GetScanSize(int datasetID) const;
+    [[nodiscard]] double GetScanMeanCharge(int datasetID) const;
+    [[nodiscard]] double GetScanStdDevCharge(int datasetID) const;
+    [[nodiscard]] Dataset GetDataset(int datasetID) const;
     void CreateDataForErrorBarPlot(double* x, double* y, double* y_err) const;
 
     std::vector<Dataset> datasets;
@@ -49,4 +49,6 @@ public:
     static void BackgroundSubtraction(TGraph* gr);
     static double IntegrateTGraph(TGraph* gr);
     static std::vector<std::string> GetCSVFiles(const std::string& directoryPath);
+
+    static void SaveWaveformToCSV(const Waveform_t& wf, const std::string& filename);
 };

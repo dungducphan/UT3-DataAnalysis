@@ -165,11 +165,10 @@ void PSDevice::CollectOneWaveform() {
     PS3000A_RATIO_MODE ratioMode = PS3000A_RATIO_MODE_NONE;
 
     for (i = 0; i < unit.channelCount; i++) {
-        if(unit.channelSettings[i].enabled) {
+        if (unit.channelSettings[i].enabled) {
             buffers[i * 2] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
             buffers[i * 2 + 1] = static_cast<int16_t *>(calloc(sampleCount, sizeof(int16_t)));
             status = ps3000aSetDataBuffers(unit.handle, static_cast<PS3000A_CHANNEL>(i), buffers[i * 2], buffers[i * 2 + 1], sampleCount, 0, ratioMode);
-            // printf(status?"BlockDataHandler:ps3000aSetDataBuffers(channel %d) ------ 0x%08lx \n":"", i, status);
         }
     }
 

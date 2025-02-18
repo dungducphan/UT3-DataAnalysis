@@ -54,6 +54,31 @@ void PSControlView::RenderDatasetView() {
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
     ImGui::SeparatorText("LIVE DATASET");
+
+    static std::string selectedSaveBasePath;
+    static char save_path[128] = "";
+
+    if (ImGui::Button("Select Base Directory to Save")) {
+        IGFD::FileDialogConfig config;
+        config.path = ".";
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseDirDlgKey_2", "Save Directory", nullptr, config);
+    }
+
+    // display
+    if (ImGuiFileDialog::Instance()->Display("ChooseDirDlgKey_2")) {
+        if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+            selectedSaveBasePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+            // only change path when select a new path in this dialog
+            strncpy(save_path, selectedSaveBasePath.c_str(), sizeof(save_path) - 1);
+            path[sizeof(save_path) - 1] = '\0'; // Ensure null-termination
+        }
+        ImGuiFileDialog::Instance()->Close();
+    }
+
+    ImGui::InputText("Selected Base Path", save_path, IM_ARRAYSIZE(save_path), ImGuiInputTextFlags_ElideLeft);
+
+    ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
     static int numberOfWaveforms = 10;
     static int numberOfWaveformsCollectedInScan = 0;
     if (!ps_device->IsDeviceOpen()) {
@@ -64,6 +89,15 @@ void PSControlView::RenderDatasetView() {
     }
     if (ImGui::Button("START ACQUISITION", ImVec2(250, 50))) {
         scanNumber++;
+        try {
+            if (std::filesystem::create_directory(selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber))) {
+                std::cout << "Directory created successfully: " << selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber) << std::endl;
+            } else {
+                std::cout << "Directory already exists or could not be created: " << selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber) << std::endl;
+            }
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Filesystem error: " << e.what() << std::endl;
+        }
         ps_data_processor->AddLiveDataset(scanNumber);
         numberOfWaveformsCollectedInScan = 0;
         if (ps_device->IsDeviceOpen()) {
@@ -72,6 +106,9 @@ void PSControlView::RenderDatasetView() {
                     ps_device->CollectOneWaveform();
                     currentWaveform = PSDataProcessor::ReadSingleWaveformLive(ps_device->currentTimeArray, ps_device->currentWaveformChannelB, BUFFER_SIZE);
                     ps_data_processor->AddWaveformToLiveDataset(scanNumber, currentWaveform, numberOfWaveforms);
+                    PSDataProcessor::SaveWaveformToCSV(currentWaveform, selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber) + "\\ChannelB\\wf_" + std::to_string(i) + ".csv");
+                    auto ps300Waveform = PSDataProcessor::ReadSingleWaveformLive(ps_device->currentTimeArray, ps_device->currentWaveformChannelA, BUFFER_SIZE);
+                    PSDataProcessor::SaveWaveformToCSV(ps300Waveform, selectedSaveBasePath + "\\Scan_" + std::to_string(scanNumber) + "\\ChannelA\\wf_" + std::to_string(i) + ".csv");
                     numberOfWaveformsCollectedInScan++;
                 }
             });
@@ -80,8 +117,10 @@ void PSControlView::RenderDatasetView() {
     }
 
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
-    ImGui::Text("Scan %i", scanNumber);
-    ImGui::Text("Acquired %i waveforms.", numberOfWaveformsCollectedInScan);
+    if (scanNumber >= 0) {
+        ImGui::Text("Scan %i", scanNumber);
+        ImGui::Text("Acquired %i waveforms.", numberOfWaveformsCollectedInScan);
+    }
     ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
     ImGui::SeparatorText("LIST OF DATASETS");
