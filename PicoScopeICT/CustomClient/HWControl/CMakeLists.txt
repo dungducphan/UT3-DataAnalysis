@@ -154,8 +154,8 @@ add_executable(HardwareControl
         ui/ImGuiConfig.h
         ui/camera_ui/CameraControlView.cpp
         ui/camera_ui/CameraControlView.h
-        ui/picoscope_ui/PSPostProcessingView.cpp
-        ui/picoscope_ui/PSPostProcessingView.h
+        #ui/picoscope_ui/PSPostProcessingView.cpp
+        #ui/picoscope_ui/PSPostProcessingView.h
         ui/picoscope_ui/PSControlView.cpp
         ui/picoscope_ui/PSControlView.h
 

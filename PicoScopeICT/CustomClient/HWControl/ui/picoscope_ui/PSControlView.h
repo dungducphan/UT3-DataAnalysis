@@ -21,4 +21,16 @@ private:
     const char* channel_coupling[2] = {"AC", "DC"};
     const char* trigger_sources[3] = {"Channel A", "Channel B", "External"};
     const char* trigger_directions[2] = {"Rising Edge", "Falling Edge"};
+
+    std::thread acquisitionThread;
+
+    // Render components
+    void RenderDatasetView();
+    void RenderHistogramView() const;
+    void RenderErrorBarPlotView() const;
+    void RenderControlPanel();
+    void RenderWaveformViewer();
+
+    // Dataset to show histogram
+    int selectedDataset;
 };

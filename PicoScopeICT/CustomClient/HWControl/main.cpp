@@ -16,7 +16,6 @@
 
 // ui
 #include "ImGuiConfig.h"
-#include "PSPostProcessingView.h"
 #include "PSControlView.h"
 
 int main() {
@@ -55,7 +54,6 @@ int main() {
     // Scope
     auto processor = new PSDataProcessor();
     auto device = new PSDevice();
-    PSPostProcessingView dataView(processor, device);
     PSControlView controlView(processor, device);
 
     // Frame Update Loop
@@ -75,7 +73,6 @@ int main() {
 
         // Show the PicoScope Control View
         // Anything in Render() will be executed every frame
-        dataView.Render();
         controlView.Render();
 
         // Rendering
