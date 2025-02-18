@@ -239,8 +239,9 @@ void PSControlView::RenderControlPanel() {
         static bool isConnected = false;
 
         // Timebase settings
-        static int timebase_numeric_current = 0;
-        static int timebase_unit_current = 0;
+        static int32_t gui_timebase = 1;
+        static int32_t samplingDurationInNanoseconds = 0;
+        static int32_t samplingIntervalInNanoseconds = 0;
 
         // Channel settings
         static bool channel_0_AC_coupling = false;
@@ -252,8 +253,9 @@ void PSControlView::RenderControlPanel() {
         static int  channel_1_coupling_current = 1;
 
         // Trigger settings
+        static int   trigger_wait_in_milliseconds = 20000;
         static int   trigger_source_current = 2;
-        static float trigger_threshold = 1500;
+        static int   trigger_threshold = 1500;
         static int   trigger_direction_current = 0;
         static int   triggerDelay = 0;
 
@@ -262,12 +264,12 @@ void PSControlView::RenderControlPanel() {
                 ps_device->CloseDevice();
             } else {
                 ps_device->OpenDevice();
-                ps_device->SetTimebase(timebase_numeric_current, timebase_unit_current);
+                ps_device->SetTimebase(gui_timebase);
                 int chID = 0;
                 ps_device->SetChannel(chID, channel_enabled[0], channel_0_AC_coupling, channel_0_range_current);
                 chID = 1;
-                ps_device->SetChannel(chID, channel_enabled[1], channel_1_AC_coupling, channel_0_range_current);
-                ps_device->SetTrigger(trigger_source_current, trigger_threshold, trigger_direction_current, triggerDelay);
+                ps_device->SetChannel(chID, channel_enabled[1], channel_1_AC_coupling, channel_1_range_current);
+                ps_device->SetSimpleTrigger(trigger_source_current, trigger_threshold, trigger_direction_current, triggerDelay, trigger_wait_in_milliseconds);
             }
             isConnected = ps_device->IsDeviceOpen();
         }
@@ -276,9 +278,10 @@ void PSControlView::RenderControlPanel() {
         if (isConnected) {
             //////////////////////////////////////////////////////////////////////////
             ImGui::SeparatorText("TIMEBASE SETTINGS");
-            if (ImGui::Combo("Timebase Numerical Value", &timebase_numeric_current, timebase_numeric, IM_ARRAYSIZE(timebase_numeric))) isScopeStateChanged = true;
-            if (ImGui::Combo("Timebase Unit", &timebase_unit_current, timebase_unit, IM_ARRAYSIZE(timebase_unit))) isScopeStateChanged = true;
-            ImGui::Text("Timebase: %s %s / div", timebase_numeric[timebase_numeric_current], timebase_unit[timebase_unit_current]);
+            if (ImGui::InputInt("Timebase", &gui_timebase)) isScopeStateChanged = true;
+            ps_device->GetTimebaseInfo(gui_timebase, samplingDurationInNanoseconds, samplingIntervalInNanoseconds);
+            ImGui::Text("Sampling Interval: %d ns", samplingIntervalInNanoseconds);
+            ImGui::Text("Sampling Duration: %d ns", samplingDurationInNanoseconds);
             ImGui::Dummy(ImVec2(0.0f, 30.0f));
 
             //////////////////////////////////////////////////////////////////////////
@@ -323,19 +326,21 @@ void PSControlView::RenderControlPanel() {
             //////////////////////////////////////////////////////////////////////////
             ImGui::SeparatorText("TRIGGER SETTINGS");
             if (ImGui::Combo("Trigger Source", &trigger_source_current, trigger_sources, IM_ARRAYSIZE(trigger_sources))) isScopeStateChanged = true;
-            if (ImGui::InputFloat("Trigger Threshold (mV)", &trigger_threshold)) isScopeStateChanged = true;
+            if (ImGui::InputInt("Trigger Threshold (mV)", &trigger_threshold)) isScopeStateChanged = true;
             if (ImGui::Combo("Trigger Direction", &trigger_direction_current, trigger_directions, IM_ARRAYSIZE(trigger_directions))) isScopeStateChanged = true;
-            if (ImGui::SliderInt("Trigger Delay (div)", &triggerDelay, 0, 10, "%d%%", ImGuiSliderFlags_AlwaysClamp)) isScopeStateChanged = true;
+            if (ImGui::SliderInt("Trigger Delay (SP)", &triggerDelay, 0, 1000, "%d sampling periods", ImGuiSliderFlags_AlwaysClamp)
+            ) isScopeStateChanged = true;
+            if (ImGui::InputInt("Trigger Wait (ms)", &trigger_wait_in_milliseconds)) isScopeStateChanged = true;
             ImGui::Dummy(ImVec2(0.0f, 30.0f));
 
             //////////////////////////////////////////////////////////////////////////
             if (isScopeStateChanged) {
-                ps_device->SetTimebase(timebase_numeric_current, timebase_unit_current);
+                ps_device->SetTimebase(gui_timebase);
                 int chID = 0;
                 ps_device->SetChannel(chID, channel_enabled[0], channel_0_AC_coupling, channel_0_range_current);
                 chID = 1;
-                ps_device->SetChannel(chID, channel_enabled[1], channel_1_AC_coupling, channel_0_range_current);
-                ps_device->SetTrigger(trigger_source_current, trigger_threshold, trigger_direction_current, triggerDelay);
+                ps_device->SetChannel(chID, channel_enabled[1], channel_1_AC_coupling, channel_1_range_current);
+                ps_device->SetSimpleTrigger(trigger_source_current, trigger_threshold, trigger_direction_current, triggerDelay, trigger_wait_in_milliseconds);
             }
         } // end if (isConnected)
     ImGui::End(); // CONTROL PANEL

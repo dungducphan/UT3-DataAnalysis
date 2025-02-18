@@ -18,25 +18,33 @@ void PSDataProcessor::AddLiveDataset(int scanID) {
 void PSDataProcessor::AddWaveformToLiveDataset(int scanID, const Waveform_t& wf, int expectedNoOfWaveforms) {
     Waveform waveform{};
     waveform.wfID = static_cast<int>(datasets.at(scanID).waveforms.size());
-    waveform.chargeValue = IntegrateTGraph(WaveformToTGraph(wf)) * 1E12 / 50;
+    // FIXME: brute force calculation of charge here, dont use ROOT
+    waveform.chargeValue = IntegrateTGraph(WaveformToTGraph(wf)) / 50;
     std::cout << "Charge: " << waveform.chargeValue << "pC." << std::endl;
     datasets.at(scanID).waveforms.push_back(waveform);
 
     if (datasets.at(scanID).waveforms.size() == expectedNoOfWaveforms) {
-        auto h = new TH1D(Form("h_%03i", scanID), Form("h_%03i", scanID), 1000, 0, 200);
-        for (const auto& wf : datasets.at(scanID).waveforms) {
-            h->Fill(wf.chargeValue);
+        // FIXME: brute force calculation of mean and std dev here, dont use ROOT
+        double meanCharge = 0;
+        for (const auto& w : datasets.at(scanID).waveforms) {
+            meanCharge += w.chargeValue;
         }
-        datasets.at(scanID).meanCharge = h->GetMean();
-        datasets.at(scanID).stdDevCharge = h->GetStdDev();
-        delete h;
+        meanCharge /= static_cast<double>(datasets.at(scanID).waveforms.size());
+
+        double stdDevCharge = 0;
+        for (const auto& w : datasets.at(scanID).waveforms) {
+            stdDevCharge += (w.chargeValue - meanCharge) * (w.chargeValue - meanCharge);
+        }
+        stdDevCharge = std::sqrt(stdDevCharge / static_cast<double>(datasets.at(scanID).waveforms.size()));
+
+        datasets.at(scanID).meanCharge = meanCharge;
+        datasets.at(scanID).stdDevCharge = stdDevCharge;
     }
 }
 
 void PSDataProcessor::AddDataset(const std::string& path) {
     // Get list of all .csv files in the directory
     std::vector<std::string> csvFiles = GetCSVFiles(path);
-
     if (csvFiles.empty()) {
         std::cerr << "Error: No .csv files found in directory " << path << std::endl;
         return;

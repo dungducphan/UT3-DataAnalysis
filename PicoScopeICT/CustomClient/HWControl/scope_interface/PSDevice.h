@@ -11,17 +11,23 @@ public:
     void OpenDevice();
     void CloseDevice();
 
-    void SetTimebase(int& timebase_value, int& timebase_unit);
+    void SetTimebase(int& timebase);
     void SetChannel(int& channelID, bool& isChannelEnabled, bool& isACCoupled, int& channelRange);
-    void SetTrigger(int& triggerSource, float& triggerThreshold, int& triggerDirection, int& triggerDelay);
+    void SetSimpleTrigger(const int& triggerSource,
+                          const int& triggerThreshold,
+                          const int& triggerDirection,
+                          const int& triggerDelay,
+                          const int& triggerTimeOutInMilliseconds);
 
     void CollectOneWaveform();
+    void GetTimebaseInfo(const int& timebase, int& samplingDurationInNanoseconds, int& samplingIntervalInNanoseconds);
 
     int32_t currentWaveformChannelA[BUFFER_SIZE];
     int32_t currentWaveformChannelB[BUFFER_SIZE];
     int32_t currentTimeArray[BUFFER_SIZE];
 
 private:
+    int32_t timebase_{};
     PICO_STATUS status{};
     UNIT unit{};
 };

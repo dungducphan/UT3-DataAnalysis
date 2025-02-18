@@ -25,121 +25,60 @@ void PSDevice::CloseDevice() {
     status = PICO_OK;
 }
 
-void PSDevice::SetTimebase(int &timebase_value, int &timebase_unit) {
+void PSDevice::SetTimebase(int &tb) {
+    timebase_ = tb;
 }
 
 void PSDevice::SetChannel(int &channelID, bool &isChannelEnabled, bool &isACCoupled, int &channelRange) {
     unit.channelSettings[channelID].enabled = isChannelEnabled ? TRUE : FALSE;  // Enable/Disable Channel
     unit.channelSettings[channelID].DCcoupled = isACCoupled ? FALSE : TRUE;   // DC/AC Coupled
-    unit.channelSettings[channelID].range = static_cast<PS3000A_RANGE>(channelRange + 1); // Range Enum
+    unit.channelSettings[channelID].range = channelRange + 1; // Range Enum
+    status = ps3000aSetChannel( unit.handle,
+                                static_cast<PS3000A_CHANNEL>(channelID),
+                                unit.channelSettings[channelID].enabled,
+                                static_cast<PS3000A_COUPLING>(unit.channelSettings[channelID].DCcoupled),
+                                static_cast<PS3000A_RANGE>(unit.channelSettings[channelID].range),
+                                0 );
 }
 
-void PSDevice::SetTrigger(int &triggerSource, float &triggerThreshold, int &triggerDirection, int &triggerDelayInDivs) {
-    struct tPS3000ATriggerChannelProperties sourceDetails{};
-    struct tPS3000ATriggerConditionsV2 conditions{};
-    struct tPwq pulseWidth{};
-    struct tTriggerDirections directions{};
-    int16_t	triggerVoltage = 0;
-    int delayInSamples = 0;
-
-    std::cout << "Setting trigger..." << std::endl;
+void PSDevice::SetSimpleTrigger(
+    const int& triggerSource,
+    const int& triggerThreshold,
+    const int& triggerDirection,
+    const int& triggerDelay,
+    const int& triggerTimeOutInMilliseconds) {
+    int16_t triggerVoltage = 0;
+    PS3000A_CHANNEL triggerSourceChannel;
+    PS3000A_THRESHOLD_DIRECTION directions;
 
     if (triggerSource == 0) {
-        triggerVoltage = mv_to_adc(1000, unit.channelSettings[PS3000A_CHANNEL_A].range, &unit);
-        sourceDetails = {	triggerVoltage,
-                            256 * 10,
-                            triggerVoltage,
-                            256 * 10,
-                            PS3000A_CHANNEL_A,
-                            PS3000A_LEVEL};
-        conditions = {PS3000A_CONDITION_TRUE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE};
-        if (triggerDirection == 0) {
-            directions = {PS3000A_RISING,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE};
-        } else {
-            directions = {PS3000A_FALLING,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE};
-        }
+        triggerVoltage = mv_to_adc(static_cast<int16_t>(triggerThreshold), unit.channelSettings[PS3000A_CHANNEL_A].range, &unit);
+        triggerSourceChannel = PS3000A_CHANNEL_A;
     } else if (triggerSource == 1) {
-        triggerVoltage = mv_to_adc(1000, unit.channelSettings[PS3000A_CHANNEL_B].range, &unit);
-        sourceDetails = {	triggerVoltage,
-                            256 * 10,
-                            triggerVoltage,
-                            256 * 10,
-                            PS3000A_CHANNEL_B,
-                            PS3000A_LEVEL};
-        conditions = {PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_TRUE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE};
-        if (triggerDirection == 0) {
-            directions = {PS3000A_NONE,
-                            PS3000A_RISING,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE};
-        } else {
-            directions = {PS3000A_NONE,
-                            PS3000A_FALLING,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE};
-        }
+        triggerVoltage = mv_to_adc(static_cast<int16_t>(triggerThreshold), unit.channelSettings[PS3000A_CHANNEL_B].range, &unit);
+        triggerSourceChannel = PS3000A_CHANNEL_B;
     } else {
-        triggerVoltage = 16000;
-        sourceDetails = {	triggerVoltage,
-                            256 * 10,
-                            triggerVoltage,
-                            256 * 10,
-                            PS3000A_EXTERNAL,
-                            PS3000A_LEVEL};
-        conditions = {PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_TRUE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE,
-                        PS3000A_CONDITION_DONT_CARE};
-        if (triggerDirection == 0) {
-            directions = {PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_RISING,
-                            PS3000A_NONE};
-        } else {
-            directions = {PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_NONE,
-                            PS3000A_FALLING,
-                            PS3000A_NONE};
-        }
+        triggerVoltage = mv_to_adc(static_cast<int16_t>(triggerThreshold), unit.channelSettings[PS3000A_EXTERNAL].range, &unit);
+        triggerSourceChannel = PS3000A_EXTERNAL;
     }
-    memset(&pulseWidth, 0, sizeof(struct tPwq));
-    setTrigger(&unit, &sourceDetails, 1, &conditions, 1, &directions, &pulseWidth, 0, 0, 0, nullptr, 0);
+
+    if (triggerDirection == 0) {
+        directions = PS3000A_RISING;
+    } else {
+        directions = PS3000A_FALLING;
+    }
+
+    if ((status = ps3000aSetSimpleTrigger(unit.handle, 1, triggerSourceChannel, triggerVoltage, directions, triggerDelay,
+    static_cast<int16_t>(triggerTimeOutInMilliseconds))) !=
+    PICO_OK) {
+        printf("Error setting trigger\n");
+    }
+
+}
+
+void PSDevice::GetTimebaseInfo(const int& TIME_BASE, int& samplingDurationInNanoseconds, int& samplingIntervalInNanoseconds) {
+    status = ps3000aGetTimebase(unit.handle, TIME_BASE, BUFFER_SIZE, &samplingIntervalInNanoseconds, 0, nullptr, 0);
+    samplingDurationInNanoseconds = BUFFER_SIZE * samplingIntervalInNanoseconds;
 }
 
 void PSDevice::CollectOneWaveform() {
@@ -172,17 +111,15 @@ void PSDevice::CollectOneWaveform() {
         }
     }
 
-    /* Find the maximum number of samples and the time interval (in nanoseconds) */
-    while (ps3000aGetTimebase(unit.handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, 0)) {
-        timebase++;
-    }
+    // Calculate time interval (in nanoseconds)
+    ps3000aGetTimebase(unit.handle, timebase_, sampleCount, &timeInterval, 0, &maxSamples, 0);
 
     /* Start the device collecting, then wait for completion*/
     g_ready = FALSE;
 
     do {
         retry = 0;
-        status = ps3000aRunBlock(unit.handle, 0, sampleCount, timebase, oversample, &timeIndisposed, 0, callBackBlock, nullptr);
+        status = ps3000aRunBlock(unit.handle, 0, sampleCount, timebase_, oversample, &timeIndisposed, 0, callBackBlock, nullptr);
         if (status != PICO_OK) {
             if (status == PICO_POWER_SUPPLY_CONNECTED || status == PICO_POWER_SUPPLY_NOT_CONNECTED ||
                 status == PICO_POWER_SUPPLY_UNDERVOLTAGE) {      // PicoScope 340XA/B/D/D MSO devices...+5 V PSU connected or removed
