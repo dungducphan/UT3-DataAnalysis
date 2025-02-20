@@ -127,9 +127,9 @@ struct Ps3000aModule {
 };
 
 
-class PS3000A_AsynPortDriver : public asynPortDriver {
+class testAsynPortDriver : public asynPortDriver {
 public:
-    PS3000A_AsynPortDriver(const char *portName, int maxArraySize);
+    testAsynPortDriver(const char *portName, int maxArraySize);
                  
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);

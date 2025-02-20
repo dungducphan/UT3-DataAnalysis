@@ -25,7 +25,6 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 #SNCSEQ=$(EPICS_BASE)/../modules/soft/seq
 
 # EPICS_BASE usually appears last so other apps can override stuff:
-EPICS_BASE=/home/dphan/Applications/EPICS/base-7.0
 
 # Set RULES here if you want to take build rules from somewhere
 # other than EPICS_BASE:
@@ -34,4 +33,3 @@ EPICS_BASE=/home/dphan/Applications/EPICS/base-7.0
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/../RELEASE.$(EPICS_HOST_ARCH).local
 -include $(TOP)/configure/RELEASE.local
-ASYN=/home/dphan/Applications/EPICS/synApps/support/asyn-R4-44-2

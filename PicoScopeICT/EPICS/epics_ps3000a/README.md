@@ -1,7 +1,7 @@
-EPICS driver and IOC for the PicoScope 3000 Series, based on the asynPortDriver
+EPICS driver and IOC for the PicoScope 3000 Series, based on the asynPortDriver (asyn), and pico_2000 EPICS driver (https://git.gsi.de/r3b_public/epics/pico_2000)
 
-Requirements
-------------
+# Requirements
+---
 
 It is required to set the environment variable 'PICO_SDK' to point to the
 installation path of the PICO SDK (including header files and libraries).
@@ -10,9 +10,15 @@ installation path of the PICO SDK (including header files and libraries).
 - EPICS base
 - asyn driver
 
-GUI
+# GUI
 ---
 
 Included for MEDM in picoApp/adl.
 Use the start_gui.sh script.
 
+
+# How to
+---
+- Write your own `configure/RELEASE.local` to define your `$EPICS_BASE`, `$SUPPORT`, and `ASYN` paths.
+- Define `PICO_SDK` path. On Linux, use `export PICO_SDK=/opt/picoscope`
+- Rebuild
