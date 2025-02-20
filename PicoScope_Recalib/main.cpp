@@ -108,6 +108,25 @@ TGraph* WaveformToTGraph(const waveform& wf) {
   return gr;
 }
 
+void BackgroundSubtraction(TGraph* gr, const double x_min, const double x_max) {
+  const auto h = new TH1D("h", "h", 100, x_min, x_max);
+  for (int i = 0; i < gr->GetN(); i++) {
+    double x, y;
+    gr->GetPoint(i, x, y);
+    if (x < x_min || x > x_max) {
+        h->Fill(y);
+    }
+  }
+  double mean = h->GetMean();
+  delete h;
+
+  for (int i = 0; i < gr->GetN(); i++) {
+    double x, y;
+    gr->GetPoint(i, x, y);
+    gr->SetPoint(i, x, y - mean);
+  }
+}
+
 void BackgroundSubtraction(TGraph* gr, int idx) {
   double mean = 0;
   for (int i = 0; i < idx; i++) {
@@ -162,14 +181,23 @@ void PlotPicoScope(bool bkgdSub = false, int idx = 1000) {
   }
 }
 
+double IntegrateTGraph(TGraph* gr, const double x_min, const double x_max) {
+  const int idx_min = gr->GetXaxis()->FindBin(x_min);
+  const int idx_max = gr->GetXaxis()->FindBin(x_max);
+  return gr->Integral(idx_min, idx_max);
+}
+
 double IntegrateTGraph(TGraph* gr, int idx_min) {
   return gr->Integral(idx_min, -1);
 }
 
-int main() {
-  // PlotLeCroy(true, 1750);
-  // PlotPicoScope(true, 1200);
+double CalculateChargeFromRawWaveform(TGraph* gr, const double x_min, const double x_max) {
+  BackgroundSubtraction(gr, x_min, x_max);
+  const double integral = IntegrateTGraph(gr, x_min, x_max);
+  return integral * 1E12 / 50;
+}
 
+int main() {
   int integralMarkerLeCroy = 1752;
   int integralMarkerPicoScope = 1202;
   int nbins = 40;
