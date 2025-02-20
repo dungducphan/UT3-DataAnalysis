@@ -1,17 +1,3 @@
-/*
- * testAsynPortDriver.cpp
- * 
- * Asyn driver that inherits from the asynPortDriver class to demonstrate its use.
- * It simulates a digital scope looking at a 1kHz 1000-point noisy sine wave.  Controls are
- * provided for time/division, volts/division, volt offset, trigger delay, noise amplitude, update time,
- * and run/stop.
- * Readbacks are provides for the waveform data, min, max and mean values.
- *
- * Author: Mark Rivers
- *
- * Created Feb. 5, 2009
- */
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -30,22 +16,18 @@
 #include "testAsynPortDriver.h"
 #include <epicsExport.h>
 
-#define FREQUENCY 1000       /* Frequency in Hz */
-#define AMPLITUDE 1.0        /* Plus and minus peaks of sin wave */
 #define NUM_DIVISIONS 10     /* Number of scope divisions in X and Y */
 #define MIN_UPDATE_TIME 0.02 /* Minimum update time, to prevent CPU saturation */
 #define N_CH 4
 #define PS3000A_FREQUENCY 1000000000
 
 #define MAX_ENUM_STRING_SIZE 20
-static int allVoltsPerDivSelections[NUM_VERT_SELECTIONS]={5,10,20,50,100,
-    200,500,1000,2000,5000,10000,20000};
+static int allVoltsPerDivSelections[NUM_VERT_SELECTIONS]={5,10,20,50,100,200,500,1000,2000,5000,10000,20000};
 
 static const char *driverName="testAsynPortDriver";
 void run_task(void *drvPvt);
 
-static const uint16_t input_ranges[] =
-{
+static const uint16_t input_ranges[] = {
 	10,
 	20,
 	50,
@@ -60,8 +42,7 @@ static const uint16_t input_ranges[] =
 	50000
 };
 
-static const char *ps3000a_strings[] =
-{
+static const char *ps3000a_strings[] = {
 	"OK",
 	"Max units opened",
 	"Memory fail",
@@ -538,8 +519,7 @@ testAsynPortDriver::pico_run_block()
 		    &time_units, segment_index);
 		CHKOK("GetTriggerTimeOffset");
 
-		double sampled_time_ns = n_samples * ps.time_interval_ns
-		    * down_sample_ratio;
+		// double sampled_time_ns = n_samples * ps.time_interval_ns * down_sample_ratio;
 		/*printf("%f sampled_time_ns\n", sampled_time_ns);*/
 
 		/*printf("Trigger time = %ld %d.\n", time, time_units);*/

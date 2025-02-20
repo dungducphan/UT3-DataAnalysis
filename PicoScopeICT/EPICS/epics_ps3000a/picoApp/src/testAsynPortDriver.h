@@ -1,16 +1,12 @@
-/*
- * testAsynPortDriver.h
- * 
- * Asyn driver that inherits from the asynPortDriver class to demonstrate its use.
- * It simulates a digital scope looking at a 1kHz 1000-point noisy sine wave.  Controls are
- * provided for time/division, volts/division, volt offset, trigger delay, noise amplitude, update time,
- * and run/stop.
- * Readbacks are provides for the waveform data, min, max and mean values.
- *
- * Author: Mark Rivers
- *
- * Created Feb. 5, 2009
- */
+/* 
+** Device support for PicoScope 3000 Series is written based on 
+** the example of "testAsynPortDriver" from asyn module
+** and the C/C++ example of "ps3000a" from Pico Technology
+** (https://github.com/picotech/picosdk-c-examples/tree/master/ps3000a)
+**
+*/
+
+#pragma once
 
 #include "asynPortDriver.h"
 
@@ -104,54 +100,42 @@
 
 #include <ps3000aApi.h>
 
-struct Ps3000aChannel
-{
-	PS3000A_RANGE range;
-	int range_v;
+struct PS3000AChannel {
+	PS3000A_RANGE    range;
+	int              range_v;
 	PS3000A_COUPLING coupling;
 };
 
-struct Ps3000aConfig
-{
-	Ps3000aChannel ch[4];
+struct PS3000AConfig {
+	PS3000AChannel ch[4];
 };
 
-struct BlockInfo
-{
+struct BlockInfo {
 	int16_t ready;
 };
 
-struct Ps3000aModule
-{
-	int16_t handle;
-	struct Ps3000aConfig config;
-	int16_t max_value;
-	float maximumVoltage;
-	float minimumVoltage;
-	float time_interval_ns;
+struct Ps3000aModule {
+	int16_t  handle;
+	struct   PS3000AConfig config;
+	int16_t  max_value;
+	float    maximumVoltage;
+	float    minimumVoltage;
+	float    time_interval_ns;
 	uint32_t time_base;
-	int32_t max_points;
+	int32_t  max_points;
 	uint32_t max_down_sample_ratio;
 };
 
 
-/** Class that demonstrates the use of the asynPortDriver base class to greatly simplify the task
-  * of writing an asyn port driver.
-  * This class does a simple simulation of a digital oscilloscope.  It computes a waveform, computes
-  * statistics on the waveform, and does callbacks with the statistics and the waveform data itself. 
-  * I have made the methods of this class public in order to generate doxygen documentation for them,
-  * but they should really all be private. */
-class testAsynPortDriver : public asynPortDriver {
+class PS3000A_AsynPortDriver : public asynPortDriver {
 public:
-    testAsynPortDriver(const char *portName, int maxArraySize);
+    PS3000A_AsynPortDriver(const char *portName, int maxArraySize);
                  
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-    virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
-                                        size_t nElements, size_t *nIn);
-    virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[],
-                                size_t nElements, size_t *nIn);
+    virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
+    virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], size_t nElements, size_t *nIn);
 
     /* These are the methods that are new to this class */
     void run_task(void);
