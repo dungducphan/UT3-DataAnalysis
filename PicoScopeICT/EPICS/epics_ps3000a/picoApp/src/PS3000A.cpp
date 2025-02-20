@@ -154,24 +154,21 @@ static const char *ps3000a_strings[] = {
   * Calls constructor for the asynPortDriver base class.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxPoints The maximum  number of points in the volt and time arrays */
-PS3000A::PS3000A(const char *portName, int maxPoints)
-   : asynPortDriver(portName,
-    1, /* maxAddr */
-    asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask
-    | asynDrvUserMask, /* Interface mask */
-    asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask
-    | asynEnumMask,  /* Interrupt mask */
-    0,
-    1, /* Autoconnect */
-    0, /* Default priority */
-    0) /* Default stack size*/
-{
+PS3000A::PS3000A(const char *portName, int maxPoints) : 
+asynPortDriver(portName,
+1, /* maxAddr */
+asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask | asynDrvUserMask, /* Interface mask */
+asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Interrupt mask */
+0,
+1, /* Autoconnect */
+0, /* Default priority */
+0) /* Default stack size*/ {
     int i, ch;
     asynStatus status;
     const char *functionName = "PS3000A";
 
     /* Make sure maxPoints is positive */
-    if (maxPoints < 1) maxPoints = 100;
+    if (maxPoints < 1) maxPoints = 1000;
 
     /* Allocate the output waveform array */
     pData_[0] = (epicsFloat64 *)calloc(maxPoints, sizeof(epicsFloat64));
@@ -279,15 +276,11 @@ PS3000A::PS3000A(const char *portName, int maxPoints)
 
     /* init volts per div values */
     for (i = 0; i < NUM_VERT_SELECTIONS; i++) {
-        voltsPerDivStrings_[i] =
-	    (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
+        voltsPerDivStrings_[i] = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
         voltsPerDivSeverities_[i] = 0;
-        epicsSnprintf(voltsPerDivStrings_[i],
-	    MAX_ENUM_STRING_SIZE, "%g",
-	    allVoltsPerDivSelections[i] / 1000.);
+        epicsSnprintf(voltsPerDivStrings_[i], MAX_ENUM_STRING_SIZE, "%g", allVoltsPerDivSelections[i] / 1000.);
         // The values are in mV
-        voltsPerDivValues_[i] =
-	    (int)(allVoltsPerDivSelections[i]);
+        voltsPerDivValues_[i] = (int)(allVoltsPerDivSelections[i]);
     }
 
     /* Set the initial values of some parameters */
@@ -314,36 +307,37 @@ PS3000A::PS3000A(const char *portName, int maxPoints)
 	    setIntegerParam(P_ch_condition[ch],	PS3000A_CONDITION_DONT_CARE);
 	    setIntegerParam(P_ch_direction[ch],	PS3000A_FALLING);
     }
+
     /* Enable trigger on channel A */
-    setIntegerParam(P_ch_enabled[0],	1);
-    setIntegerParam(P_ch_condition[0],	PS3000A_CONDITION_TRUE);
+    setIntegerParam(P_ch_enabled  [0],	1                     ); /* Enable Channel A*/
+    setIntegerParam(P_ch_condition[0],	PS3000A_CONDITION_TRUE); /* Set Trigger Condition, see API [enPS3000ATriggerState]*/
 
-    setIntegerParam(P_down_sample_ratio, 1);
+    setIntegerParam(P_down_sample_ratio, 1);					 /* No down sampling */
+    setIntegerParam(P_time_base_lopr, 0);                        /* Minimum operation value (0), please see "Sampling Interval Formula" in 3000A API docs */
+    setIntegerParam(P_time_base_hopr, 9); 					  	 /* Maximum operation value (9) */
+    setIntegerParam(P_time_base_nelm, maxPoints); 			    
 
-    setIntegerParam(P_time_base_lopr, 0);
-    setIntegerParam(P_time_base_hopr, 9);
-    setIntegerParam(P_time_base_nelm, maxPoints);
-
-    setDoubleParam (P_TriggerDelay,      0.0);
-    setDoubleParam (P_FullTime,         1000);
-    setDoubleParam (P_TimePerDiv,        100);
+    setDoubleParam (P_TriggerDelay,      0.0);					 /* Trigger delay in sampling periods (NOT nanoseconds) */
+    setDoubleParam (P_FullTime,         2000);					 /* Sampling duration in nanoseconds */
+    setDoubleParam (P_TimePerDiv,        200);						 /* Time per division in nanoseconds */
     setDoubleParam (P_UpdateTime,        0.5);
     setDoubleParam (P_NoiseAmplitude,    0.1);
     setDoubleParam (P_MinValue,          0.0);
     setDoubleParam (P_MaxValue,          0.0);
     setDoubleParam (P_MeanValue,         0.0);
 
-    setIntegerParam(P_max_samples,	maxPoints);
+    setIntegerParam(P_max_samples,	maxPoints);					/* Maximum number of sampling points */
     setIntegerParam(P_segment_index,	0);
     setIntegerParam(P_downsampled_frequency, 1000000000);
     setIntegerParam(P_sample_frequency, 1000000000);
-    setIntegerParam(P_sample_length,	maxPoints);
+    setIntegerParam(P_sample_length,	maxPoints);    		    /* Number of sampling points*/
     set_time_base_array();
 
-    setDoubleParam (P_time_interval_ns,	0);
+    setDoubleParam (P_time_interval_ns,	0);						 /* Sampling interval in nanoseconds */
 
-    setIntegerParam(P_trigger_source,	PS3000A_CHANNEL_A);
+    setIntegerParam(P_trigger_source,	PS3000A_CHANNEL_A);      /* Trigger Source on Channel A*/ // FIXME: This should be on EXTERNAL
 
+	// FIXME: Should turn off signal generator
     setIntegerParam(P_sig_offset,	0);
     setDoubleParam (P_sig_pktopk,	1.0); /* Volt */
     setIntegerParam(P_sig_wavetype,	PS3000A_SINE);
@@ -589,7 +583,7 @@ asynStatus PS3000A::writeInt32(asynUser *pasynUser, epicsInt32 value) {
         setTimePerDiv();
     }
     else if (function == P_PicoConnect) {
-	connectPicoScope();
+		ConnectPicoScope();
     }
     else if (function == P_trigger_source) {
 	    set_trigger_source();
@@ -821,7 +815,7 @@ asynStatus PS3000A::readEnum(asynUser *pasynUser, char *strings[], int values[],
     return asynSuccess;
 }
 
-int PS3000A::openPs3000a() {
+int PS3000A::OpenPS3000A() {
 	PICO_STATUS ok;
 	int8_t *serial = 0;
 
@@ -851,7 +845,7 @@ int PS3000A::openPs3000a() {
 	return ok;
 }
 
-int PS3000A::closePs3000a() {
+int PS3000A::ClosePS3000A() {
 	PICO_STATUS ok;
 	ok = ps3000aCloseUnit(ps.handle);
 	CHKOK("Close");
@@ -1068,7 +1062,7 @@ static const char *pico_info_strings[] = {
 	NULL
 };
 
-void PS3000A::print_unit_info() {
+void PS3000A::PrintUnitInfo() {
 	char string[BUFSIZ];
 	int16_t string_length = BUFSIZ;
 	int16_t required_size = 0;
@@ -1131,7 +1125,7 @@ int PS3000A::set_signal_generator() {
 	return 0;
 }
 
-int PS3000A::set_time_base() {
+int PS3000A::SetTimeBase() {
 	PICO_STATUS ok;
 	int ch;
 	int channels_enabled;
@@ -1189,6 +1183,11 @@ int PS3000A::set_time_base() {
 		abort();
 	}
 
+	/* Find the lowest time base that can handle the requested time
+	** per division and specified  number of samples.
+	** Using ps3000aGetTimebase2() from API to get the time interval
+	** in FLOAT rather than in INT32.
+	*/
 time_base_again:
 	printf("Request time_base = %d\n", time_base);
 
@@ -1224,8 +1223,7 @@ time_base_again:
 	 * Do we need to downsample the data?
 	 */
 	if (samples_needed > max_points) {
-		down_sample_ratio =
-		    ceil((double)samples_needed / (double)max_points);
+		down_sample_ratio = ceil((double)samples_needed / (double)max_points);
 	} else {
 		down_sample_ratio = 1;
 	}
@@ -1239,8 +1237,7 @@ time_base_again:
 	/*
 	 * How many samples do we need to read after downsampling?
 	 */
-	samples_to_read = ceil((double)samples_needed /
-	    (double)down_sample_ratio);
+	samples_to_read = ceil((double)samples_needed / (double)down_sample_ratio);
 	printf("Samples to read = %d\n", samples_to_read);
 	setIntegerParam(P_sample_length, samples_to_read);
 	setIntegerParam(P_time_base_nelm, samples_to_read);
@@ -1307,7 +1304,7 @@ int PS3000A::setup_trigger() {
 	return ok;
 }
 
-void PS3000A::connectPicoScope() {
+void PS3000A::ConnectPicoScope() {
 	epicsInt32 connect, connected;
 	getIntegerParam(P_PicoConnect, &connect);
 	getIntegerParam(P_PicoConnected, &connected);
@@ -1315,26 +1312,29 @@ void PS3000A::connectPicoScope() {
 	printf("PICO connectPicoScope connect = %d\n", connect);
 
 	if (connect == 0 && connected == 1) {
+		// Device already connected, and an user issues a disconnect
 		printf("PICO Disconnecting...\n");
-		closePs3000a();
+		ClosePS3000A();
 		setIntegerParam(P_PicoConnected, 0);
 	} else if (connected == 0 && connect == 1) {
+		// Device not connected, and an user issues a connect
 		int ch;
 		printf("PICO Connecting...\n");
-		if(openPs3000a() != 0) {
+		if(OpenPS3000A() != 0) {
 			return;
 		}
 		for (ch = 0; ch < 4; ch++) {
 			set_channel(ch);
 		}
 
-		print_unit_info();
+		PrintUnitInfo();
 
-		set_time_base();
+		SetTimeBase();
 		setup_trigger();
 		set_signal_generator();
 		set_data_buffer();
 	}
+	// Any other case is a no-op
 }
 
 void PS3000A::setTimePerDiv() {

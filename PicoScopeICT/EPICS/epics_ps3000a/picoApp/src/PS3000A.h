@@ -98,6 +98,7 @@
 #define P_sig_wavetype_string       "sig_wavetype"
 #define P_sig_frequency_string      "sig_frequency"
 #define P_sig_trigger_source_string	"sig_trigger_source"
+
 #define P_trigger_source_string     "trigger_source"
 
 #include <ps3000aApi.h>
@@ -116,7 +117,7 @@ struct BlockInfo {
 	int16_t ready;
 };
 
-struct Ps3000aModule {
+struct PS3000AModule {
 	int16_t  handle;
 	struct   PS3000AConfig config;
 	int16_t  max_value;
@@ -207,9 +208,9 @@ private:
     void setVoltsPerDiv(int);
     void setTimePerDiv();
 
-    void connectPicoScope(void);
-    int closePs3000a(void);
-    int set_time_base(void);
+    void ConnectPicoScope(void);
+    int ClosePS3000A(void);
+    int SetTimeBase(void);
     void set_time_base_array(void);
     int set_channel(int);
     int setup_trigger(void);
@@ -221,8 +222,8 @@ private:
     int set_trigger_source();
     int set_sig_trigger_source();
     int pico_run_block(void);
-    int openPs3000a(void);
-    void print_unit_info(void);
+    int OpenPS3000A(void);
+    void PrintUnitInfo(void);
 
     int16_t mv_to_adc(int16_t, int);
     int32_t adc_to_uv(int32_t, int);
@@ -231,7 +232,7 @@ private:
     /* pico data members */
     int16_t *data_buffer[4];
     epicsInt32 max_sample_length;
-    struct Ps3000aModule ps;
+    struct PS3000AModule ps;
 };
 
 #define CHKOK_OR_RETURN(name) do {\
