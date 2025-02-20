@@ -30,5 +30,8 @@ EPICS_BASE=/home/dphan/Applications/EPICS/base-7.0
 # Set RULES here if you want to take build rules from somewhere
 # other than EPICS_BASE:
 #RULES=/path/to/epics/support/module/rules/x-y
-include $(TOP)/configure/RELEASE.site
-ASYN=/home/dphan/Applications/EPICS/synApps/support/asyn-4-44-2
+#include $(TOP)/configure/RELEASE.site
+-include $(TOP)/../RELEASE.local
+-include $(TOP)/../RELEASE.$(EPICS_HOST_ARCH).local
+-include $(TOP)/configure/RELEASE.local
+ASYN=/home/dphan/Applications/EPICS/synApps/support/asyn-R4-44-2

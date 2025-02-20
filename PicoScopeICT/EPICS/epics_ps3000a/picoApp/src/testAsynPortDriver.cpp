@@ -35,7 +35,7 @@
 #define NUM_DIVISIONS 10     /* Number of scope divisions in X and Y */
 #define MIN_UPDATE_TIME 0.02 /* Minimum update time, to prevent CPU saturation */
 #define N_CH 4
-#define PS2000A_FREQUENCY 1000000000
+#define PS3000A_FREQUENCY 1000000000
 
 #define MAX_ENUM_STRING_SIZE 20
 static int allVoltsPerDivSelections[NUM_VERT_SELECTIONS]={5,10,20,50,100,
@@ -60,7 +60,7 @@ static const uint16_t input_ranges[] =
 	50000
 };
 
-static const char *ps2000a_strings[] =
+static const char *ps3000a_strings[] =
 {
 	"OK",
 	"Max units opened",
@@ -323,19 +323,19 @@ testAsynPortDriver::testAsynPortDriver(const char *portName, int maxPoints)
 	    setDoubleParam (P_VoltsPerDiv[ch],       1.0);
 	    setIntegerParam(P_VoltsPerDivSelect[ch], 100);
 	    setDoubleParam (P_VoltOffset[ch],        0.0);
-	    setIntegerParam(P_ch_coupling[ch],	PS2000A_DC);
+	    setIntegerParam(P_ch_coupling[ch],	PS3000A_DC);
 	    setIntegerParam(P_ch_enabled[ch],	0);
 	    setDoubleParam (P_ch_offset[ch],	0);
-	    setIntegerParam(P_ch_range[ch],	PS2000A_500MV);
-	    ps.config.ch[ch].range = PS2000A_500MV;
+	    setIntegerParam(P_ch_range[ch],	PS3000A_500MV);
+	    ps.config.ch[ch].range = PS3000A_500MV;
 	    ps.config.ch[ch].range_v = input_ranges[ps.config.ch[ch].range];
 	    setDoubleParam (P_ch_threshold[ch],	mv_to_adc(-10, ch));
-	    setIntegerParam(P_ch_condition[ch],	PS2000A_CONDITION_DONT_CARE);
-	    setIntegerParam(P_ch_direction[ch],	PS2000A_FALLING);
+	    setIntegerParam(P_ch_condition[ch],	PS3000A_CONDITION_DONT_CARE);
+	    setIntegerParam(P_ch_direction[ch],	PS3000A_FALLING);
     }
     /* Enable trigger on channel A */
     setIntegerParam(P_ch_enabled[0],	1);
-    setIntegerParam(P_ch_condition[0],	PS2000A_CONDITION_TRUE);
+    setIntegerParam(P_ch_condition[0],	PS3000A_CONDITION_TRUE);
 
     setIntegerParam(P_down_sample_ratio, 1);
 
@@ -361,13 +361,13 @@ testAsynPortDriver::testAsynPortDriver(const char *portName, int maxPoints)
 
     setDoubleParam (P_time_interval_ns,	0);
 
-    setIntegerParam(P_trigger_source,	PS2000A_CHANNEL_A);
+    setIntegerParam(P_trigger_source,	PS3000A_CHANNEL_A);
 
     setIntegerParam(P_sig_offset,	0);
     setDoubleParam (P_sig_pktopk,	1.0); /* Volt */
-    setIntegerParam(P_sig_wavetype,	PS2000A_SINE);
+    setIntegerParam(P_sig_wavetype,	PS3000A_SINE);
     setDoubleParam (P_sig_frequency,	1e6); /* Hz */
-    setIntegerParam(P_sig_trigger_source, PS2000A_SIGGEN_NONE);
+    setIntegerParam(P_sig_trigger_source, PS3000A_SIGGEN_NONE);
 
     /* Create the thread that runs the waveforms acq in the background */
     status = (asynStatus)(epicsThreadCreate("testAsynPortDriverTask",
@@ -479,13 +479,13 @@ testAsynPortDriver::pico_run_block()
 	int32_t pre_trigger = pre_ds_sample_length * (1. - trigger_fraction);
 	int32_t post_trigger = pre_ds_sample_length * trigger_fraction;
 	int32_t time_indisposed_ms = 0;
-	ps2000aBlockReady callback_block_ready = pico_block_ready;
+	ps3000aBlockReady callback_block_ready = pico_block_ready;
 	struct BlockInfo block_info;
 	block_info.ready = 0;
 	void *p_parameter = (void *)&block_info;
 	int cnt = 0;
 	const int trigger_timeout = 1000; /* ms */
-	PS2000A_RATIO_MODE down_sample_ratio_mode = PS2000A_RATIO_MODE_AVERAGE;
+	PS3000A_RATIO_MODE down_sample_ratio_mode = PS3000A_RATIO_MODE_AVERAGE;
 	uint32_t n_samples = sample_length;
 	uint32_t start_index = 0;
 
@@ -496,7 +496,7 @@ testAsynPortDriver::pico_run_block()
 	printf("post_trigger = %d\n", post_trigger);*/
 	/*printf("ps.time_interval_ns = %f\n", ps.time_interval_ns);
 	printf("ps.time_base = %u\n", (uint32_t)ps.time_base);*/
-	ok = ps2000aRunBlock(ps.handle, pre_trigger, post_trigger,
+	ok = ps3000aRunBlock(ps.handle, pre_trigger, post_trigger,
 	    ps.time_base, 0, &time_indisposed_ms,
 	    segment_index, callback_block_ready, p_parameter);
 	CHKOK("RunBlock");
@@ -523,18 +523,18 @@ testAsynPortDriver::pico_run_block()
 		uint32_t ch;
 		double val;
 		int64_t time;
-		PS2000A_TIME_UNITS time_units;
+		PS3000A_TIME_UNITS time_units;
 		int16_t overflow = 0;
 
 		/*printf("Retrieving data...\n");*/
-		ok = ps2000aGetValues(ps.handle, start_index,
+		ok = ps3000aGetValues(ps.handle, start_index,
 		    &n_samples, down_sample_ratio, down_sample_ratio_mode,
 		    segment_index, &overflow);
 		/*printf("%d samples\n", n_samples);
 		printf("%d overflow\n", overflow);*/
 		CHKOK("GetValues");
 
-		ok = ps2000aGetTriggerTimeOffset64(ps.handle, &time,
+		ok = ps3000aGetTriggerTimeOffset64(ps.handle, &time,
 		    &time_units, segment_index);
 		CHKOK("GetTriggerTimeOffset");
 
@@ -859,31 +859,31 @@ asynStatus testAsynPortDriver::readEnum(asynUser *pasynUser, char *strings[],
 }
 
 int
-testAsynPortDriver::openPs2000a()
+testAsynPortDriver::openPs3000a()
 {
 	PICO_STATUS ok;
 	int8_t *serial = 0;
 
-	ps.config.ch[0].coupling = PS2000A_DC;
+	ps.config.ch[0].coupling = PS3000A_DC;
 
-	ok = ps2000aOpenUnit(&ps.handle, serial);
+	ok = ps3000aOpenUnit(&ps.handle, serial);
 	CHKOK_OR_RETURN("OpenUnit");
 
 	setIntegerParam(P_PicoConnected, 1);
 
-	ok = ps2000aMaximumValue(ps.handle, &ps.max_value);
+	ok = ps3000aMaximumValue(ps.handle, &ps.max_value);
 	CHKOK("MaximumValue");
 	printf("max_value = %d\n", ps.max_value);
 	printf("range = %d\n", ps.config.ch[0].range);
 
-	ok = ps2000aGetAnalogueOffset(ps.handle, ps.config.ch[0].range,
+	ok = ps3000aGetAnalogueOffset(ps.handle, ps.config.ch[0].range,
 	    ps.config.ch[0].coupling, &ps.maximumVoltage, &ps.minimumVoltage);
 	CHKOK("GetAnalogueOffset");
 	printf("Minimum Voltage = %f\n", ps.minimumVoltage);
 	printf("Maximum Voltage = %f\n", ps.maximumVoltage);
 
-	ok = ps2000aGetMaxDownSampleRatio(ps.handle, ps.max_points,
-	    &ps.max_down_sample_ratio, PS2000A_RATIO_MODE_AVERAGE, 0);
+	ok = ps3000aGetMaxDownSampleRatio(ps.handle, ps.max_points,
+	    &ps.max_down_sample_ratio, PS3000A_RATIO_MODE_AVERAGE, 0);
 	CHKOK("GetMaxDownSampleRatio");
 	printf("Maximum downsample ratio = %u\n", ps.max_down_sample_ratio);
 
@@ -891,10 +891,10 @@ testAsynPortDriver::openPs2000a()
 }
 
 int
-testAsynPortDriver::closePs2000a()
+testAsynPortDriver::closePs3000a()
 {
 	PICO_STATUS ok;
-	ok = ps2000aCloseUnit(ps.handle);
+	ok = ps3000aCloseUnit(ps.handle);
 	CHKOK("Close");
 	setIntegerParam(P_PicoConnected, 0);
 
@@ -905,7 +905,7 @@ int
 testAsynPortDriver::set_channel(int ch)
 {
 	int ok;
-	PS2000A_CHANNEL channel = PS2000A_CHANNEL(PS2000A_CHANNEL_A + ch);
+	PS3000A_CHANNEL channel = PS3000A_CHANNEL(PS3000A_CHANNEL_A + ch);
 
 	epicsInt32 enabled;
 	epicsInt32 coupling;
@@ -923,15 +923,15 @@ testAsynPortDriver::set_channel(int ch)
 
 	memset(pData_[ch], 0, sizeof(epicsFloat64) * max_points);
 
-    	ps.config.ch[ch].range = (PS2000A_RANGE)range;
+    	ps.config.ch[ch].range = (PS3000A_RANGE)range;
 	ps.config.ch[ch].range_v = input_ranges[ps.config.ch[ch].range];
 
 	/*printf("Set channel %d: %d, %d, %d, %f\n", ch, enabled, coupling, range,
 	    analog_offset);*/
 
 	if (connected != 0) {
-		ok = ps2000aSetChannel(ps.handle, channel, (int16_t)enabled,
-		    (PS2000A_COUPLING)coupling, (PS2000A_RANGE)range,
+		ok = ps3000aSetChannel(ps.handle, channel, (int16_t)enabled,
+		    (PS3000A_COUPLING)coupling, (PS3000A_RANGE)range,
 		    (float)analog_offset);
 		CHKOK("SetChannel");
 	}
@@ -961,7 +961,7 @@ testAsynPortDriver::set_trigger(int ch)
 {
 	PICO_STATUS ok;
 
-	PS2000A_TRIGGER_CHANNEL_PROPERTIES channelProperties[N_CH];
+	PS3000A_TRIGGER_CHANNEL_PROPERTIES channelProperties[N_CH];
 	int16_t nChannelProperties = 1;
 
 	int32_t autoTriggerMilliseconds = 100;
@@ -987,12 +987,12 @@ testAsynPortDriver::set_trigger(int ch)
 	channelProperties[0].thresholdLower = thr;
 	channelProperties[0].thresholdLowerHysteresis = 2 * 256;
 	channelProperties[0].channel =
-	    (PS2000A_CHANNEL)(PS2000A_CHANNEL_A + ch);
-	channelProperties[0].thresholdMode = PS2000A_LEVEL;
+	    (PS3000A_CHANNEL)(PS3000A_CHANNEL_A + ch);
+	channelProperties[0].thresholdMode = PS3000A_LEVEL;
 
 	if (enabled == 1 && ch == source) {
 		if (connected == 1) {
-			ok = ps2000aSetTriggerChannelProperties(ps.handle,
+			ok = ps3000aSetTriggerChannelProperties(ps.handle,
 			    channelProperties, nChannelProperties, 0,
 			    autoTriggerMilliseconds);
 			CHKOK("SetTriggerChannelProperties");
@@ -1012,11 +1012,11 @@ testAsynPortDriver::set_sig_trigger_source()
 	getIntegerParam(P_trigger_source, &source);
 
 	for (ch = 0; ch < 4; ++ch) {
-		PS2000A_TRIGGER_STATE cond;
+		PS3000A_TRIGGER_STATE cond;
 		if (ch == source) {
-			cond = PS2000A_CONDITION_TRUE;
+			cond = PS3000A_CONDITION_TRUE;
 		} else {
-			cond = PS2000A_CONDITION_DONT_CARE;
+			cond = PS3000A_CONDITION_DONT_CARE;
 		}
 		setIntegerParam(P_ch_condition[ch], cond);
 	}
@@ -1031,11 +1031,11 @@ testAsynPortDriver::set_trigger_source()
 	getIntegerParam(P_trigger_source, &source);
 
 	for (ch = 0; ch < 4; ++ch) {
-		PS2000A_TRIGGER_STATE cond;
+		PS3000A_TRIGGER_STATE cond;
 		if (ch == source) {
-			cond = PS2000A_CONDITION_TRUE;
+			cond = PS3000A_CONDITION_TRUE;
 		} else {
-			cond = PS2000A_CONDITION_DONT_CARE;
+			cond = PS3000A_CONDITION_DONT_CARE;
 		}
 		setIntegerParam(P_ch_condition[ch], cond);
 	}
@@ -1047,7 +1047,7 @@ testAsynPortDriver::set_trigger_conditions()
 {
 	PICO_STATUS ok;
 
-	PS2000A_TRIGGER_CONDITIONS conditions[1];
+	PS3000A_TRIGGER_CONDITIONS conditions[1];
 	int16_t nConditions = 1;
 	int ch;
 	epicsInt32 connected;
@@ -1062,17 +1062,16 @@ testAsynPortDriver::set_trigger_conditions()
 	/*printf("conditions: %d %d %d %d\n", ch_cond[0], ch_cond[1], ch_cond[2],
 	    ch_cond[3]);*/
 
-	conditions[0].channelA = (PS2000A_TRIGGER_STATE)ch_cond[0];
-	conditions[0].channelB = (PS2000A_TRIGGER_STATE)ch_cond[1];
-	conditions[0].channelC = (PS2000A_TRIGGER_STATE)ch_cond[2];
-	conditions[0].channelD = (PS2000A_TRIGGER_STATE)ch_cond[3];
-	conditions[0].external = PS2000A_CONDITION_DONT_CARE;
-	conditions[0].aux = PS2000A_CONDITION_DONT_CARE;
-	conditions[0].pulseWidthQualifier = PS2000A_CONDITION_DONT_CARE;
-	conditions[0].digital = PS2000A_CONDITION_DONT_CARE;
+	conditions[0].channelA = (PS3000A_TRIGGER_STATE)ch_cond[0];
+	conditions[0].channelB = (PS3000A_TRIGGER_STATE)ch_cond[1];
+	conditions[0].channelC = (PS3000A_TRIGGER_STATE)ch_cond[2];
+	conditions[0].channelD = (PS3000A_TRIGGER_STATE)ch_cond[3];
+	conditions[0].external = PS3000A_CONDITION_DONT_CARE;
+	conditions[0].aux = PS3000A_CONDITION_DONT_CARE;
+	conditions[0].pulseWidthQualifier = PS3000A_CONDITION_DONT_CARE;
 
 	if (connected != 0) {
-		ok = ps2000aSetTriggerChannelConditions(ps.handle, conditions,
+		ok = ps3000aSetTriggerChannelConditions(ps.handle, conditions,
 		    nConditions);
 		CHKOK("SetTriggerChannelConditions");
 	}
@@ -1085,7 +1084,7 @@ testAsynPortDriver::set_trigger_directions()
 {
 	PICO_STATUS ok;
 	int ch;
-	PS2000A_THRESHOLD_DIRECTION dir[4];
+	PS3000A_THRESHOLD_DIRECTION dir[4];
 	epicsInt32 connected;
 
 	getIntegerParam(P_PicoConnected, &connected);
@@ -1094,13 +1093,13 @@ testAsynPortDriver::set_trigger_directions()
 	for (ch = 0; ch < 4; ++ch) {
 		epicsInt32 direction;
 		getIntegerParam(P_ch_direction[ch], &direction);
-		dir[ch] = (PS2000A_THRESHOLD_DIRECTION)direction;
+		dir[ch] = (PS3000A_THRESHOLD_DIRECTION)direction;
 	}
 
-	PS2000A_THRESHOLD_DIRECTION ext = PS2000A_FALLING;
-	PS2000A_THRESHOLD_DIRECTION aux = PS2000A_FALLING;
+	PS3000A_THRESHOLD_DIRECTION ext = PS3000A_FALLING;
+	PS3000A_THRESHOLD_DIRECTION aux = PS3000A_FALLING;
 
-	ok = ps2000aSetTriggerChannelDirections(ps.handle, dir[0], dir[1],
+	ok = ps3000aSetTriggerChannelDirections(ps.handle, dir[0], dir[1],
 	    dir[2], dir[3], ext, aux);
 	CHKOK("SetTriggerChannelDirections");
 
@@ -1139,7 +1138,7 @@ testAsynPortDriver::print_unit_info()
 	printf("------- Unit info -------\n");
 	for (info = PICO_DRIVER_VERSION; info < PICO_FIRMWARE_VERSION_2;
 	    ++info) {
-		ps2000aGetUnitInfo(ps.handle, (int8_t *)&string[0],
+		ps3000aGetUnitInfo(ps.handle, (int8_t *)&string[0],
 		    string_length, &required_size, info);
 		printf("%s: %*s\n", pico_info_strings[info], required_size,
 		    string);
@@ -1172,22 +1171,22 @@ testAsynPortDriver::set_signal_generator()
 	double stop_frequency = start_frequency;
 	double increment = 1;
 	double dwell_time = 1;
-	PS2000A_SWEEP_TYPE sweep_type = PS2000A_UP;
-	PS2000A_EXTRA_OPERATIONS operation = PS2000A_ES_OFF;
+	PS3000A_SWEEP_TYPE sweep_type = PS3000A_UP;
+	PS3000A_EXTRA_OPERATIONS operation = PS3000A_ES_OFF;
 	uint32_t shots = 0;
 	uint32_t sweeps = 0;
-	PS2000A_SIGGEN_TRIG_TYPE trigger_type = PS2000A_SIGGEN_FALLING;
-	trigger_source = PS2000A_SIGGEN_NONE;
+	PS3000A_SIGGEN_TRIG_TYPE trigger_type = PS3000A_SIGGEN_FALLING;
+	trigger_source = PS3000A_SIGGEN_NONE;
 	int16_t ext_in_threshold = 0;
 
 	if (connected != 0) {
 		/* Function takes values in micro-volts */
 		int32_t offset_uV = offset_voltage * 1000000;
 		int32_t pk_to_pk_uV = pk_to_pk * 1000000;
-		ok = ps2000aSetSigGenBuiltInV2(ps.handle, offset_uV,
+		ok = ps3000aSetSigGenBuiltInV2(ps.handle, offset_uV,
 		    pk_to_pk_uV, wave_type, start_frequency, stop_frequency,
 		    increment, dwell_time, sweep_type, operation, shots, sweeps,
-		    trigger_type, (PS2000A_SIGGEN_TRIG_SOURCE)trigger_source,
+		    trigger_type, (PS3000A_SIGGEN_TRIG_SOURCE)trigger_source,
 		    ext_in_threshold);
 		CHKOK("SetSigGenBuiltIn");
 	}
@@ -1258,7 +1257,7 @@ testAsynPortDriver::set_time_base()
 time_base_again:
 	printf("Request time_base = %d\n", time_base);
 
-	ok = ps2000aGetTimebase2(ps.handle, time_base, max_points,
+	ok = ps3000aGetTimebase2(ps.handle, time_base, max_points,
 	    &time_interval_ns, 0, &max_samples, segment_index);
 	CHKOK("GetTimebase2");
 	if (ok == PICO_INVALID_TIMEBASE) {
@@ -1276,7 +1275,7 @@ time_base_again:
 	printf("Returned max_samples = %d\n", max_samples);
 	setIntegerParam(P_max_samples, max_samples);
 
-	sample_frequency = PS2000A_FREQUENCY / time_interval_ns;
+	sample_frequency = PS3000A_FREQUENCY / time_interval_ns;
 	printf("Sample frequency = %d Hz\n", sample_frequency);
 	setIntegerParam(P_sample_frequency, sample_frequency);
 
@@ -1322,14 +1321,13 @@ testAsynPortDriver::set_data_buffer()
 
 	epicsInt32 segment_index;
 	epicsInt32 max_points;
-	PS2000A_RATIO_MODE mode = PS2000A_RATIO_MODE_AVERAGE;
+	PS3000A_RATIO_MODE mode = PS3000A_RATIO_MODE_AVERAGE;
 
 	getIntegerParam(P_segment_index, &segment_index);
         getIntegerParam(P_MaxPoints, &max_points);
 
 	for (ch = 0; ch < 4; ++ch) {
-		ok = ps2000aSetDataBuffer(ps.handle, PS2000A_CHANNEL_A + ch,
-		    data_buffer[ch], max_points, segment_index, mode);
+		ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) ch, data_buffer[ch], max_points, segment_index, mode);
 	}
 
 	CHKOK("SetDataBuffer");
@@ -1337,16 +1335,16 @@ testAsynPortDriver::set_data_buffer()
 	return 0;
 }
 
-PS2000A_RANGE
+PS3000A_RANGE
 get_best_range(int full_scale_mv)
 {
 	int i;
-	for (i = PS2000A_20MV; i < PS2000A_20V; ++i) {
+	for (i = PS3000A_20MV; i < PS3000A_20V; ++i) {
 		if (input_ranges[i] >= full_scale_mv) {
 			break;
 		}
 	}
-	return (PS2000A_RANGE)i;
+	return (PS3000A_RANGE)i;
 }
 
 void testAsynPortDriver::setVoltsPerDiv(int ch)
@@ -1360,7 +1358,7 @@ void testAsynPortDriver::setVoltsPerDiv(int ch)
 
     /* update channel range */
     full_scale_mv = mVPerDiv * NUM_DIVISIONS;
-    PS2000A_RANGE range = get_best_range(full_scale_mv);
+    PS3000A_RANGE range = get_best_range(full_scale_mv);
 
     /*printf("Full scale %d = %d mV\n", ch, full_scale_mv);
     printf("Optimal range %d = %d (enum)\n", ch, range);*/
@@ -1391,12 +1389,12 @@ void testAsynPortDriver::connectPicoScope()
 
 	if (connect == 0 && connected == 1) {
 		printf("PICO Disconnecting...\n");
-		closePs2000a();
+		closePs3000a();
 		setIntegerParam(P_PicoConnected, 0);
 	} else if (connected == 0 && connect == 1) {
 		int ch;
 		printf("PICO Connecting...\n");
-		if(openPs2000a() != 0) {
+		if(openPs3000a() != 0) {
 			return;
 		}
 		for (ch = 0; ch < 4; ch++) {
