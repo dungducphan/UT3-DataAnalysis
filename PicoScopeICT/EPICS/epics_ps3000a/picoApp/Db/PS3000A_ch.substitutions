@@ -1,4 +1,4 @@
-file db/testAsynPortDriver_ch.template {
+file db/PS3000A_ch.template {
 	pattern { C }
 	{ A }
 	{ B }

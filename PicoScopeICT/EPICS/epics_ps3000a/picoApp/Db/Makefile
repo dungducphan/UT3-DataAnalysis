@@ -1,5 +1,6 @@
 TOP=../..
 include $(TOP)/configure/CONFIG
-DB += testAsynPortDriver.db
-DB += testAsynPortDriver_ch.db
+DB += asynRecord.db
+DB += PS3000A.db
+DB += PS3000A_ch.db
 include $(TOP)/configure/RULES

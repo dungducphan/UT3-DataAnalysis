@@ -1,8 +1,10 @@
 /* 
 ** Device support for PicoScope 3000 Series is written based on 
-** the example of "testAsynPortDriver" from asyn module
-** and the C/C++ example of "ps3000a" from Pico Technology
-** (https://github.com/picotech/picosdk-c-examples/tree/master/ps3000a)
+** the example of "testAsynPortDriver" from asyn module,
+** the C/C++ example of "ps3000a" from Pico Technology
+** (https://github.com/picotech/picosdk-c-examples/tree/master/ps3000a),
+** and the "pico_2000" EPICS driver from GSI 
+** (https://git.gsi.de/r3b_public/epics/pico_2000)
 **
 */
 
@@ -127,9 +129,9 @@ struct Ps3000aModule {
 };
 
 
-class testAsynPortDriver : public asynPortDriver {
+class PS3000A : public asynPortDriver {
 public:
-    testAsynPortDriver(const char *portName, int maxArraySize);
+    PS3000A(const char *portName, int maxArraySize);
                  
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);

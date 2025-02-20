@@ -2,7 +2,7 @@
 < cdCommands
 
 cd topbin
-ld < testAsynPortDriver.munch
+ld < PS3000A.munch
 cd startup
 < st.cmd
 

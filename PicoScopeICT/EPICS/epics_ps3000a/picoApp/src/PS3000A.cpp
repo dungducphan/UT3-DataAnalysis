@@ -13,18 +13,18 @@
 #include <epicsEvent.h>
 #include <iocsh.h>
 
-#include "testAsynPortDriver.h"
+#include "PS3000A.h"
 #include <epicsExport.h>
 
 #define NUM_DIVISIONS 10     /* Number of scope divisions in X and Y */
 #define MIN_UPDATE_TIME 0.02 /* Minimum update time, to prevent CPU saturation */
-#define N_CH 4
+#define N_CH 2
 #define PS3000A_FREQUENCY 1000000000
 
 #define MAX_ENUM_STRING_SIZE 20
 static int allVoltsPerDivSelections[NUM_VERT_SELECTIONS]={5,10,20,50,100,200,500,1000,2000,5000,10000,20000};
 
-static const char *driverName="testAsynPortDriver";
+static const char *driverName="PS3000A";
 void run_task(void *drvPvt);
 
 static const uint16_t input_ranges[] = {
@@ -150,11 +150,11 @@ static const char *ps3000a_strings[] = {
 };
 
 
-/** Constructor for the testAsynPortDriver class.
+/** Constructor for the PS3000A class.
   * Calls constructor for the asynPortDriver base class.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxPoints The maximum  number of points in the volt and time arrays */
-testAsynPortDriver::testAsynPortDriver(const char *portName, int maxPoints)
+PS3000A::PS3000A(const char *portName, int maxPoints)
    : asynPortDriver(portName,
     1, /* maxAddr */
     asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask
@@ -168,7 +168,7 @@ testAsynPortDriver::testAsynPortDriver(const char *portName, int maxPoints)
 {
     int i, ch;
     asynStatus status;
-    const char *functionName = "testAsynPortDriver";
+    const char *functionName = "PS3000A";
 
     /* Make sure maxPoints is positive */
     if (maxPoints < 1) maxPoints = 100;
@@ -351,7 +351,7 @@ testAsynPortDriver::testAsynPortDriver(const char *portName, int maxPoints)
     setIntegerParam(P_sig_trigger_source, PS3000A_SIGGEN_NONE);
 
     /* Create the thread that runs the waveforms acq in the background */
-    status = (asynStatus)(epicsThreadCreate("testAsynPortDriverTask",
+    status = (asynStatus)(epicsThreadCreate("PS3000ATask",
                           epicsThreadPriorityMedium,
                           epicsThreadGetStackSize(epicsThreadStackMedium),
                           (EPICSTHREADFUNC)::run_task,
@@ -364,9 +364,7 @@ testAsynPortDriver::testAsynPortDriver(const char *portName, int maxPoints)
 
 }
 
-void
-testAsynPortDriver::set_time_base_array()
-{
+void PS3000A::set_time_base_array() {
 	int i;
 	epicsInt32 max_points = 0;
 	getIntegerParam(P_MaxPoints, &max_points);
@@ -380,16 +378,12 @@ testAsynPortDriver::set_time_base_array()
 	    P_TimeBase, 0);
 }
 
-void
-run_task(void *drvPvt)
-{
-    testAsynPortDriver *pPvt = (testAsynPortDriver *)drvPvt;
+void run_task(void *drvPvt) {
+    PS3000A *pPvt = (PS3000A *)drvPvt;
     pPvt->run_task();
 }
 
-void
-pico_block_ready(int16_t handle, PICO_STATUS ok, void *p_parameter)
-{
+void pico_block_ready(int16_t handle, PICO_STATUS ok, void *p_parameter) {
 	struct BlockInfo *info = (struct BlockInfo *)p_parameter;
 
 	if (ok != PICO_CANCELLED) {
@@ -397,9 +391,7 @@ pico_block_ready(int16_t handle, PICO_STATUS ok, void *p_parameter)
 	}
 }
 
-void
-testAsynPortDriver::run_task()
-{
+void PS3000A::run_task() {
 	epicsInt32 run;
 	double updateTime;
 
@@ -424,9 +416,7 @@ testAsynPortDriver::run_task()
 	}
 }
 
-int
-testAsynPortDriver::pico_run_block()
-{
+int PS3000A::pico_run_block() {
 	PICO_STATUS ok;
 
 	epicsInt32 sample_length;
@@ -567,8 +557,7 @@ testAsynPortDriver::pico_run_block()
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write. */
-asynStatus testAsynPortDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
-{
+asynStatus PS3000A::writeInt32(asynUser *pasynUser, epicsInt32 value) {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     const char *paramName;
@@ -677,8 +666,7 @@ asynStatus testAsynPortDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
   * For all  parameters it  sets the value in the parameter library and calls any registered callbacks.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write. */
-asynStatus testAsynPortDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
-{
+asynStatus PS3000A::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     epicsInt32 run;
@@ -739,16 +727,13 @@ asynStatus testAsynPortDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 va
     return status;
 }
 
-
 /** Called when asyn clients call pasynFloat64Array->read().
   * Returns the value of the P_Waveform or P_TimeBase arrays.  
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Pointer to the array to read.
   * \param[in] nElements Number of elements to read.
   * \param[out] nIn Number of elements actually read. */
-asynStatus testAsynPortDriver::readFloat64Array(asynUser *pasynUser,
-    epicsFloat64 *value, size_t nElements, size_t *nIn)
-{
+asynStatus PS3000A::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn) {
     int function = pasynUser->reason;
     size_t ncopy;
     int ch;
@@ -792,9 +777,7 @@ asynStatus testAsynPortDriver::readFloat64Array(asynUser *pasynUser,
     return status;
 }
 
-asynStatus testAsynPortDriver::readEnum(asynUser *pasynUser, char *strings[],
-    int values[], int severities[], size_t nElements, size_t *nIn)
-{
+asynStatus PS3000A::readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], size_t nElements, size_t *nIn) {
     int function = pasynUser->reason;
     size_t i;
 
@@ -838,9 +821,7 @@ asynStatus testAsynPortDriver::readEnum(asynUser *pasynUser, char *strings[],
     return asynSuccess;
 }
 
-int
-testAsynPortDriver::openPs3000a()
-{
+int PS3000A::openPs3000a() {
 	PICO_STATUS ok;
 	int8_t *serial = 0;
 
@@ -870,9 +851,7 @@ testAsynPortDriver::openPs3000a()
 	return ok;
 }
 
-int
-testAsynPortDriver::closePs3000a()
-{
+int PS3000A::closePs3000a() {
 	PICO_STATUS ok;
 	ok = ps3000aCloseUnit(ps.handle);
 	CHKOK("Close");
@@ -881,9 +860,7 @@ testAsynPortDriver::closePs3000a()
 	return 0;
 }
 
-int
-testAsynPortDriver::set_channel(int ch)
-{
+int PS3000A::set_channel(int ch) {
 	int ok;
 	PS3000A_CHANNEL channel = PS3000A_CHANNEL(PS3000A_CHANNEL_A + ch);
 
@@ -919,26 +896,19 @@ testAsynPortDriver::set_channel(int ch)
 	return 0;
 }
 
-float
-testAsynPortDriver::s_to_ns(int32_t s)
-{
+float PS3000A::s_to_ns(int32_t s) {
 	return s * ps.time_interval_ns;
 }
 
-int32_t
-testAsynPortDriver::adc_to_uv(int32_t adc, int ch)
-{
+int32_t PS3000A::adc_to_uv(int32_t adc, int ch) {
 	return ((float)adc * 1000. * ps.config.ch[ch].range_v) / ps.max_value;
 }
-int16_t
-testAsynPortDriver::mv_to_adc(int16_t mv, int ch)
-{
+
+int16_t PS3000A::mv_to_adc(int16_t mv, int ch) {
 	return (mv * ps.max_value) / ps.config.ch[ch].range_v;
 }
 
-int
-testAsynPortDriver::set_trigger(int ch)
-{
+int PS3000A::set_trigger(int ch) {
 	PICO_STATUS ok;
 
 	PS3000A_TRIGGER_CHANNEL_PROPERTIES channelProperties[N_CH];
@@ -984,9 +954,7 @@ testAsynPortDriver::set_trigger(int ch)
 	return 0;
 }
 
-int
-testAsynPortDriver::set_sig_trigger_source()
-{
+int PS3000A::set_sig_trigger_source() {
 	int ch;
 	epicsInt32 source;
 	getIntegerParam(P_trigger_source, &source);
@@ -1003,9 +971,7 @@ testAsynPortDriver::set_sig_trigger_source()
 	return setup_trigger();
 }
 
-int
-testAsynPortDriver::set_trigger_source()
-{
+int PS3000A::set_trigger_source() {
 	int ch;
 	epicsInt32 source;
 	getIntegerParam(P_trigger_source, &source);
@@ -1022,9 +988,7 @@ testAsynPortDriver::set_trigger_source()
 	return setup_trigger();
 }
 
-int
-testAsynPortDriver::set_trigger_conditions()
-{
+int PS3000A::set_trigger_conditions() {
 	PICO_STATUS ok;
 
 	PS3000A_TRIGGER_CONDITIONS conditions[1];
@@ -1059,9 +1023,7 @@ testAsynPortDriver::set_trigger_conditions()
 	return 0;
 }
 
-int
-testAsynPortDriver::set_trigger_directions()
-{
+int PS3000A::set_trigger_directions() {
 	PICO_STATUS ok;
 	int ch;
 	PS3000A_THRESHOLD_DIRECTION dir[4];
@@ -1086,8 +1048,7 @@ testAsynPortDriver::set_trigger_directions()
 	return 0;
 }
 
-static const char *pico_info_strings[] =
-{
+static const char *pico_info_strings[] = {
 	"driver version",
 	"usb version",
 	"hardware version",
@@ -1107,9 +1068,7 @@ static const char *pico_info_strings[] =
 	NULL
 };
 
-void
-testAsynPortDriver::print_unit_info()
-{
+void PS3000A::print_unit_info() {
 	char string[BUFSIZ];
 	int16_t string_length = BUFSIZ;
 	int16_t required_size = 0;
@@ -1126,9 +1085,7 @@ testAsynPortDriver::print_unit_info()
 	printf("----- End Unit info -----\n");
 }
 
-int
-testAsynPortDriver::set_signal_generator()
-{
+int PS3000A::set_signal_generator() {
 	PICO_STATUS ok;
 
 	epicsInt32 offset_voltage;
@@ -1174,9 +1131,7 @@ testAsynPortDriver::set_signal_generator()
 	return 0;
 }
 
-int
-testAsynPortDriver::set_time_base()
-{
+int PS3000A::set_time_base() {
 	PICO_STATUS ok;
 	int ch;
 	int channels_enabled;
@@ -1293,15 +1248,13 @@ time_base_again:
 	return ok;
 }
 
-int
-testAsynPortDriver::set_data_buffer()
-{
+int PS3000A::set_data_buffer() {
 	PICO_STATUS ok;
 	int ch;
 
 	epicsInt32 segment_index;
 	epicsInt32 max_points;
-	PS3000A_RATIO_MODE mode = PS3000A_RATIO_MODE_AVERAGE;
+	PS3000A_RATIO_MODE mode = PS3000A_RATIO_MODE_NONE;
 
 	getIntegerParam(P_segment_index, &segment_index);
         getIntegerParam(P_MaxPoints, &max_points);
@@ -1315,9 +1268,7 @@ testAsynPortDriver::set_data_buffer()
 	return 0;
 }
 
-PS3000A_RANGE
-get_best_range(int full_scale_mv)
-{
+PS3000A_RANGE get_best_range(int full_scale_mv) {
 	int i;
 	for (i = PS3000A_20MV; i < PS3000A_20V; ++i) {
 		if (input_ranges[i] >= full_scale_mv) {
@@ -1327,8 +1278,7 @@ get_best_range(int full_scale_mv)
 	return (PS3000A_RANGE)i;
 }
 
-void testAsynPortDriver::setVoltsPerDiv(int ch)
-{
+void PS3000A::setVoltsPerDiv(int ch) {
     epicsInt32 mVPerDiv;
     int full_scale_mv;
 
@@ -1346,9 +1296,7 @@ void testAsynPortDriver::setVoltsPerDiv(int ch)
     set_channel(ch);
 }
 
-int
-testAsynPortDriver::setup_trigger()
-{
+int PS3000A::setup_trigger() {
 	int ch;
 	int ok;
 	for (ch = 0; ch < 4; ch++) {
@@ -1359,8 +1307,7 @@ testAsynPortDriver::setup_trigger()
 	return ok;
 }
 
-void testAsynPortDriver::connectPicoScope()
-{
+void PS3000A::connectPicoScope() {
 	epicsInt32 connect, connected;
 	getIntegerParam(P_PicoConnect, &connect);
 	getIntegerParam(P_PicoConnected, &connected);
@@ -1390,8 +1337,7 @@ void testAsynPortDriver::connectPicoScope()
 	}
 }
 
-void testAsynPortDriver::setTimePerDiv()
-{
+void PS3000A::setTimePerDiv() {
 	epicsInt32 nsPerDiv;
 	double time_per_div;
 	double full_time_ns;
@@ -1410,17 +1356,15 @@ void testAsynPortDriver::setTimePerDiv()
 	setup_trigger();
 };
 
-
 /* Configuration routine.  Called directly, or from the iocsh function below */
 
 extern "C" {
 
-/** EPICS iocsh callable function to call constructor for the testAsynPortDriver class.
+/** EPICS iocsh callable function to call constructor for the PS3000A class.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxPoints The maximum  number of points in the volt and time arrays */
-int testAsynPortDriverConfigure(const char *portName, int maxPoints)
-{
-    new testAsynPortDriver(portName, maxPoints);
+int PS3000AConfigure(const char *portName, int maxPoints) {
+    new PS3000A(portName, maxPoints);
     return(asynSuccess);
 }
 
@@ -1429,20 +1373,17 @@ int testAsynPortDriverConfigure(const char *portName, int maxPoints)
 
 static const iocshArg initArg0 = { "portName",iocshArgString};
 static const iocshArg initArg1 = { "max points",iocshArgInt};
-static const iocshArg * const initArgs[] = {&initArg0,
-                                            &initArg1};
-static const iocshFuncDef initFuncDef = {"testAsynPortDriverConfigure",2,initArgs};
-static void initCallFunc(const iocshArgBuf *args)
-{
-    testAsynPortDriverConfigure(args[0].sval, args[1].ival);
+static const iocshArg * const initArgs[] = {&initArg0, &initArg1};
+static const iocshFuncDef initFuncDef = {"PS3000AConfigure",2,initArgs};
+static void initCallFunc(const iocshArgBuf *args) {
+    PS3000AConfigure(args[0].sval, args[1].ival);
 }
 
-void testAsynPortDriverRegister(void)
-{
+void PS3000ARegister(void) {
     iocshRegister(&initFuncDef,initCallFunc);
 }
 
-epicsExportRegistrar(testAsynPortDriverRegister);
+epicsExportRegistrar(PS3000ARegister);
 
 }
 

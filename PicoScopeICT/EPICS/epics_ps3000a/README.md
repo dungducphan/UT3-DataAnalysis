@@ -20,5 +20,13 @@ Use the start_gui.sh script.
 # How to
 ---
 - Write your own `configure/RELEASE.local` to define your `$EPICS_BASE`, `$SUPPORT`, and `ASYN` paths.
+
+My `.local` looks like this:
+```
+EPICS_BASE=/home/dphan/Applications/EPICS/epics-base
+SUPPORT=/home/dphan/Applications/EPICS/support
+ASYN=$(SUPPORT)/asyn-R4-44-2
+```
+
 - Define `PICO_SDK` path. On Linux, use `export PICO_SDK=/opt/picoscope`
 - Rebuild
