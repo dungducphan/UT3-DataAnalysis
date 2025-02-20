@@ -20,3 +20,13 @@ Integrate Domain:
 - Modifying the code to correlate the data from ICT and LANEX and calculate the TID on DUT.
 - Thanh's code live independently "somewhere else", I will just generate a dose table for him to continue the analysis.
 - Adding the PS300 data as well.
+
+### Procedure for PS300
+- Get a time value before the noise starts.
+- Get the baseline of the waveform up to that time.
+- Correlate the baseline with the TID (from Thanh's code).
+
+### Procedure for LANEX
+- Define a ROI.
+- Integrate the light intensity in the ROI.
+- Correlate the light intensity with the charge from ICT.
