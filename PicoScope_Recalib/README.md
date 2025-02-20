@@ -20,8 +20,7 @@ Integrate Domain:
 - Modifying the code to correlate the data from ICT and LANEX and calculate the TID on DUT.
 - Thanh's code live independently "somewhere else", I will just generate a dose table for him to continue the analysis.
 - Adding the PS300 data as well.
-- All data can be found in UT Box: https://utexas.app.box.com/folder/308295681483. Shot log: https://utexas.app.box.
-  com/file/1782555688602.
+- All data can be found in UT Box: https://utexas.app.box.com/folder/308295681483. Shot log: https://utexas.app.box.com/file/1782555688602.
 
 ### Procedure for PS300
 - Get a time value before the noise starts.
