@@ -12,6 +12,7 @@
 #include "TROOT.h"
 #include "TLegend.h"
 #include "TGraph.h"
+#include "TGraphErrors.h"
 
 using waveform = std::pair<std::vector<double>, std::vector<double>>;
 
@@ -83,9 +84,8 @@ waveform ReadSingleWaveformPicoScope(const std::string& filename) {
     if (std::getline(ss, x_str, ',') && std::getline(ss, y_str, ',')) {
       double x_val = std::stod(x_str);
       double y_val = std::stod(y_str);
-      // if (x_val > 500 && x_val < 510) std::cout << "picoscope: " << counter << std::endl;
-      x.push_back(x_val * 1E-9); // ns
-      y.push_back(y_val * 1E-3); // mV
+      x.push_back(x_val); // ns
+      y.push_back(y_val); // mV
     }
     counter++;
   }
@@ -194,10 +194,10 @@ double IntegrateTGraph(TGraph* gr, int idx_min) {
 double CalculateChargeFromRawWaveform(TGraph* gr, const double x_min, const double x_max) {
   BackgroundSubtraction(gr, x_min, x_max);
   const double integral = IntegrateTGraph(gr, x_min, x_max);
-  return integral * 1E12 / 50;
+  return integral / 50;
 }
 
-int main() {
+void PS_LeCroy_CrossCalib() {
   int integralMarkerLeCroy = 1752;
   int integralMarkerPicoScope = 1202;
   int nbins = 40;
@@ -249,6 +249,56 @@ int main() {
   leg->Draw();
 
   c->SaveAs("test/hist.png");
+}
 
+void GetICTChargeTable_20250219() {
+  std::string PS_ICT_20250219_DataDir = "C:\\Users\\brian\\Documents\\GitHub\\UT3-DataAnalysis\\PicoScope_Recalib\\20250219-ICT\\";
+  for (int shotID = 0; shotID < 100; shotID++) {
+    std::string filename = Form("wf_%i.csv", shotID);
+    auto wf = ReadSingleWaveformPicoScope(PS_ICT_20250219_DataDir + filename);
+    auto gr = WaveformToTGraph(wf);
+    auto c = new TCanvas("c", "c", 1200, 600);
+    gr->Draw("APL");
+    c->SaveAs(Form("test\\ict\\wf_%i.png", shotID));
+    auto charge =  CalculateChargeFromRawWaveform(gr, 700, 1200);
+    std::cout << "Shot " << shotID << " :" << charge << "pC." << std::endl;
+    delete gr;
+    delete c;
+  }
+}
+
+void GetPS300CurrentTable_20250219() {
+  std::string PS_PS300_20250219_DataDir = "C:\\Users\\brian\\Documents\\GitHub\\UT3-DataAnalysis\\PicoScope_Recalib\\20250219-PS300\\";
+  auto sumGr = new TGraphErrors();
+  for (int shotID = 0; shotID < 100; shotID++) {
+    std::string filename = Form("wf_%i.csv", shotID);
+    auto wf = ReadSingleWaveformPicoScope(PS_PS300_20250219_DataDir + filename);
+    auto gr = WaveformToTGraph(wf);
+    auto h = new TH1D("h", "h", 400, -2, 2);
+    for (int i = 0; i < gr->GetN(); i++) {
+      double x, y;
+      gr->GetPoint(i, x, y);
+      if (x <= 500) h->Fill(y);
+    }
+    double mean = h->GetMean();
+    double stdDev = h->GetStdDev();
+    sumGr->SetPoint(shotID, shotID, mean);
+    sumGr->SetPointError(shotID, 0, stdDev);
+    // auto c = new TCanvas("c", "c", 1200, 600);
+    // gr->Draw("APL");
+    // c->SaveAs(Form("test\\ps300\\wf_%i.png", shotID));
+    delete gr;
+    delete h;
+    // delete c;
+  }
+  auto c = new TCanvas("c", "c", 1200, 600);
+  sumGr->Draw("APL");
+  c->SaveAs("test\\ps300\\aa_sum.png");
+  delete c;
+  delete sumGr;
+}
+
+int main() {
+  GetPS300CurrentTable_20250219();
   return 0;
 }
