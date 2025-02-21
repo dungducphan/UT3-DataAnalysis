@@ -8,3 +8,4 @@ Debug/
 *.vcxproj.user
 *.aps
 build/
+*slices*
