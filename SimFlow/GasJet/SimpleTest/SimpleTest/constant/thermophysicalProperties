@@ -11,7 +11,7 @@ thermoType
 	type	hePsiThermo;
 	mixture	pureMixture;
 	transport	sutherland;
-	thermo	hConst;
+	thermo	janaf;
 	equationOfState	PengRobinsonGas;
 	specie	specie;
 	energy	sensibleEnthalpy;
@@ -21,12 +21,16 @@ mixture
 	specie
 	{
 		nMoles	1.0;
-		molWeight	4.0026;
+		molWeight	4.0;
 	}
 	thermodynamics
 	{
-		Cp	5188.0;
-		Hf	0.0;
+		highCpCoeffs	( 3.0879 0.0012459 -4.2372E-7 6.7477E-11 -3.9708E-15 -995.26 5.9596 );
+		Sf	0.0;
+		Tcommon	273.0;
+		Thigh	1000.0;
+		Tlow	100.0;
+		lowCpCoeffs	( 3.5683 -6.7873E-4 1.5537E-6 -3.2994E-12 -4.664E-13 -1062.3 3.7158 );
 	}
 	transport
 	{
@@ -36,7 +40,7 @@ mixture
 	equationOfState
 	{
 		Pc	930000.0;
-		Vc	0.0352;
+		Vc	3.52E-5;
 		omega	-0.39;
 		Tc	5.2;
 	}

@@ -1,8 +1,12 @@
-materials
+meshing
 {
-	regions
+	parallel	true;
+	processors	24;
+	meshingStages
 	{
-		default	helium-gas;
+		Base	true;
+		Mesh	true;
+		Layers	true;
 	}
 }
 geometry
@@ -12,347 +16,66 @@ geometry
 		tessellation	Normal;
 	}
 }
+regionProperties
+{
+	default
+	{
+		bafflesSplit	false;
+		cellZones
+		{
+		}
+	}
+}
 regionInit
 {
 	patchInitializationMode	onInitialization;
 }
-fieldInputs
-{
-	default
-	{
-		p
-		{
-			internalField	uniform 100000;
-			boundaryField
-			{
-				GasJetSmaller_in
-				{
-					type	totalPressure;
-					p0	"uniform 100000";
-					gamma	1.668;
-				}
-				GasJetSmaller_out
-				{
-					type	fixedValue;
-					value	"uniform 100000";
-				}
-				GasJetSmaller_dyn_wall
-				{
-					type	zeroGradient;
-				}
-				GasJetSmaller_nil_wall
-				{
-					type	zeroGradient;
-				}
-			}
-		}
-		U
-		{
-			internalField	uniform (0 0 0);
-			boundaryField
-			{
-				GasJetSmaller_in
-				{
-					type	pressureInletOutletVelocity;
-					rho	rho;
-				}
-				GasJetSmaller_out
-				{
-					type	pressureInletOutletVelocity;
-					rho	rho;
-				}
-				GasJetSmaller_dyn_wall
-				{
-					type	noSlip;
-				}
-				GasJetSmaller_nil_wall
-				{
-					type	noSlip;
-				}
-			}
-		}
-		T
-		{
-			internalField	uniform 300;
-			boundaryField
-			{
-				GasJetSmaller_in
-				{
-					type	totalTemperature;
-					T0	"uniform 300";
-					gamma	1.668;
-					psi	thermo:psi;
-				}
-				GasJetSmaller_out
-				{
-					type	inletOutlet;
-					inletValue	"uniform 300";
-				}
-				GasJetSmaller_dyn_wall
-				{
-					type	zeroGradient;
-				}
-				GasJetSmaller_nil_wall
-				{
-					type	zeroGradient;
-				}
-			}
-		}
-		k
-		{
-			internalField	uniform 1e-02;
-			boundaryField
-			{
-				GasJetSmaller_in
-				{
-					type	turbulentIntensityKineticEnergyInlet;
-					intensity	0.05;
-				}
-				GasJetSmaller_out
-				{
-					type	zeroGradient;
-				}
-				GasJetSmaller_dyn_wall
-				{
-					type	kqRWallFunction;
-				}
-				GasJetSmaller_nil_wall
-				{
-					type	kqRWallFunction;
-				}
-			}
-		}
-		epsilon
-		{
-			internalField	uniform 1;
-			boundaryField
-			{
-				GasJetSmaller_in
-				{
-					type	turbulentMixingLengthDissipationRateInlet;
-					mixingLength	1e-03;
-				}
-				GasJetSmaller_out
-				{
-					type	zeroGradient;
-				}
-				GasJetSmaller_dyn_wall
-				{
-					type	epsilonWallFunction;
-				}
-				GasJetSmaller_nil_wall
-				{
-					type	epsilonWallFunction;
-				}
-			}
-		}
-		nut
-		{
-			internalField	uniform 0.1;
-			boundaryField
-			{
-				GasJetSmaller_in
-				{
-					type	calculated;
-				}
-				GasJetSmaller_out
-				{
-					type	calculated;
-				}
-				GasJetSmaller_dyn_wall
-				{
-					type	nutUWallFunction;
-				}
-				GasJetSmaller_nil_wall
-				{
-					type	nutUWallFunction;
-				}
-			}
-		}
-		alphat
-		{
-			internalField	uniform 0;
-			boundaryField
-			{
-				GasJetSmaller_in
-				{
-					type	calculated;
-				}
-				GasJetSmaller_out
-				{
-					type	calculated;
-				}
-				GasJetSmaller_dyn_wall
-				{
-					type	compressible::alphatJayatillekeWallFunction;
-					Prt	0.85;
-				}
-				GasJetSmaller_nil_wall
-				{
-					type	compressible::alphatJayatillekeWallFunction;
-					Prt	0.85;
-				}
-			}
-		}
-	}
-}
-primitiveMesh
-{
-	type	cylinder;
-	box
-	{
-		min	(-0.007354 -0.002524728 -0.002525);
-		max	(3.554e-03 2.5247e-03 2.525e-03);
-		division	(10 10 10);
-		grading	(1 1 1);
-		lockCellSize	false;
-		boundaries
-		{
-			x_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			y_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			z_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			x_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			z_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			y_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-		}
-	}
-	cylinder
-	{
-		axis	X;
-		origin	-7.5e-03;
-		radius	2.8e-03;
-		length	0.0112;
-		radialFraction	0.7;
-		radialDivision	20;
-		radialGrading	1;
-		axialDivision	100;
-		axialGrading	1;
-		circumferentialDivision	20;
-		boundaries
-		{
-			cylinder
-			{
-				name	boundaries;
-				type	wall;
-			}
-			outlet
-			{
-				name	boundaries;
-				type	wall;
-			}
-			inlet
-			{
-				name	boundaries;
-				type	wall;
-			}
-		}
-	}
-	plate
-	{
-		minx	-0.5;
-		miny	-0.5;
-		maxx	0.5;
-		maxy	0.5;
-		divisionx	10;
-		divisiony	10;
-		gradingx	1;
-		gradingy	1;
-		lockCellSize	false;
-		boundaries
-		{
-			x_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			y_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			y_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			x_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-		}
-	}
-	wedge
-	{
-		lockCellSize	false;
-		origin	0;
-		radius	1;
-		length	1;
-		radialDivision	10;
-		radialGrading	1;
-		axialDivision	10;
-		axialGrading	1;
-		boundaries
-		{
-			cylinder
-			{
-				name	boundaries;
-				type	patch;
-			}
-			inlet
-			{
-				name	boundaries;
-				type	patch;
-			}
-			outlet
-			{
-				name	boundaries;
-				type	patch;
-			}
-		}
-	}
-}
-slices
+parameters
 {
 }
-probes
+mesh
 {
+}
+initialization
+{
+	potentialInit	false;
+	nNonOrthogonalCorrectors	8;
+	mapInit	false;
+	mapConsistent	false;
 }
 application
 {
 	mode	normal;
 }
-parameters
+slices
+{
+	CentralSlice
+	{
+		point	(0 0 0);
+		normal	(0 0 1);
+	}
+	TransverseSlice
+	{
+		point	(5e-4 0 0);
+		normal	(1 0 0);
+	}
+}
+summary
 {
 }
-inputs
+run
 {
-	default
+	parallel	true;
+	processors	24;
+}
+probes
+{
+}
+materials
+{
+	regions
 	{
+		default	helium-gas;
 	}
 }
 Graphics3D
@@ -458,6 +181,92 @@ Graphics3D
 	}
 	postprocessingPlots
 	{
+		residuals
+		{
+			properties
+			{
+				title	;
+				isXGridVisible	true;
+				isYGridVisible	true;
+				xLabel	Time [s];
+				yLabel	Residuum [-];
+			}
+			series
+			{
+				Ux
+				{
+					label	Ux;
+					color	(0 0 255);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				Uy
+				{
+					label	Uy;
+					color	(255 0 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				Uz
+				{
+					label	Uz;
+					color	(0 255 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				p
+				{
+					label	p;
+					color	(0 0 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				p_rgh
+				{
+					label	p_rgh;
+					color	(0 0 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				omega
+				{
+					label	omega;
+					color	(255 200 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				epsilon
+				{
+					label	epsilon;
+					color	(255 200 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				k
+				{
+					label	k;
+					color	(0 255 255);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				h
+				{
+					label	h;
+					color	(254 0 255);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+			}
+		}
 	}
 	SectionViewParameters
 	{
@@ -470,48 +279,376 @@ Graphics3D
 	{
 		POST
 		{
+			CentralSlice
+			{
+				isVisible	true;
+			}
+			TransverseSlice
+			{
+				isVisible	true;
+			}
 		}
 		MODEL
 		{
+			CentralSlice
+			{
+				isVisible	true;
+			}
+			TransverseSlice
+			{
+				isVisible	true;
+			}
 		}
 	}
 }
-regionProperties
+fieldInputs
 {
 	default
 	{
-		bafflesSplit	false;
-		cellZones
+		p
 		{
+			internalField	uniform 100;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	totalPressure;
+					p0	"uniform 100";
+					gamma	1.4;
+				}
+				GasJetSmaller_out
+				{
+					type	zeroGradient;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	zeroGradient;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	zeroGradient;
+				}
+			}
+		}
+		U
+		{
+			internalField	uniform (0 0 0);
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	pressureInletOutletVelocity;
+					rho	rho;
+				}
+				GasJetSmaller_out
+				{
+					type	zeroGradient;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	noSlip;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	noSlip;
+				}
+			}
+		}
+		T
+		{
+			internalField	uniform 300;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	fixedValue;
+					value	"uniform 300";
+				}
+				GasJetSmaller_out
+				{
+					type	inletOutlet;
+					inletValue	"uniform 300";
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	zeroGradient;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	zeroGradient;
+				}
+			}
+		}
+		k
+		{
+			internalField	uniform 1e-02;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	turbulentIntensityKineticEnergyInlet;
+					intensity	0.05;
+				}
+				GasJetSmaller_out
+				{
+					type	zeroGradient;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	kqRWallFunction;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	kqRWallFunction;
+				}
+			}
+		}
+		epsilon
+		{
+			internalField	uniform 0.1;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	turbulentMixingLengthDissipationRateInlet;
+					mixingLength	1e-03;
+				}
+				GasJetSmaller_out
+				{
+					type	zeroGradient;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	epsilonWallFunction;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	epsilonWallFunction;
+				}
+			}
+		}
+		nut
+		{
+			internalField	uniform 0.1;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	calculated;
+				}
+				GasJetSmaller_out
+				{
+					type	calculated;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	nutUWallFunction;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	nutUWallFunction;
+				}
+			}
+		}
+		alphat
+		{
+			internalField	uniform 0;
+			boundaryField
+			{
+				GasJetSmaller_in
+				{
+					type	calculated;
+				}
+				GasJetSmaller_out
+				{
+					type	calculated;
+				}
+				GasJetSmaller_dyn_wall
+				{
+					type	compressible::alphatWallFunction;
+				}
+				GasJetSmaller_nil_wall
+				{
+					type	compressible::alphatWallFunction;
+				}
+			}
 		}
 	}
 }
-initialization
+primitiveMesh
 {
-	potentialInit	false;
-	nNonOrthogonalCorrectors	8;
-	mapInit	false;
-	mapConsistent	false;
-}
-run
-{
-	parallel	false;
-	processors	48;
-}
-mesh
-{
-}
-meshing
-{
-	parallel	true;
-	processors	24;
-	meshingStages
+	type	cylinder;
+	box
 	{
-		Base	true;
-		Mesh	true;
-		Layers	true;
+		min	(-7.354e-03 -2.5247e-03 -2.525e-03);
+		max	(3.554e-03 2.5247e-03 2.525e-03);
+		division	(10 10 10);
+		grading	(1 1 1);
+		lockCellSize	false;
+		boundaries
+		{
+			x_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			z_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			z_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
+	}
+	cylinder
+	{
+		axis	X;
+		origin	-7.5e-03;
+		radius	2.8e-03;
+		length	0.0112;
+		radialFraction	0.7;
+		radialDivision	20;
+		radialGrading	1;
+		axialDivision	50;
+		axialGrading	1;
+		circumferentialDivision	10;
+		boundaries
+		{
+			outlet
+			{
+				name	boundaries;
+				type	wall;
+			}
+			cylinder
+			{
+				name	boundaries;
+				type	wall;
+			}
+			inlet
+			{
+				name	boundaries;
+				type	wall;
+			}
+		}
+	}
+	plate
+	{
+		minx	-0.5;
+		miny	-0.5;
+		maxx	0.5;
+		maxy	0.5;
+		divisionx	10;
+		divisiony	10;
+		gradingx	1;
+		gradingy	1;
+		lockCellSize	false;
+		boundaries
+		{
+			y_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
+	}
+	wedge
+	{
+		lockCellSize	false;
+		origin	0;
+		radius	1;
+		length	1;
+		radialDivision	10;
+		radialGrading	1;
+		axialDivision	10;
+		axialGrading	1;
+		boundaries
+		{
+			cylinder
+			{
+				name	boundaries;
+				type	patch;
+			}
+			outlet
+			{
+				name	boundaries;
+				type	patch;
+			}
+			inlet
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
 	}
 }
-summary
+inputs
 {
+	default
+	{
+		radiationProperties
+		{
+			solarLoarCoeffs
+			{
+				sunDirection	(0 0 -1);
+			}
+			solarLoadCoeffs
+			{
+				sunDirection	(0 0 -1);
+			}
+		}
+		turbulenceProperties
+		{
+			RAS
+			{
+				kEpsilonCoeffs
+				{
+					C3	-0.33;
+				}
+			}
+		}
+		thermophysicalProperties
+		{
+			mixture
+			{
+				equationOfState
+				{
+					omega	-0.39;
+				}
+			}
+		}
+	}
 }

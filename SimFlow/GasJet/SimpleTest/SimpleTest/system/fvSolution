@@ -23,18 +23,18 @@ solvers
 	U
 	{
 		solver	PCG;
-		relTol	1.0E-4;
+		relTol	0.001;
 		preconditioner	DIC;
-		tolerance	1.0E-6;
-		maxIter	100;
+		tolerance	1.0E-4;
+		maxIter	1000;
 	}
 	h
 	{
 		solver	PCG;
-		relTol	1.0E-4;
+		relTol	0.001;
 		preconditioner	DIC;
-		tolerance	1.0E-6;
-		maxIter	100;
+		tolerance	1.0E-4;
+		maxIter	1000;
 	}
 	rho
 	{
@@ -51,18 +51,18 @@ solvers
 	k
 	{
 		solver	PBiCGStab;
-		relTol	1.0E-4;
+		relTol	0.001;
 		preconditioner	DILU;
-		tolerance	1.0E-6;
-		maxIter	100;
+		tolerance	1.0E-4;
+		maxIter	1000;
 	}
 	epsilon
 	{
 		solver	PBiCGStab;
-		relTol	1.0E-4;
+		relTol	0.001;
 		preconditioner	DILU;
-		tolerance	1.0E-6;
-		maxIter	100;
+		tolerance	1.0E-4;
+		maxIter	1000;
 	}
 }
 relaxationFactors

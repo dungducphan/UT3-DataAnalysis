@@ -6,12 +6,12 @@ FoamFile
 	object	controlDict;
 	version	2.0;
 }
-adjustTimeStep	false;
+adjustTimeStep	true;
 application	rhoCentralFoam;
-deltaT	1;
-endTime	1;
-maxCo	2;
-maxDeltaT	1;
+deltaT	1e-10;
+endTime	1e-03;
+maxCo	0.5;
+maxDeltaT	1e-06;
 purgeWrite	0;
 startFrom	latestTime;
 startTime	0;
@@ -19,7 +19,7 @@ stopAt	endTime;
 timeFormat	general;
 timePrecision	6;
 writeControl	adjustableRunTime;
-writeInterval	1;
+writeInterval	1e-06;
 writePrecision	7;
 runTimeModifiable	true;
 timeFormat	general;
@@ -28,6 +28,49 @@ writeCompression	false;
 writeFormat	binary;
 writePrecision	7;
 libs	("libfvMotionSolvers.so" "libturbulenceModels.so" "libturbulenceModelSchemes.so");
+functions
+{
+	slices
+	{
+		libs	("libsampling.so");
+		type	surfaces;
+		interpolationScheme	cellPoint;
+		surfaceFormat	foam;
+		surfaces	(
+	CentralSlice
+	{
+		interpolate	true;
+		planeType	pointAndNormal;
+		pointAndNormalDict
+		{
+			normal	(0 0 1);
+			point	(0 0 0);
+		}
+		triangulate	true;
+		type	plane;
+	}
+	TransverseSlice
+	{
+		interpolate	true;
+		planeType	pointAndNormal;
+		pointAndNormalDict
+		{
+			normal	(1 0 0);
+			point	(5e-4 0 0);
+		}
+		triangulate	true;
+		type	plane;
+	}
+);
+		executeInterval	1;
+		fields	(p U);
+		enabled	true;
+		log	true;
+		writeControl	writeTime;
+		writeFields	true;
+		writeInterval	1;
+	}
+}
 OptimisationSwitches
 {
 	fileHandler	uncollated;

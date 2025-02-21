@@ -8,19 +8,18 @@ FoamFile
 	arch	"LSB;label=32;scalar=64";
 }
 dimensions	[1 -1 -2 0 0 0 0];
-internalField	uniform 100000;
+internalField	uniform 100;
 boundaryField
 {
 	GasJetSmaller_in
 	{
 		type	totalPressure;
-		p0	uniform 100000;
-		gamma	1.668;
+		p0	uniform 100;
+		gamma	1.4;
 	}
 	GasJetSmaller_out
 	{
-		type	fixedValue;
-		value	uniform 100000;
+		type	zeroGradient;
 	}
 	GasJetSmaller_dyn_wall
 	{

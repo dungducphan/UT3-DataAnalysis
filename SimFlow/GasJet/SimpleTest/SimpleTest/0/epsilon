@@ -8,13 +8,13 @@ FoamFile
 	arch	"LSB;label=32;scalar=64";
 }
 dimensions	[0 2 -3 0 0 0 0];
-internalField	uniform 1;
+internalField	uniform 0.1;
 boundaryField
 {
 	GasJetSmaller_in
 	{
 		type	turbulentMixingLengthDissipationRateInlet;
-		value	uniform 1;
+		value	uniform 0.1;
 		mixingLength	0.001;
 	}
 	GasJetSmaller_out
@@ -24,11 +24,11 @@ boundaryField
 	GasJetSmaller_dyn_wall
 	{
 		type	epsilonWallFunction;
-		value	uniform 1;
+		value	uniform 0.1;
 	}
 	GasJetSmaller_nil_wall
 	{
 		type	epsilonWallFunction;
-		value	uniform 1;
+		value	uniform 0.1;
 	}
 }
