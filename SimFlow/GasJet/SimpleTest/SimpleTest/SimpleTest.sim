@@ -1,6 +1,6 @@
 run
 {
-	parallel	true;
+	parallel	false;
 	processors	24;
 }
 summary
