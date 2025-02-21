@@ -1,0 +1,3 @@
+EPICS_BASE=/home/dphan/Applications/EPICS/epics-base
+SUPPORT=/home/dphan/Applications/EPICS/support
+ASYN=$(SUPPORT)/asyn-R4-44-2
