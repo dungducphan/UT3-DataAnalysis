@@ -1,0 +1,1523 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2406                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _9bfe8264-20241212 OPENFOAM=2406 patch=241212 version=2406
+Arch   : "LSB;label=32;scalar=64"
+Exec   : /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/decomposePar -noFunctionObjects -latestTime -force
+Date   : Feb 21 2025
+Time   : 09:18:15
+Host   : dphan-Thelio-Major
+PID    : 118622
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+I/O    : uncollated
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+Case   : /home/dphan/Documents/GitHub/UT3-DataAnalysis/SimFlow/GasJet/SimpleTest/SimpleTest
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+
+Decomposing mesh
+
+Removing 46 existing processor directories
+Create mesh
+
+Calculating distribution of cells
+Decomposition method scotch [24] (region region0)
+
+Finished decomposition in 23.16 s
+
+Calculating original mesh data
+
+Distributing cells to processors
+
+Distributing faces to processors
+
+Distributing points to processors
+
+Constructing processor meshes
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 0
+    Number of cells = 443047
+    Number of points = 484653
+    Number of faces shared with processor 1 = 2046
+    Number of faces shared with processor 2 = 6064
+    Number of faces shared with processor 3 = 2530
+    Number of faces shared with processor 8 = 3654
+    Number of processor patches = 4
+    Number of processor faces = 14294
+    Number of boundary faces = 42277
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 1
+    Number of cells = 447397
+    Number of points = 492552
+    Number of faces shared with processor 0 = 2046
+    Number of faces shared with processor 2 = 7961
+    Number of faces shared with processor 3 = 2490
+    Number of faces shared with processor 4 = 1969
+    Number of faces shared with processor 5 = 4350
+    Number of faces shared with processor 12 = 2673
+    Number of faces shared with processor 14 = 4456
+    Number of faces shared with processor 18 = 4472
+    Number of processor patches = 8
+    Number of processor faces = 30417
+    Number of boundary faces = 33481
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 2
+    Number of cells = 445481
+    Number of points = 490396
+    Number of faces shared with processor 0 = 6064
+    Number of faces shared with processor 1 = 7961
+    Number of faces shared with processor 7 = 2203
+    Number of faces shared with processor 8 = 2631
+    Number of faces shared with processor 12 = 2785
+    Number of faces shared with processor 13 = 1576
+    Number of faces shared with processor 14 = 2654
+    Number of processor patches = 7
+    Number of processor faces = 25874
+    Number of boundary faces = 35648
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 3
+    Number of cells = 444945
+    Number of points = 487698
+    Number of faces shared with processor 0 = 2530
+    Number of faces shared with processor 1 = 2490
+    Number of faces shared with processor 4 = 2309
+    Number of faces shared with processor 5 = 4567
+    Number of faces shared with processor 6 = 2719
+    Number of faces shared with processor 11 = 480
+    Number of processor patches = 6
+    Number of processor faces = 15095
+    Number of boundary faces = 43316
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 4
+    Number of cells = 448308
+    Number of points = 492968
+    Number of faces shared with processor 1 = 1969
+    Number of faces shared with processor 3 = 2309
+    Number of faces shared with processor 5 = 8989
+    Number of faces shared with processor 10 = 1767
+    Number of faces shared with processor 11 = 4856
+    Number of faces shared with processor 13 = 648
+    Number of faces shared with processor 14 = 3709
+    Number of faces shared with processor 18 = 4356
+    Number of faces shared with processor 21 = 989
+    Number of faces shared with processor 23 = 3257
+    Number of processor patches = 10
+    Number of processor faces = 32849
+    Number of boundary faces = 31427
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 5
+    Number of cells = 441878
+    Number of points = 483605
+    Number of faces shared with processor 1 = 4350
+    Number of faces shared with processor 3 = 4567
+    Number of faces shared with processor 4 = 8989
+    Number of faces shared with processor 6 = 740
+    Number of faces shared with processor 11 = 3757
+    Number of faces shared with processor 14 = 76
+    Number of faces shared with processor 18 = 3321
+    Number of faces shared with processor 21 = 1817
+    Number of processor patches = 8
+    Number of processor faces = 27617
+    Number of boundary faces = 30800
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 6
+    Number of cells = 442894
+    Number of points = 484983
+    Number of faces shared with processor 3 = 2719
+    Number of faces shared with processor 5 = 740
+    Number of faces shared with processor 7 = 2871
+    Number of faces shared with processor 8 = 3416
+    Number of faces shared with processor 11 = 5934
+    Number of processor patches = 5
+    Number of processor faces = 15680
+    Number of boundary faces = 41570
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 7
+    Number of cells = 443393
+    Number of points = 488611
+    Number of faces shared with processor 2 = 2203
+    Number of faces shared with processor 6 = 2871
+    Number of faces shared with processor 8 = 6798
+    Number of faces shared with processor 11 = 4879
+    Number of faces shared with processor 12 = 4528
+    Number of faces shared with processor 13 = 3547
+    Number of faces shared with processor 21 = 2279
+    Number of processor patches = 7
+    Number of processor faces = 27105
+    Number of boundary faces = 35559
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 8
+    Number of cells = 441721
+    Number of points = 484001
+    Number of faces shared with processor 0 = 3654
+    Number of faces shared with processor 2 = 2631
+    Number of faces shared with processor 6 = 3416
+    Number of faces shared with processor 7 = 6798
+    Number of processor patches = 4
+    Number of processor faces = 16499
+    Number of boundary faces = 40871
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 9
+    Number of cells = 441625
+    Number of points = 487629
+    Number of faces shared with processor 10 = 486
+    Number of processor patches = 1
+    Number of processor faces = 486
+    Number of boundary faces = 65646
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 10
+    Number of cells = 441671
+    Number of points = 488432
+    Number of faces shared with processor 4 = 1767
+    Number of faces shared with processor 9 = 486
+    Number of faces shared with processor 11 = 262
+    Number of faces shared with processor 13 = 2451
+    Number of faces shared with processor 14 = 1573
+    Number of processor patches = 5
+    Number of processor faces = 6539
+    Number of boundary faces = 64389
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 11
+    Number of cells = 445757
+    Number of points = 490117
+    Number of faces shared with processor 3 = 480
+    Number of faces shared with processor 4 = 4856
+    Number of faces shared with processor 5 = 3757
+    Number of faces shared with processor 6 = 5934
+    Number of faces shared with processor 7 = 4879
+    Number of faces shared with processor 10 = 262
+    Number of faces shared with processor 13 = 2784
+    Number of faces shared with processor 21 = 4452
+    Number of faces shared with processor 23 = 1960
+    Number of processor patches = 9
+    Number of processor faces = 29364
+    Number of boundary faces = 32409
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 12
+    Number of cells = 446503
+    Number of points = 485169
+    Number of faces shared with processor 1 = 2673
+    Number of faces shared with processor 2 = 2785
+    Number of faces shared with processor 7 = 4528
+    Number of faces shared with processor 13 = 5831
+    Number of faces shared with processor 14 = 2045
+    Number of faces shared with processor 15 = 1156
+    Number of faces shared with processor 17 = 6018
+    Number of faces shared with processor 18 = 404
+    Number of faces shared with processor 21 = 2827
+    Number of processor patches = 9
+    Number of processor faces = 28267
+    Number of boundary faces = 27673
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 13
+    Number of cells = 448736
+    Number of points = 481591
+    Number of faces shared with processor 2 = 1576
+    Number of faces shared with processor 4 = 648
+    Number of faces shared with processor 7 = 3547
+    Number of faces shared with processor 10 = 2451
+    Number of faces shared with processor 11 = 2784
+    Number of faces shared with processor 12 = 5831
+    Number of faces shared with processor 14 = 5152
+    Number of faces shared with processor 15 = 2752
+    Number of faces shared with processor 16 = 570
+    Number of faces shared with processor 17 = 1289
+    Number of faces shared with processor 21 = 1142
+    Number of faces shared with processor 23 = 6138
+    Number of processor patches = 12
+    Number of processor faces = 33880
+    Number of boundary faces = 16822
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 14
+    Number of cells = 449626
+    Number of points = 478470
+    Number of faces shared with processor 1 = 4456
+    Number of faces shared with processor 2 = 2654
+    Number of faces shared with processor 4 = 3709
+    Number of faces shared with processor 5 = 76
+    Number of faces shared with processor 10 = 1573
+    Number of faces shared with processor 12 = 2045
+    Number of faces shared with processor 13 = 5152
+    Number of faces shared with processor 16 = 4033
+    Number of faces shared with processor 17 = 867
+    Number of faces shared with processor 18 = 3996
+    Number of faces shared with processor 19 = 975
+    Number of faces shared with processor 20 = 2010
+    Number of faces shared with processor 23 = 2302
+    Number of processor patches = 13
+    Number of processor faces = 33848
+    Number of boundary faces = 12623
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 15
+    Number of cells = 446603
+    Number of points = 483808
+    Number of faces shared with processor 12 = 1156
+    Number of faces shared with processor 13 = 2752
+    Number of faces shared with processor 16 = 3413
+    Number of faces shared with processor 17 = 8357
+    Number of faces shared with processor 20 = 2259
+    Number of faces shared with processor 21 = 1194
+    Number of faces shared with processor 22 = 4810
+    Number of faces shared with processor 23 = 5943
+    Number of processor patches = 8
+    Number of processor faces = 29884
+    Number of boundary faces = 25265
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 16
+    Number of cells = 446896
+    Number of points = 482908
+    Number of faces shared with processor 13 = 570
+    Number of faces shared with processor 14 = 4033
+    Number of faces shared with processor 15 = 3413
+    Number of faces shared with processor 17 = 7786
+    Number of faces shared with processor 18 = 2208
+    Number of faces shared with processor 19 = 4248
+    Number of faces shared with processor 20 = 4132
+    Number of faces shared with processor 23 = 178
+    Number of processor patches = 8
+    Number of processor faces = 26568
+    Number of boundary faces = 26033
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 17
+    Number of cells = 443305
+    Number of points = 484569
+    Number of faces shared with processor 12 = 6018
+    Number of faces shared with processor 13 = 1289
+    Number of faces shared with processor 14 = 867
+    Number of faces shared with processor 15 = 8357
+    Number of faces shared with processor 16 = 7786
+    Number of faces shared with processor 18 = 1161
+    Number of faces shared with processor 21 = 440
+    Number of processor patches = 7
+    Number of processor faces = 25918
+    Number of boundary faces = 33483
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 18
+    Number of cells = 449194
+    Number of points = 489155
+    Number of faces shared with processor 1 = 4472
+    Number of faces shared with processor 4 = 4356
+    Number of faces shared with processor 5 = 3321
+    Number of faces shared with processor 12 = 404
+    Number of faces shared with processor 14 = 3996
+    Number of faces shared with processor 16 = 2208
+    Number of faces shared with processor 17 = 1161
+    Number of faces shared with processor 19 = 7761
+    Number of faces shared with processor 20 = 2185
+    Number of faces shared with processor 21 = 2210
+    Number of faces shared with processor 23 = 1856
+    Number of processor patches = 11
+    Number of processor faces = 33930
+    Number of boundary faces = 25794
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 19
+    Number of cells = 443365
+    Number of points = 483086
+    Number of faces shared with processor 14 = 975
+    Number of faces shared with processor 16 = 4248
+    Number of faces shared with processor 18 = 7761
+    Number of faces shared with processor 20 = 6795
+    Number of faces shared with processor 21 = 522
+    Number of faces shared with processor 22 = 3695
+    Number of faces shared with processor 23 = 914
+    Number of processor patches = 7
+    Number of processor faces = 24910
+    Number of boundary faces = 32489
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 20
+    Number of cells = 445826
+    Number of points = 479610
+    Number of faces shared with processor 14 = 2010
+    Number of faces shared with processor 15 = 2259
+    Number of faces shared with processor 16 = 4132
+    Number of faces shared with processor 18 = 2185
+    Number of faces shared with processor 19 = 6795
+    Number of faces shared with processor 22 = 2157
+    Number of faces shared with processor 23 = 7395
+    Number of processor patches = 7
+    Number of processor faces = 26933
+    Number of boundary faces = 22814
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 21
+    Number of cells = 448622
+    Number of points = 489376
+    Number of faces shared with processor 4 = 989
+    Number of faces shared with processor 5 = 1817
+    Number of faces shared with processor 7 = 2279
+    Number of faces shared with processor 11 = 4452
+    Number of faces shared with processor 12 = 2827
+    Number of faces shared with processor 13 = 1142
+    Number of faces shared with processor 15 = 1194
+    Number of faces shared with processor 17 = 440
+    Number of faces shared with processor 18 = 2210
+    Number of faces shared with processor 19 = 522
+    Number of faces shared with processor 22 = 3967
+    Number of faces shared with processor 23 = 6075
+    Number of processor patches = 12
+    Number of processor faces = 27914
+    Number of boundary faces = 30345
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 22
+    Number of cells = 442495
+    Number of points = 483543
+    Number of faces shared with processor 15 = 4810
+    Number of faces shared with processor 19 = 3695
+    Number of faces shared with processor 20 = 2157
+    Number of faces shared with processor 21 = 3967
+    Number of faces shared with processor 23 = 6191
+    Number of processor patches = 5
+    Number of processor faces = 20820
+    Number of boundary faces = 36249
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+Processor 23
+    Number of cells = 449162
+    Number of points = 473247
+    Number of faces shared with processor 4 = 3257
+    Number of faces shared with processor 11 = 1960
+    Number of faces shared with processor 13 = 6138
+    Number of faces shared with processor 14 = 2302
+    Number of faces shared with processor 15 = 5943
+    Number of faces shared with processor 16 = 178
+    Number of faces shared with processor 18 = 1856
+    Number of faces shared with processor 19 = 914
+    Number of faces shared with processor 20 = 7395
+    Number of faces shared with processor 21 = 6075
+    Number of faces shared with processor 22 = 6191
+    Number of processor patches = 11
+    Number of processor faces = 42209
+    Number of boundary faces = 2993
+
+Number of processor faces = 298450
+Max number of cells = 449626 (0.9596714% above average 445352.1)
+Max number of processor patches = 13 (69.56522% above average 7.666667)
+Max number of faces between processors = 42209 (69.71285% above average 24870.83)
+
+Time = 0
+
+Processor 0: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 1: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 2: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 3: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 4: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 5: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 6: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 7: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 8: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 9: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 10: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 11: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 12: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 13: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 14: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 15: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 16: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 17: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 18: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 19: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 20: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 21: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 22: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Processor 23: field transfer
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+
+End
+
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2406                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _9bfe8264-20241212 OPENFOAM=2406 patch=241212 version=2406
+Arch   : "LSB;label=32;scalar=64"
+Exec   : rhoCentralFoam -parallel
+Date   : Feb 21 2025
+Time   : 09:18:53
+Host   : dphan-Thelio-Major
+PID    : 118719
+I/O    : uncollated
+Case   : /home/dphan/Documents/GitHub/UT3-DataAnalysis/SimFlow/GasJet/SimpleTest/SimpleTest
+nProcs : 24
+Hosts  :
+(
+    (dphan-Thelio-Major 24)
+)
+Pstream initialized with:
+    floatTransfer      : false
+    maxCommsSize       : 0
+    nProcsSimpleSum    : 0
+    nonBlockingExchange: 0 (tuning: 0)
+    exchange algorithm : 0
+    commsType          : nonBlocking
+    polling iterations : 0
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Overriding OptimisationSwitches according to controlDict
+    fileHandler (unregistered)
+    fileModificationSkew 0;
+
+    maxMasterFileBufferSize 1e+09;
+
+    maxThreadFileBufferSize 1e+09;
+
+    mpiBufferSize (unregistered)
+Create mesh for time = 0
+
+Selecting dynamicFvMesh staticFvMesh
+Reading thermophysical properties
+
+Selecting thermodynamics package 
+{
+    type            hePsiThermo;
+    mixture         pureMixture;
+    transport       sutherland;
+    thermo          hConst;
+    equationOfState PengRobinsonGas;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+Reading field U
+
+Creating turbulence model
+
+Selecting turbulence model type RAS
+Selecting RAS turbulence model kEpsilon
+kEpsilonCoeffs
+{
+    C3              -0.33;
+    Cmu             0.09;
+    sigmak          1;
+    C1              1.44;
+    sigmaEps        1.3;
+    C2              1.92;
+}
+
+[14] [stack trace]
+[14] =============
+[0] [stack trace]
+[0] =============
+[1] [stack trace]
+[1] =============
+[2] [stack trace]
+[2] =============
+[3] [stack trace]
+[3] =============
+[4] [stack trace]
+[4] =============
+[5] [stack trace]
+[5] =============
+[6] [stack trace]
+[6] =============
+[7] [stack trace]
+[7] =============
+[8] [stack trace]
+[8] =============
+[9] [stack trace]
+[9] =============
+[9] #[10] [stack trace]
+[10] =============
+[10] #1  [11] [stack trace]
+[11] =============
+[11] #1  [13] [stack trace]
+[13] =============
+[13] #1  [0] #1  Foam::sigFpe::sigHandler(int)[1] #1  Foam::sigFpe::sigHandler(int)[2] #1  Foam::sigFpe::sigHandler(int)[3] #1  Foam::sigFpe::sigHandler(int)[4] #1  Foam::sigFpe::sigHandler(int)[5] #1  Foam::sigFpe::sigHandler(int)[6] #1  Foam::sigFpe::sigHandler(int)[7] #1  Foam::sigFpe::sigHandler(int)1  Foam::sigFpe::sigHandler(int)Foam::sigFpe::sigHandler(int)Foam::sigFpe::sigHandler(int)Foam::sigFpe::sigHandler(int)[14] #1  Foam::sigFpe::sigHandler(int)[8] #1  Foam::sigFpe::sigHandler(int) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[7] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[10] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[0] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[9] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in [2] #2  ?/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[8] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[1] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[4] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[5] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[14] #2  ?[3] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[11] #2  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[6] #2   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+?[13] #2  ? in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+[7] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&)[0] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&)[10] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&) in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+[9] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&) in /lib/x86_64-linux-gnu/libc.so.6
+[8] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&)[2] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&) in /lib/x86_64-linux-gnu/libc.so.6
+[14] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&)[3] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&)[4] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&)[1] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&) in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+[5] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&)[11] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&) in /lib/x86_64-linux-gnu/libc.so.6
+[13] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&)[6] #3  Foam::divide(Foam::Field<double>&, Foam::UList<double> const&, Foam::UList<double> const&) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[0] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[7] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&)[10] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[4] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&)[8] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&)[2] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[1] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[14] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&)[11] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&)[3] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[13] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&)[6] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&)[9] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[5] #4  Foam::operator/(Foam::tmp<Foam::Field<double> > const&, Foam::UList<double> const&) in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[0] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[10] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[4] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[8] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[2] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[1] # in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[11] #
+[14] #5  ?5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[13] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[3] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[6] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[7] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[9] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so
+[5] #5  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[0] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[10] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[4] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[11] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[13] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[2] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[14] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[3] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[6] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const[9] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[8] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[7] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const[5] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[1] #6  Foam::nutUWallFunctionFvPatchScalarField::calcYPlus(Foam::Field<double> const&) const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[0] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[10] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[11] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[4] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[13] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[14] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[2] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[3] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[6] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[8] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[7] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[5] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[1] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[9] #7  Foam::nutUWallFunctionFvPatchScalarField::calcNut() const in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[0] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[10] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[14] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[2] # in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[13]  in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[11] #8  8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs()#8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs()Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[3] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[5] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[4] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[8] # in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[6] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs()8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[7] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[1] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[9] #8  Foam::nutWallFunctionFvPatchScalarField::updateCoeffs() in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[0] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[14] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[2] #9  ?[3] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[4] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[10] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[8] # in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[13] #9  ?9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[11] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[6] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[9] #9[5] #9  ?  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[7] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[1] #9  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[0] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[3] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[4] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[13] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[14] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[9] #10[6] #10  ?  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[2] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[5] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[7] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[10] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[11] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[8] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so
+[1] #10  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[0] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[4] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[3] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[2] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[6] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[13] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[5] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[14] #11   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[7] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[9] #11  ?? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[11] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[10] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[8] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[1] #11  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[0] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[4] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[3] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[13] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[5] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[2] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[7] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[10] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[9] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[6] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[14] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[11] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[8] #12   in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so
+[1] #12  ?????????????? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[0] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[4] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[13] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[7] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[5] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[2] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[9] #13  ?[3] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[14] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[11] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[6] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[10] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[1] #13  ? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[8] #13  ? in /lib/x86_64-linux-gnu/libc.so.6
+[0] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[4] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[13] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[7] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[2] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[14] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[3] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+ in /lib/x86_64-linux-gnu/libc.so.6
+[6] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[9] #14  __libc_start_main[10] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[11] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[5] #14   in /lib/x86_64-linux-gnu/libc.so.6
+[8] #14  __libc_start_main__libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[1] #14  __libc_start_main in /lib/x86_64-linux-gnu/libc.so.6
+[0] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[4] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[7] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[13] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[2] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[3] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[6] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[9] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[10] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[14] # in /lib/x86_64-linux-gnu/libc.so.6
+[11] #15  15   in /lib/x86_64-linux-gnu/libc.so.6
+[8] #15   in /lib/x86_64-linux-gnu/libc.so.6
+[5] #15  ? in /lib/x86_64-linux-gnu/libc.so.6
+[1] #15  ????????????? in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[0] =============
+[dphan-Thelio-Major:118719] *** Process received signal ***
+[dphan-Thelio-Major:118719] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118719] Signal code:  (-6)
+[dphan-Thelio-Major:118719] Failing at address: 0x3e80001cfbf
+[dphan-Thelio-Major:118719] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x736a18042520]
+[dphan-Thelio-Major:118719] [ 1] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x736a180969fc]
+[dphan-Thelio-Major:118719] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x736a18042476]
+[dphan-Thelio-Major:118719] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x736a18042520]
+[dphan-Thelio-Major:118719] [ 4] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x736a18d95ce5]
+[dphan-Thelio-Major:118719] [ 5] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x736a18d98fa6]
+[dphan-Thelio-Major:118719] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x736a192d3f85]
+[dphan-Thelio-Major:118719] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x736a1a960855]
+[dphan-Thelio-Major:118719] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x736a1a962fa1]
+[dphan-Thelio-Major:118719] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x736a1a95b59e]
+[dphan-Thelio-Major:118719] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x736a1a8e20f4]
+[dphan-Thelio-Major:118719] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x736a192b2845]
+[dphan-Thelio-Major:118719] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x736a192fb138]
+[dphan-Thelio-Major:118719] [13] rhoCentralFoam(+0x1b8b4)[0x61997546f8b4]
+[dphan-Thelio-Major:118719] [14] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x736a18029d90]
+[dphan-Thelio-Major:118719] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x736a18029e40]
+[dphan-Thelio-Major:118719] [16] rhoCentralFoam(+0x26b65)[0x61997547ab65]
+[dphan-Thelio-Major:118719] *** End of error message ***
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[4] =============
+[dphan-Thelio-Major:118723] *** Process received signal ***
+[dphan-Thelio-Major:118723] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118723] Signal code:  (-6)
+[dphan-Thelio-Major:118723] Failing at address: 0x3e80001cfc3
+[dphan-Thelio-Major:118723] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7a1279242520]
+[dphan-Thelio-Major:118723] [ 1]  in /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7a12792969fc]
+[dphan-Thelio-Major:118723] [ 2] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[13] =============
+/lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7a1279242476]
+[dphan-Thelio-Major:118723] [ 3] [dphan-Thelio-Major:118732] *** Process received signal ***
+[dphan-Thelio-Major:118732] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118732] Signal code:  (-6)
+[dphan-Thelio-Major:118732] Failing at address: 0x3e80001cfcc
+/lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7a1279242520]
+[dphan-Thelio-Major:118723] [ 4] [dphan-Thelio-Major:118732] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x710e26a42520]
+[dphan-Thelio-Major:118732] [ 1] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x710e26a969fc]
+[dphan-Thelio-Major:118732] [ 2]  in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[2] =============
+/lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x710e26a42476]
+[dphan-Thelio-Major:118732] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x710e26a42520]
+[dphan-Thelio-Major:118732] [ 4] [dphan-Thelio-Major:118721] *** Process received signal ***
+[dphan-Thelio-Major:118721] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118721] Signal code:  (-6)
+[dphan-Thelio-Major:118721] Failing at address: 0x3e80001cfc1
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7a1279f95ce5]
+[dphan-Thelio-Major:118723] [ 5] [dphan-Thelio-Major:118721] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7ca22f642520]
+[dphan-Thelio-Major:118721] [ 1] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7ca22f6969fc]
+[dphan-Thelio-Major:118721] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7ca22f642476]
+[dphan-Thelio-Major:118721] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7ca22f642520]
+[dphan-Thelio-Major:118721] [ 4]  in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[7] =============
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x710e27795ce5]
+[dphan-Thelio-Major:118732] [ 5] [dphan-Thelio-Major:118726] *** Process received signal ***
+[dphan-Thelio-Major:118726] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118726] Signal code:  (-6)
+[dphan-Thelio-Major:118726] Failing at address: 0x3e80001cfc6
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7a1279f98fa6]
+[dphan-Thelio-Major:118723] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7a127a4d3f85]
+[dphan-Thelio-Major:118723] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7a127bb60855]
+[dphan-Thelio-Major:118723] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7a127bb62fa1]
+[dphan-Thelio-Major:118726] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7bef45242520]
+[dphan-Thelio-Major:118723] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7a127bb5b59e]
+[dphan-Thelio-Major:118723] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7a127bae20f4]
+[dphan-Thelio-Major:118723] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7a127a4b2845]
+[dphan-Thelio-Major:118723] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7a127a4fb138]
+[dphan-Thelio-Major:118723] [dphan-Thelio-Major:118726] [ 1] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7bef452969fc]
+[dphan-Thelio-Major:118726] [ 2] [13] rhoCentralFoam(+0x1b8b4)[0x60c13f3698b4]
+[dphan-Thelio-Major:118723] [14] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7a1279229d90]
+[dphan-Thelio-Major:118723] [15] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7ca230395ce5]
+[dphan-Thelio-Major:118721] [ 5] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x710e27798fa6]
+[dphan-Thelio-Major:118732] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x710e27cd3f85]
+[dphan-Thelio-Major:118732] [ 7] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7bef45242476]
+[dphan-Thelio-Major:118726] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7bef45242520]
+[dphan-Thelio-Major:118726] [ 4] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7a1279229e40]
+[dphan-Thelio-Major:118723] [16] rhoCentralFoam(+0x26b65)[0x60c13f374b65]
+[dphan-Thelio-Major:118723] *** End of error message ***
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x710e29360855]
+[dphan-Thelio-Major:118732] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x710e29362fa1]
+[dphan-Thelio-Major:118732] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x710e2935b59e]
+[dphan-Thelio-Major:118732] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x710e292e20f4]
+[dphan-Thelio-Major:118732] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x710e27cb2845]
+[dphan-Thelio-Major:118732] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x710e27cfb138]
+[dphan-Thelio-Major:118732] [13] rhoCentralFoam(+0x1b8b4)[0x5f522a4b28b4]
+[dphan-Thelio-Major:118732] [14] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x710e26a29d90]
+[dphan-Thelio-Major:118732] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x710e26a29e40]
+[dphan-Thelio-Major:118732] [16] rhoCentralFoam(+0x26b65)[0x5f522a4bdb65]
+[dphan-Thelio-Major:118732] *** End of error message ***
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7ca230398fa6]
+[dphan-Thelio-Major:118721] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7ca2308d3f85]
+[dphan-Thelio-Major:118721] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7ca231f60855]
+[dphan-Thelio-Major:118721] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7ca231f62fa1]
+[dphan-Thelio-Major:118721] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7ca231f5b59e]
+[dphan-Thelio-Major:118721] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7ca231ee20f4]
+[dphan-Thelio-Major:118721] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7ca2308b2845]
+[dphan-Thelio-Major:118721] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7ca2308fb138]
+[dphan-Thelio-Major:118721] [13] rhoCentralFoam(+0x1b8b4)[0x6039525d38b4]
+[dphan-Thelio-Major:118721] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7bef45f95ce5]
+[dphan-Thelio-Major:118726] [ 5] [14] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7ca22f629d90]
+[dphan-Thelio-Major:118721] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7ca22f629e40]
+[dphan-Thelio-Major:118721] [16] rhoCentralFoam(+0x26b65)[0x6039525deb65]
+[dphan-Thelio-Major:118721] *** End of error message ***
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7bef45f98fa6]
+[dphan-Thelio-Major:118726] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7bef464d3f85]
+[dphan-Thelio-Major:118726] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7bef47b60855]
+[dphan-Thelio-Major:118726] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7bef47b62fa1]
+[dphan-Thelio-Major:118726] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7bef47b5b59e]
+[dphan-Thelio-Major:118726] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7bef47ae20f4]
+[dphan-Thelio-Major:118726] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7bef464b2845]
+[dphan-Thelio-Major:118726] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7bef464fb138]
+[dphan-Thelio-Major:118726] [13] rhoCentralFoam(+0x1b8b4)[0x5bedf6a3c8b4]
+[dphan-Thelio-Major:118726] [14]  in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[6] =============
+/lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7bef45229d90]
+[dphan-Thelio-Major:118726] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7bef45229e40]
+[dphan-Thelio-Major:118726] [16] rhoCentralFoam(+0x26b65)[0x5bedf6a47b65]
+[dphan-Thelio-Major:118726] *** End of error message ***
+[dphan-Thelio-Major:118725] *** Process received signal ***
+[dphan-Thelio-Major:118725] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118725] Signal code:  (-6)
+[dphan-Thelio-Major:118725] Failing at address: 0x3e80001cfc5
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[10] =============
+[dphan-Thelio-Major:118725] [ 0]  in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[11] =============
+[dphan-Thelio-Major:118730] *** Process received signal ***
+/lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x75ea15c42520]
+[dphan-Thelio-Major:118725] [ 1] [dphan-Thelio-Major:118729] *** Process received signal ***
+[dphan-Thelio-Major:118729] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118729] Signal code:  (-6)
+[dphan-Thelio-Major:118729] Failing at address: 0x3e80001cfc9
+[dphan-Thelio-Major:118730] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118730] Signal code:  (-6)
+[dphan-Thelio-Major:118730] Failing at address: 0x3e80001cfca
+/lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x75ea15c969fc]
+[dphan-Thelio-Major:118725] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x75ea15c42476]
+[dphan-Thelio-Major:118725] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x75ea15c42520]
+[dphan-Thelio-Major:118725] [ 4] [dphan-Thelio-Major:118730] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7b525dc42520]
+[dphan-Thelio-Major:118730] [ 1] [dphan-Thelio-Major:118729] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7d7e89042520]
+[dphan-Thelio-Major:118729] [ 1] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7d7e890969fc]
+[dphan-Thelio-Major:118729] [ 2] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7b525dc969fc]
+[dphan-Thelio-Major:118730] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7b525dc42476]
+[dphan-Thelio-Major:118730] [ 3] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7d7e89042476]
+[dphan-Thelio-Major:118729] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7d7e89042520]
+[dphan-Thelio-Major:118729] [ 4] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7b525dc42520]
+[dphan-Thelio-Major:118730] [ 4]  in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[3] =============
+[dphan-Thelio-Major:118722] *** Process received signal ***
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[9] =============
+[dphan-Thelio-Major:118728] *** Process received signal ***
+[dphan-Thelio-Major:118728] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118728] Signal code:  (-6)
+[dphan-Thelio-Major:118728] Failing at address: 0x3e80001cfc8
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x75ea16995ce5]
+[dphan-Thelio-Major:118725] [ 5] [dphan-Thelio-Major:118722] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118722] Signal code:  (-6)
+[dphan-Thelio-Major:118722] Failing at address: 0x3e80001cfc2
+[dphan-Thelio-Major:118722] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x704fcb442520]
+[dphan-Thelio-Major:118722] [ 1] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7d7e89d95ce5]
+[dphan-Thelio-Major:118729] [ 5] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7b525e995ce5]
+[dphan-Thelio-Major:118730] [ 5] [dphan-Thelio-Major:118728] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7bfbf4242520]
+[dphan-Thelio-Major:118728] [ 1] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x704fcb4969fc]
+[dphan-Thelio-Major:118722] [ 2] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7bfbf42969fc]
+[dphan-Thelio-Major:118728] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x704fcb442476]
+[dphan-Thelio-Major:118722] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x704fcb442520]
+[dphan-Thelio-Major:118722] [ 4] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7bfbf4242476]
+[dphan-Thelio-Major:118728] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7bfbf4242520]
+[dphan-Thelio-Major:118728] [ 4] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x75ea16998fa6]
+[dphan-Thelio-Major:118725] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x75ea16ed3f85]
+[dphan-Thelio-Major:118725] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x75ea18560855]
+[dphan-Thelio-Major:118725] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x75ea18562fa1]
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7b525e998fa6]
+[dphan-Thelio-Major:118730] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7b525eed3f85]
+[dphan-Thelio-Major:118730] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7b5260560855]
+[dphan-Thelio-Major:118730] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7b5260562fa1]
+[dphan-Thelio-Major:118730] [ 9] [dphan-Thelio-Major:118725] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x75ea1855b59e]
+[dphan-Thelio-Major:118725] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x75ea184e20f4]
+[dphan-Thelio-Major:118725] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x75ea16eb2845]
+[dphan-Thelio-Major:118725] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7d7e89d98fa6]
+[dphan-Thelio-Major:118729] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7d7e8a2d3f85]
+[dphan-Thelio-Major:118729] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7b526055b59e]
+[dphan-Thelio-Major:118730] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7b52604e20f4]
+[dphan-Thelio-Major:118730] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7b525eeb2845]
+[dphan-Thelio-Major:118730] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7b525eefb138]
+[dphan-Thelio-Major:118730] [13] rhoCentralFoam(+0x1b8b4)[0x5f98e0fac8b4]
+[dphan-Thelio-Major:118730] [14] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x75ea16efb138]
+[dphan-Thelio-Major:118725] [13] rhoCentralFoam(+0x1b8b4)[0x5e0aafae08b4]
+[dphan-Thelio-Major:118725] [14] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x75ea15c29d90]
+[dphan-Thelio-Major:118725] [15] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7b525dc29d90]
+[dphan-Thelio-Major:118730] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7b525dc29e40]
+[dphan-Thelio-Major:118730] [16] rhoCentralFoam(+0x26b65)[0x5f98e0fb7b65]
+[dphan-Thelio-Major:118730] *** End of error message ***
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7d7e8b960855]
+[dphan-Thelio-Major:118729] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7d7e8b962fa1]
+[dphan-Thelio-Major:118729] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7d7e8b95b59e]
+[dphan-Thelio-Major:118729] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7d7e8b8e20f4]
+[dphan-Thelio-Major:118729] [11] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x75ea15c29e40]
+[dphan-Thelio-Major:118725] [16] rhoCentralFoam(+0x26b65)[0x5e0aafaebb65]
+[dphan-Thelio-Major:118725] *** End of error message ***
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[5] =============
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x704fcc195ce5]
+[dphan-Thelio-Major:118722] [ 5] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7d7e8a2b2845]
+[dphan-Thelio-Major:118729] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7d7e8a2fb138]
+[dphan-Thelio-Major:118729] [13] rhoCentralFoam(+0x1b8b4)[0x5ddaccf368b4]
+[dphan-Thelio-Major:118729] [14] [dphan-Thelio-Major:118724] *** Process received signal ***
+[dphan-Thelio-Major:118724] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118724] Signal code:  (-6)
+[dphan-Thelio-Major:118724] Failing at address: 0x3e80001cfc4
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7bfbf4f95ce5]
+[dphan-Thelio-Major:118728] [ 5] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7d7e89029d90]
+[dphan-Thelio-Major:118729] [15] [dphan-Thelio-Major:118724] [ 0] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7d7e89029e40]
+[dphan-Thelio-Major:118729] [16] rhoCentralFoam(+0x26b65)[0x5ddaccf41b65]
+[dphan-Thelio-Major:118729] *** End of error message ***
+/lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7ba3e1c42520]
+[dphan-Thelio-Major:118724] [ 1] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7ba3e1c969fc]
+[dphan-Thelio-Major:118724] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7ba3e1c42476]
+[dphan-Thelio-Major:118724] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7ba3e1c42520]
+[dphan-Thelio-Major:118724] [ 4]  in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[14] =============
+[dphan-Thelio-Major:118733] *** Process received signal ***
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x704fcc198fa6]
+[dphan-Thelio-Major:118722] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x704fcc6d3f85]
+[dphan-Thelio-Major:118722] [ 7] [dphan-Thelio-Major:118733] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118733] Signal code:  (-6)
+[dphan-Thelio-Major:118733] Failing at address: 0x3e80001cfcd
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7bfbf4f98fa6]
+[dphan-Thelio-Major:118728] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7bfbf68d3f85]
+[dphan-Thelio-Major:118728] [dphan-Thelio-Major:118733] [ 0] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7bfbf7bd0855]
+[dphan-Thelio-Major:118728] [ 8] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7aaaec842520]
+[dphan-Thelio-Major:118733] [ 1] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7bfbf7bd2fa1]
+[dphan-Thelio-Major:118728] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7bfbf7bcb59e]
+[dphan-Thelio-Major:118728] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7bfbf7b520f4]
+[dphan-Thelio-Major:118728] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7bfbf68b2845]
+[dphan-Thelio-Major:118728] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7bfbf68fb138]
+[dphan-Thelio-Major:118728] [13] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7aaaec8969fc]
+[dphan-Thelio-Major:118733] [ 2] rhoCentralFoam(+0x1b8b4)[0x5e6a967f68b4]
+[dphan-Thelio-Major:118728] [14] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7aaaec842476]
+[dphan-Thelio-Major:118733] [ 3] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7ba3e2995ce5]
+[dphan-Thelio-Major:118724] [ 5] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x704fcdd60855]
+[dphan-Thelio-Major:118722] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x704fcdd62fa1]
+[dphan-Thelio-Major:118722] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x704fcdd5b59e]
+[dphan-Thelio-Major:118722] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x704fcdce20f4]
+[dphan-Thelio-Major:118722] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x704fcc6b2845]
+[dphan-Thelio-Major:118722] [12] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7aaaec842520]
+[dphan-Thelio-Major:118733] [ 4] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7bfbf4229d90]
+[dphan-Thelio-Major:118728] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7bfbf4229e40]
+[dphan-Thelio-Major:118728] [16] rhoCentralFoam(+0x26b65)[0x5e6a96801b65]
+[dphan-Thelio-Major:118728] *** End of error message ***
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x704fcc6fb138]
+[dphan-Thelio-Major:118722] [13] rhoCentralFoam(+0x1b8b4)[0x5ad34a28f8b4]
+[dphan-Thelio-Major:118722] [14] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x704fcb429d90]
+[dphan-Thelio-Major:118722] [15]  in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[8] =============
+[dphan-Thelio-Major:118727] *** Process received signal ***
+[dphan-Thelio-Major:118727] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118727] Signal code:  (-6)
+[dphan-Thelio-Major:118727] Failing at address: 0x3e80001cfc7
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x704fcb429e40]
+[dphan-Thelio-Major:118722] [16] rhoCentralFoam(+0x26b65)[0x5ad34a29ab65]
+[dphan-Thelio-Major:118722] *** End of error message ***
+[dphan-Thelio-Major:118727] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7855b3c42520]
+[dphan-Thelio-Major:118727] [ 1] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7ba3e2998fa6]
+[dphan-Thelio-Major:118724] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7ba3e2ed3f85]
+[dphan-Thelio-Major:118724] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7ba3e4560855]
+[dphan-Thelio-Major:118724] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7ba3e4562fa1]
+[dphan-Thelio-Major:118724] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7ba3e455b59e]
+[dphan-Thelio-Major:118724] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7ba3e44e20f4]
+[dphan-Thelio-Major:118724] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7ba3e2eb2845]
+[dphan-Thelio-Major:118724] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7aaaed595ce5]
+[dphan-Thelio-Major:118733] [ 5] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x7855b3c969fc]
+[dphan-Thelio-Major:118727] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x7855b3c42476]
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7ba3e2efb138]
+[dphan-Thelio-Major:118724] [13] rhoCentralFoam(+0x1b8b4)[0x5a01018948b4]
+[dphan-Thelio-Major:118724] [14] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7ba3e1c29d90]
+[dphan-Thelio-Major:118724] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7ba3e1c29e40]
+[dphan-Thelio-Major:118724] [16] rhoCentralFoam(+0x26b65)[0x5a010189fb65]
+[dphan-Thelio-Major:118724] *** End of error message ***
+[dphan-Thelio-Major:118727] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x7855b3c42520]
+[dphan-Thelio-Major:118727] [ 4] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7aaaed598fa6]
+[dphan-Thelio-Major:118733] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7aaaedad3f85]
+[dphan-Thelio-Major:118733] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7aaaef160855]
+[dphan-Thelio-Major:118733] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7aaaef162fa1]
+[dphan-Thelio-Major:118733] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7aaaef15b59e]
+[dphan-Thelio-Major:118733] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7aaaef0e20f4]
+[dphan-Thelio-Major:118733] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7aaaedab2845]
+[dphan-Thelio-Major:118733] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7aaaedafb138]
+[dphan-Thelio-Major:118733] [13] rhoCentralFoam(+0x1b8b4)[0x5ab9d5bb88b4]
+[dphan-Thelio-Major:118733] [14] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x7855b4995ce5]
+[dphan-Thelio-Major:118727] [ 5] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7aaaec829d90]
+[dphan-Thelio-Major:118733] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7aaaec829e40]
+[dphan-Thelio-Major:118733] [16] rhoCentralFoam(+0x26b65)[0x5ab9d5bc3b65]
+[dphan-Thelio-Major:118733] *** End of error message ***
+ in /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/bin/rhoCentralFoam
+[1] =============
+[dphan-Thelio-Major:118720] *** Process received signal ***
+[dphan-Thelio-Major:118720] Signal: Floating point exception (8)
+[dphan-Thelio-Major:118720] Signal code:  (-6)
+[dphan-Thelio-Major:118720] Failing at address: 0x3e80001cfc0
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x7855b4998fa6]
+[dphan-Thelio-Major:118727] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x7855b4ed3f85]
+[dphan-Thelio-Major:118727] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x7855b6516855]
+[dphan-Thelio-Major:118727] [ 8] [dphan-Thelio-Major:118720] [ 0] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x71b7d1a42520]
+[dphan-Thelio-Major:118720] [ 1] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x7855b6518fa1]
+[dphan-Thelio-Major:118727] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x7855b651159e]
+[dphan-Thelio-Major:118727] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x7855b64980f4]
+[dphan-Thelio-Major:118727] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x7855b4eb2845]
+[dphan-Thelio-Major:118727] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x7855b4efb138]
+[dphan-Thelio-Major:118727] [13] rhoCentralFoam(+0x1b8b4)[0x5e5fdde9e8b4]
+[dphan-Thelio-Major:118727] [14] /lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x12c)[0x71b7d1a969fc]
+[dphan-Thelio-Major:118720] [ 2] /lib/x86_64-linux-gnu/libc.so.6(raise+0x16)[0x71b7d1a42476]
+[dphan-Thelio-Major:118720] [ 3] /lib/x86_64-linux-gnu/libc.so.6(+0x42520)[0x71b7d1a42520]
+[dphan-Thelio-Major:118720] [ 4] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x7855b3c29d90]
+[dphan-Thelio-Major:118727] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x7855b3c29e40]
+[dphan-Thelio-Major:118727] [16] rhoCentralFoam(+0x26b65)[0x5e5fddea9b65]
+[dphan-Thelio-Major:118727] *** End of error message ***
+/usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4Foam6divideERNS_5FieldIdEERKNS_5UListIdEES6_+0x25)[0x71b7d2795ce5]
+[dphan-Thelio-Major:118720] [ 5] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libOpenFOAM.so(_ZN4FoamdvERKNS_3tmpINS_5FieldIdEEEERKNS_5UListIdEE+0x56)[0x71b7d2798fa6]
+[dphan-Thelio-Major:118720] [ 6] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xa2f85)[0x71b7d2cd3f85]
+[dphan-Thelio-Major:118720] [ 7] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField9calcYPlusERKNS_5FieldIdEE+0x145)[0x71b7d4360855]
+[dphan-Thelio-Major:118720] [ 8] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZNK4Foam34nutUWallFunctionFvPatchScalarField7calcNutEv+0x201)[0x71b7d4362fa1]
+[dphan-Thelio-Major:118720] [ 9] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(_ZN4Foam33nutWallFunctionFvPatchScalarField12updateCoeffsEv+0x3e)[0x71b7d435b59e]
+[dphan-Thelio-Major:118720] [10] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libturbulenceModels.so(+0x600f4)[0x71b7d42e20f4]
+[dphan-Thelio-Major:118720] [11] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0x81845)[0x71b7d2cb2845]
+[dphan-Thelio-Major:118720] [12] /usr/lib/openfoam/openfoam2406/platforms/linux64GccDPInt32Opt/lib/libcompressibleTurbulenceModels.so(+0xca138)[0x71b7d2cfb138]
+[dphan-Thelio-Major:118720] [13] rhoCentralFoam(+0x1b8b4)[0x64605d75d8b4]
+[dphan-Thelio-Major:118720] [14] /lib/x86_64-linux-gnu/libc.so.6(+0x29d90)[0x71b7d1a29d90]
+[dphan-Thelio-Major:118720] [15] /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80)[0x71b7d1a29e40]
+[dphan-Thelio-Major:118720] [16] rhoCentralFoam(+0x26b65)[0x64605d768b65]
+[dphan-Thelio-Major:118720] *** End of error message ***
+--------------------------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+mpiexec noticed that process rank 5 with PID 0 on node dphan-Thelio-Major exited on signal 8 (Floating point exception).
+--------------------------------------------------------------------------

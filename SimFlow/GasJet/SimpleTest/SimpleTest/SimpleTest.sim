@@ -1,7 +1,7 @@
 run
 {
-	parallel	false;
-	processors	48;
+	parallel	true;
+	processors	24;
 }
 summary
 {
@@ -193,6 +193,84 @@ Graphics3D
 	}
 	postprocessingPlots
 	{
+		residuals
+		{
+			properties
+			{
+				title	;
+				isXGridVisible	true;
+				isYGridVisible	true;
+				xLabel	Time [s];
+				yLabel	Residuum [-];
+			}
+			series
+			{
+				Ux
+				{
+					label	Ux;
+					color	(0 0 255);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				Uy
+				{
+					label	Uy;
+					color	(255 0 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				Uz
+				{
+					label	Uz;
+					color	(0 255 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				p
+				{
+					label	p;
+					color	(0 0 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				p_rgh
+				{
+					label	p_rgh;
+					color	(0 0 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				omega
+				{
+					label	omega;
+					color	(255 200 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				epsilon
+				{
+					label	epsilon;
+					color	(255 200 0);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				k
+				{
+					label	k;
+					color	(0 255 255);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+			}
+		}
 	}
 	SectionViewParameters
 	{
