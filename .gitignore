@@ -8,4 +8,13 @@ Debug/
 *.vcxproj.user
 *.aps
 build/
+RELEASE.local
+*linux-x86_64*
+db/
+PicoScopeICT/EPICS/epics_ps3000a/picoApp/src/O.Common/PS3000A.dbd
+PicoScopeICT/EPICS/epics_ps3000a/picoApp/Db/O.Common/PS3000A_ch.db
+PicoScopeICT/EPICS/epics_ps3000a/iocBoot/iocPS3000A/envPaths
+PicoScopeICT/EPICS/epics_ps3000a/iocBoot/iocPS3000A/dllPath.bat
+PicoScopeICT/EPICS/epics_ps3000a/iocBoot/iocPS3000A/cdCommands
+PicoScopeICT/EPICS/epics_ps3000a/dbd/PS3000A.dbd
 *slices*

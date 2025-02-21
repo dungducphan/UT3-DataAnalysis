@@ -1,4 +1,0 @@
-ACLOCAL_AMFLAGS = -I m4
-
-bin_PROGRAMS = ps3000Con
-ps3000Con_SOURCES = ps3000Con.c
