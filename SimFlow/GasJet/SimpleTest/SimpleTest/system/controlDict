@@ -28,6 +28,49 @@ writeCompression	false;
 writeFormat	binary;
 writePrecision	7;
 libs	("libfvMotionSolvers.so" "libturbulenceModels.so" "libturbulenceModelSchemes.so");
+functions
+{
+	slices
+	{
+		libs	("libsampling.so");
+		type	surfaces;
+		interpolationScheme	cellPoint;
+		surfaceFormat	foam;
+		surfaces	(
+	CentralSlice
+	{
+		interpolate	true;
+		planeType	pointAndNormal;
+		pointAndNormalDict
+		{
+			normal	(0 0 1);
+			point	(0 0 0);
+		}
+		triangulate	true;
+		type	plane;
+	}
+	TransverseSlice
+	{
+		interpolate	true;
+		planeType	pointAndNormal;
+		pointAndNormalDict
+		{
+			normal	(1 0 0);
+			point	(5e-04 0 0);
+		}
+		triangulate	true;
+		type	plane;
+	}
+);
+		executeInterval	1;
+		fields	(p nut alphat U);
+		enabled	true;
+		log	true;
+		writeControl	writeTime;
+		writeFields	true;
+		writeInterval	1;
+	}
+}
 OptimisationSwitches
 {
 	fileHandler	uncollated;

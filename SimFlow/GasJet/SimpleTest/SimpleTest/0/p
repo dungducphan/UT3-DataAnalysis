@@ -8,7 +8,7 @@ FoamFile
 	arch	"LSB;label=32;scalar=64";
 }
 dimensions	[1 -1 -2 0 0 0 0];
-internalField	uniform 100000;
+internalField	uniform 0;
 boundaryField
 {
 	GasJetSmaller_in
