@@ -13,15 +13,13 @@ boundaryField
 {
 	GasJetSmaller_in
 	{
-		type	pressureNormalInletOutletVelocity;
+		type	pressureInletOutletVelocity;
 		value	uniform (0 0 0);
 		rho	rho;
 	}
 	GasJetSmaller_out
 	{
-		type	pressureInletOutletVelocity;
-		value	uniform (0 0 0);
-		rho	rho;
+		type	zeroGradient;
 	}
 	GasJetSmaller_dyn_wall
 	{

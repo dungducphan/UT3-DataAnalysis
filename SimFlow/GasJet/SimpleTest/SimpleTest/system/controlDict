@@ -8,10 +8,10 @@ FoamFile
 }
 adjustTimeStep	false;
 application	rhoCentralFoam;
-deltaT	1e-06;
-endTime	1e-02;
-maxCo	2.0;
-maxDeltaT	1.0;
+deltaT	1e-12;
+endTime	1e-03;
+maxCo	0.5;
+maxDeltaT	1e-09;
 purgeWrite	0;
 startFrom	latestTime;
 startTime	0;
@@ -19,7 +19,7 @@ stopAt	endTime;
 timeFormat	general;
 timePrecision	6;
 writeControl	adjustableRunTime;
-writeInterval	1e-05;
+writeInterval	1e-06;
 writePrecision	7;
 runTimeModifiable	true;
 timeFormat	general;
@@ -63,7 +63,7 @@ functions
 	}
 );
 		executeInterval	1;
-		fields	(p nut alphat U);
+		fields	(p U);
 		enabled	true;
 		log	true;
 		writeControl	writeTime;

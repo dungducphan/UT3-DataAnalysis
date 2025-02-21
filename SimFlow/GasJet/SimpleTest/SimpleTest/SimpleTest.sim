@@ -1,6 +1,6 @@
 run
 {
-	parallel	false;
+	parallel	true;
 	processors	24;
 }
 summary
@@ -29,26 +29,6 @@ inputs
 			solarLoadCoeffs
 			{
 				sunDirection	(0 0 -1);
-			}
-		}
-		turbulenceProperties
-		{
-			RAS
-			{
-				kEpsilonCoeffs
-				{
-					C3	-0.33;
-				}
-			}
-		}
-		thermophysicalProperties
-		{
-			mixture
-			{
-				equationOfState
-				{
-					omega	-0.39;
-				}
 			}
 		}
 	}
@@ -269,6 +249,22 @@ Graphics3D
 					thickness	1;
 					representation	Solid;
 				}
+				h
+				{
+					label	h;
+					color	(254 0 255);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
+				e
+				{
+					label	e;
+					color	(254 0 255);
+					isVisible	true;
+					thickness	1;
+					representation	Solid;
+				}
 			}
 		}
 	}
@@ -379,9 +375,9 @@ primitiveMesh
 		radialFraction	0.7;
 		radialDivision	20;
 		radialGrading	1;
-		axialDivision	100;
+		axialDivision	50;
 		axialGrading	1;
-		circumferentialDivision	20;
+		circumferentialDivision	10;
 		boundaries
 		{
 			cylinder
@@ -476,19 +472,19 @@ fieldInputs
 	{
 		p
 		{
-			internalField	uniform 0;
+			internalField	uniform 100;
 			boundaryField
 			{
 				GasJetSmaller_in
 				{
 					type	totalPressure;
-					p0	"uniform 2000000";
+					p0	"uniform 1000";
 					gamma	1.668;
 				}
 				GasJetSmaller_out
 				{
 					type	fixedValue;
-					value	"uniform 0";
+					value	"uniform 100";
 				}
 				GasJetSmaller_dyn_wall
 				{
@@ -507,13 +503,12 @@ fieldInputs
 			{
 				GasJetSmaller_in
 				{
-					type	pressureNormalInletOutletVelocity;
+					type	pressureInletOutletVelocity;
 					rho	rho;
 				}
 				GasJetSmaller_out
 				{
-					type	pressureInletOutletVelocity;
-					rho	rho;
+					type	zeroGradient;
 				}
 				GasJetSmaller_dyn_wall
 				{
@@ -532,10 +527,8 @@ fieldInputs
 			{
 				GasJetSmaller_in
 				{
-					type	totalTemperature;
-					T0	"uniform 300";
-					gamma	1.668;
-					psi	thermo:psi;
+					type	fixedValue;
+					value	"uniform 300";
 				}
 				GasJetSmaller_out
 				{
@@ -578,7 +571,7 @@ fieldInputs
 		}
 		epsilon
 		{
-			internalField	uniform 1;
+			internalField	uniform 0.1;
 			boundaryField
 			{
 				GasJetSmaller_in
@@ -638,13 +631,11 @@ fieldInputs
 				}
 				GasJetSmaller_dyn_wall
 				{
-					type	compressible::alphatJayatillekeWallFunction;
-					Prt	0.85;
+					type	compressible::alphatWallFunction;
 				}
 				GasJetSmaller_nil_wall
 				{
-					type	compressible::alphatJayatillekeWallFunction;
-					Prt	0.85;
+					type	compressible::alphatWallFunction;
 				}
 			}
 		}

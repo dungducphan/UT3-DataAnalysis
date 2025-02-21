@@ -13,10 +13,8 @@ boundaryField
 {
 	GasJetSmaller_in
 	{
-		type	totalTemperature;
-		T0	uniform 300;
-		gamma	1.668;
-		psi	thermo:psi;
+		type	fixedValue;
+		value	uniform 300;
 	}
 	GasJetSmaller_out
 	{
