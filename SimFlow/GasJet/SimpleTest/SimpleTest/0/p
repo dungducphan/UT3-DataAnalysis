@@ -14,13 +14,13 @@ boundaryField
 	GasJetSmaller_in
 	{
 		type	totalPressure;
-		p0	uniform 100000;
+		p0	uniform 2000000;
 		gamma	1.668;
 	}
 	GasJetSmaller_out
 	{
 		type	fixedValue;
-		value	uniform 100000;
+		value	uniform 0;
 	}
 	GasJetSmaller_dyn_wall
 	{

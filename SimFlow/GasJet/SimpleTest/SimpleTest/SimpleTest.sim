@@ -1,3 +1,220 @@
+run
+{
+	parallel	false;
+	processors	48;
+}
+summary
+{
+}
+regionProperties
+{
+	default
+	{
+		bafflesSplit	false;
+		cellZones
+		{
+		}
+	}
+}
+inputs
+{
+	default
+	{
+		radiationProperties
+		{
+			solarLoarCoeffs
+			{
+				sunDirection	(0 0 -1);
+			}
+			solarLoadCoeffs
+			{
+				sunDirection	(0 0 -1);
+			}
+		}
+		turbulenceProperties
+		{
+			RAS
+			{
+				kEpsilonCoeffs
+				{
+					C3	-0.33;
+				}
+			}
+		}
+		thermophysicalProperties
+		{
+			mixture
+			{
+				equationOfState
+				{
+					omega	-0.39;
+				}
+			}
+		}
+	}
+}
+application
+{
+	mode	normal;
+}
+probes
+{
+}
+initialization
+{
+	potentialInit	false;
+	nNonOrthogonalCorrectors	8;
+	mapInit	false;
+	mapConsistent	false;
+}
+slices
+{
+}
+parameters
+{
+}
+geometry
+{
+	GasJetSmaller
+	{
+		tessellation	Normal;
+	}
+}
+Graphics3D
+{
+	MeshParameters
+	{
+		default
+		{
+			GasJetSmaller_dyn_wall
+			{
+				color	(155 50 0);
+				transparency	0.0;
+				Model
+				{
+					faceHide	true;
+					edgesHide	false;
+				}
+				Slice
+				{
+					faceHide	true;
+					edgesHide	true;
+				}
+			}
+			GasJetSmaller_in
+			{
+				color	(155 180 50);
+				transparency	0.0;
+				Model
+				{
+					faceHide	true;
+					edgesHide	false;
+				}
+				Slice
+				{
+					faceHide	true;
+					edgesHide	true;
+				}
+			}
+			GasJetSmaller_nil_wall
+			{
+				color	(51 255 0);
+				transparency	0.0;
+				Model
+				{
+					faceHide	true;
+					edgesHide	false;
+				}
+				Slice
+				{
+					faceHide	true;
+					edgesHide	true;
+				}
+			}
+			GasJetSmaller_out
+			{
+				color	(0 255 178);
+				transparency	0.0;
+				Model
+				{
+					faceHide	true;
+					edgesHide	false;
+				}
+				Slice
+				{
+					faceHide	true;
+					edgesHide	true;
+				}
+			}
+		}
+	}
+	CellZonesParameters
+	{
+	}
+	ProbeParameters
+	{
+	}
+	View
+	{
+		SavedViews
+		{
+		}
+	}
+	PostprocessingParameters
+	{
+		ActiveTime	0;
+		ActiveField	Solid;
+	}
+	GeometryParameters
+	{
+		GasJetSmaller
+		{
+			color	(112 128 144);
+			transparency	0.0;
+			Model
+			{
+				hide	true;
+			}
+			Slice
+			{
+				hide	true;
+			}
+		}
+	}
+	postprocessingPlots
+	{
+	}
+	SectionViewParameters
+	{
+		point	(0 0 0);
+		normal	(0 0 1);
+		type	FullCell;
+		isEnabled	false;
+	}
+	SlicesParameters
+	{
+		POST
+		{
+		}
+		MODEL
+		{
+		}
+	}
+}
+mesh
+{
+}
+meshing
+{
+	parallel	true;
+	processors	24;
+	meshingStages
+	{
+		Base	true;
+		Mesh	true;
+		Layers	true;
+	}
+}
 materials
 {
 	regions
@@ -5,11 +222,144 @@ materials
 		default	helium-gas;
 	}
 }
-geometry
+primitiveMesh
 {
-	GasJetSmaller
+	type	cylinder;
+	box
 	{
-		tessellation	Normal;
+		min	(-7.354e-03 -2.5247e-03 -2.525e-03);
+		max	(3.554e-03 2.5247e-03 2.525e-03);
+		division	(10 10 10);
+		grading	(1 1 1);
+		lockCellSize	false;
+		boundaries
+		{
+			y_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			z_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			z_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
+	}
+	cylinder
+	{
+		axis	X;
+		origin	-7.5e-03;
+		radius	2.8e-03;
+		length	0.0112;
+		radialFraction	0.7;
+		radialDivision	20;
+		radialGrading	1;
+		axialDivision	100;
+		axialGrading	1;
+		circumferentialDivision	20;
+		boundaries
+		{
+			cylinder
+			{
+				name	boundaries;
+				type	wall;
+			}
+			outlet
+			{
+				name	boundaries;
+				type	wall;
+			}
+			inlet
+			{
+				name	boundaries;
+				type	wall;
+			}
+		}
+	}
+	plate
+	{
+		minx	-0.5;
+		miny	-0.5;
+		maxx	0.5;
+		maxy	0.5;
+		divisionx	10;
+		divisiony	10;
+		gradingx	1;
+		gradingy	1;
+		lockCellSize	false;
+		boundaries
+		{
+			y_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_minus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			x_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+			y_plus
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
+	}
+	wedge
+	{
+		lockCellSize	false;
+		origin	0;
+		radius	1;
+		length	1;
+		radialDivision	10;
+		radialGrading	1;
+		axialDivision	10;
+		axialGrading	1;
+		boundaries
+		{
+			cylinder
+			{
+				name	boundaries;
+				type	patch;
+			}
+			inlet
+			{
+				name	boundaries;
+				type	patch;
+			}
+			outlet
+			{
+				name	boundaries;
+				type	patch;
+			}
+		}
 	}
 }
 regionInit
@@ -28,13 +378,13 @@ fieldInputs
 				GasJetSmaller_in
 				{
 					type	totalPressure;
-					p0	"uniform 100000";
+					p0	"uniform 2000000";
 					gamma	1.668;
 				}
 				GasJetSmaller_out
 				{
 					type	fixedValue;
-					value	"uniform 100000";
+					value	"uniform 0";
 				}
 				GasJetSmaller_dyn_wall
 				{
@@ -53,7 +403,7 @@ fieldInputs
 			{
 				GasJetSmaller_in
 				{
-					type	pressureInletOutletVelocity;
+					type	pressureNormalInletOutletVelocity;
 					rho	rho;
 				}
 				GasJetSmaller_out
@@ -195,323 +545,4 @@ fieldInputs
 			}
 		}
 	}
-}
-primitiveMesh
-{
-	type	cylinder;
-	box
-	{
-		min	(-0.007354 -0.002524728 -0.002525);
-		max	(3.554e-03 2.5247e-03 2.525e-03);
-		division	(10 10 10);
-		grading	(1 1 1);
-		lockCellSize	false;
-		boundaries
-		{
-			x_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			y_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			z_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			x_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			z_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			y_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-		}
-	}
-	cylinder
-	{
-		axis	X;
-		origin	-7.5e-03;
-		radius	2.8e-03;
-		length	0.0112;
-		radialFraction	0.7;
-		radialDivision	20;
-		radialGrading	1;
-		axialDivision	100;
-		axialGrading	1;
-		circumferentialDivision	20;
-		boundaries
-		{
-			cylinder
-			{
-				name	boundaries;
-				type	wall;
-			}
-			outlet
-			{
-				name	boundaries;
-				type	wall;
-			}
-			inlet
-			{
-				name	boundaries;
-				type	wall;
-			}
-		}
-	}
-	plate
-	{
-		minx	-0.5;
-		miny	-0.5;
-		maxx	0.5;
-		maxy	0.5;
-		divisionx	10;
-		divisiony	10;
-		gradingx	1;
-		gradingy	1;
-		lockCellSize	false;
-		boundaries
-		{
-			x_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			y_minus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			y_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-			x_plus
-			{
-				name	boundaries;
-				type	patch;
-			}
-		}
-	}
-	wedge
-	{
-		lockCellSize	false;
-		origin	0;
-		radius	1;
-		length	1;
-		radialDivision	10;
-		radialGrading	1;
-		axialDivision	10;
-		axialGrading	1;
-		boundaries
-		{
-			cylinder
-			{
-				name	boundaries;
-				type	patch;
-			}
-			inlet
-			{
-				name	boundaries;
-				type	patch;
-			}
-			outlet
-			{
-				name	boundaries;
-				type	patch;
-			}
-		}
-	}
-}
-slices
-{
-}
-probes
-{
-}
-application
-{
-	mode	normal;
-}
-parameters
-{
-}
-inputs
-{
-	default
-	{
-	}
-}
-Graphics3D
-{
-	MeshParameters
-	{
-		default
-		{
-			GasJetSmaller_dyn_wall
-			{
-				color	(155 50 0);
-				transparency	0.0;
-				Model
-				{
-					faceHide	true;
-					edgesHide	false;
-				}
-				Slice
-				{
-					faceHide	true;
-					edgesHide	true;
-				}
-			}
-			GasJetSmaller_in
-			{
-				color	(155 180 50);
-				transparency	0.0;
-				Model
-				{
-					faceHide	true;
-					edgesHide	false;
-				}
-				Slice
-				{
-					faceHide	true;
-					edgesHide	true;
-				}
-			}
-			GasJetSmaller_nil_wall
-			{
-				color	(51 255 0);
-				transparency	0.0;
-				Model
-				{
-					faceHide	true;
-					edgesHide	false;
-				}
-				Slice
-				{
-					faceHide	true;
-					edgesHide	true;
-				}
-			}
-			GasJetSmaller_out
-			{
-				color	(0 255 178);
-				transparency	0.0;
-				Model
-				{
-					faceHide	true;
-					edgesHide	false;
-				}
-				Slice
-				{
-					faceHide	true;
-					edgesHide	true;
-				}
-			}
-		}
-	}
-	CellZonesParameters
-	{
-	}
-	ProbeParameters
-	{
-	}
-	View
-	{
-		SavedViews
-		{
-		}
-	}
-	PostprocessingParameters
-	{
-		ActiveTime	0;
-		ActiveField	Solid;
-	}
-	GeometryParameters
-	{
-		GasJetSmaller
-		{
-			color	(112 128 144);
-			transparency	0.0;
-			Model
-			{
-				hide	true;
-			}
-			Slice
-			{
-				hide	true;
-			}
-		}
-	}
-	postprocessingPlots
-	{
-	}
-	SectionViewParameters
-	{
-		point	(0 0 0);
-		normal	(0 0 1);
-		type	FullCell;
-		isEnabled	false;
-	}
-	SlicesParameters
-	{
-		POST
-		{
-		}
-		MODEL
-		{
-		}
-	}
-}
-regionProperties
-{
-	default
-	{
-		bafflesSplit	false;
-		cellZones
-		{
-		}
-	}
-}
-initialization
-{
-	potentialInit	false;
-	nNonOrthogonalCorrectors	8;
-	mapInit	false;
-	mapConsistent	false;
-}
-run
-{
-	parallel	false;
-	processors	48;
-}
-mesh
-{
-}
-meshing
-{
-	parallel	true;
-	processors	24;
-	meshingStages
-	{
-		Base	true;
-		Mesh	true;
-		Layers	true;
-	}
-}
-summary
-{
 }

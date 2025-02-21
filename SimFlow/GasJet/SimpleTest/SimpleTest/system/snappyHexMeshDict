@@ -15,7 +15,7 @@ geometry
 	{
 		type	triSurfaceMesh;
 		simflowType	brep;
-		topoType	solid;
+		topoType	compound;
 		name	GasJetSmaller;
 		faceGroups
 		{
