@@ -181,23 +181,21 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 
 	createParam(P_RunString             , asynParamInt32       , &P_Run             ); // 1
 	createParam(P_MaxPointsString       , asynParamInt32       , &P_MaxPoints       ); // 2  
-	createParam(P_PicoStatusString      , asynParamInt32       , &P_PicoStatus      ); // 3
-	createParam(P_PicoConnectString     , asynParamInt32       , &P_PicoConnect     ); // 4
-	createParam(P_PicoConnectedString   , asynParamInt32       , &P_PicoConnected   ); // 5
-	createParam(P_SampleLengthString    , asynParamInt32       , &P_SampleLength    ); // 6
-	createParam(P_SampleFrequencyString , asynParamInt32       , &P_SampleFrequency ); // 7
-	createParam(P_TriggerSourceString   , asynParamInt32       , &P_TriggerSource   ); // 8
-	createParam(P_ChannelRangeStringA   , asynParamInt32       , &P_ChannelRangeA   ); // 9
-	createParam(P_ChannelRangeStringB   , asynParamInt32       , &P_ChannelRangeB   ); // 10
-	createParam(P_TriggerDelayString    , asynParamFloat64     , &P_TriggerDelay    ); // 11
-	createParam(P_TimeBaseString        , asynParamFloat64Array, &P_TimeBase        ); // 12
-	createParam(P_WaveformStringA       , asynParamFloat64Array, &P_WaveformA       ); // 13
-	createParam(P_WaveformStringB       , asynParamFloat64Array, &P_WaveformB       ); // 14
+	createParam(P_PicoConnectString     , asynParamInt32       , &P_PicoConnect     ); // 3
+	createParam(P_PicoConnectedString   , asynParamInt32       , &P_PicoConnected   ); // 4
+	createParam(P_SampleLengthString    , asynParamInt32       , &P_SampleLength    ); // 5
+	createParam(P_SampleFrequencyString , asynParamInt32       , &P_SampleFrequency ); // 6
+	createParam(P_TriggerSourceString   , asynParamInt32       , &P_TriggerSource   ); // 7
+	createParam(P_ChannelRangeStringA   , asynParamInt32       , &P_ChannelRangeA   ); // 8
+	createParam(P_ChannelRangeStringB   , asynParamInt32       , &P_ChannelRangeB   ); // 9
+	createParam(P_TriggerDelayString    , asynParamFloat64     , &P_TriggerDelay    ); // 10
+	createParam(P_TimeBaseString        , asynParamFloat64Array, &P_TimeBase        ); // 11
+	createParam(P_WaveformStringA       , asynParamFloat64Array, &P_WaveformA       ); // 12
+	createParam(P_WaveformStringB       , asynParamFloat64Array, &P_WaveformB       ); // 13
 
     /* Set the initial values of some parameters */
 	setIntegerParam(P_Run,               0);
 	setIntegerParam(P_MaxPoints,         maxPoints);
-    setIntegerParam(P_PicoStatus,        0);
 	setIntegerParam(P_PicoConnect,       0);
     setIntegerParam(P_PicoConnected,     0);
 	setIntegerParam(P_SampleLength,      maxPoints);
@@ -442,7 +440,7 @@ int PS3000A::ClosePS3000A() {
 	return 0;
 }
 
-int PS3000A::set_channel(int ch) {
+int PS3000A::SetChannels() {
 	int ok;
 	PS3000A_CHANNEL channel = PS3000A_CHANNEL(PS3000A_CHANNEL_A + ch);
 
@@ -490,146 +488,6 @@ int16_t PS3000A::mv_to_adc(int16_t mv, int ch) {
 	return (mv * ps.max_value) / ps.config.ch[ch].range_v;
 }
 
-int PS3000A::set_trigger(int ch) {
-	PICO_STATUS ok;
-
-	PS3000A_TRIGGER_CHANNEL_PROPERTIES channelProperties[N_CH];
-	int16_t nChannelProperties = 1;
-
-	int32_t autoTriggerMilliseconds = 100;
-
-	epicsFloat64 ch_thr;
-	epicsInt32 connected;
-	epicsInt32 enabled;
-	epicsInt32 source;
-
-	getIntegerParam(P_PicoConnected, &connected);
-	getIntegerParam(P_ch_enabled[ch], &enabled);
-	getIntegerParam(P_trigger_source, &source);
-	getDoubleParam(P_ch_threshold[ch], &ch_thr);
-
-	/*printf("ch_%d_threshold = %f\n", ch, ch_thr);*/
-
-	int16_t thr = mv_to_adc(ch_thr, ch);
-
-	/*printf("thr = %d\n", thr);*/
-
-	channelProperties[0].thresholdUpper = thr;
-	channelProperties[0].thresholdUpperHysteresis = 2 * 256;
-	channelProperties[0].thresholdLower = thr;
-	channelProperties[0].thresholdLowerHysteresis = 2 * 256;
-	channelProperties[0].channel =
-	    (PS3000A_CHANNEL)(PS3000A_CHANNEL_A + ch);
-	channelProperties[0].thresholdMode = PS3000A_LEVEL;
-
-	if (enabled == 1 && ch == source) {
-		if (connected == 1) {
-			ok = ps3000aSetTriggerChannelProperties(ps.handle,
-			    channelProperties, nChannelProperties, 0,
-			    autoTriggerMilliseconds);
-			CHKOK("SetTriggerChannelProperties");
-		} else {
-			printf("SetTriggerChannelProperties: Not connected.\n");
-		}
-	}
-
-	return 0;
-}
-
-int PS3000A::set_sig_trigger_source() {
-	int ch;
-	epicsInt32 source;
-	getIntegerParam(P_trigger_source, &source);
-
-	for (ch = 0; ch < 4; ++ch) {
-		PS3000A_TRIGGER_STATE cond;
-		if (ch == source) {
-			cond = PS3000A_CONDITION_TRUE;
-		} else {
-			cond = PS3000A_CONDITION_DONT_CARE;
-		}
-		setIntegerParam(P_ch_condition[ch], cond);
-	}
-	return setup_trigger();
-}
-
-int PS3000A::set_trigger_source() {
-	int ch;
-	epicsInt32 source;
-	getIntegerParam(P_trigger_source, &source);
-
-	for (ch = 0; ch < 4; ++ch) {
-		PS3000A_TRIGGER_STATE cond;
-		if (ch == source) {
-			cond = PS3000A_CONDITION_TRUE;
-		} else {
-			cond = PS3000A_CONDITION_DONT_CARE;
-		}
-		setIntegerParam(P_ch_condition[ch], cond);
-	}
-	return setup_trigger();
-}
-
-int PS3000A::set_trigger_conditions() {
-	PICO_STATUS ok;
-
-	PS3000A_TRIGGER_CONDITIONS conditions[1];
-	int16_t nConditions = 1;
-	int ch;
-	epicsInt32 connected;
-
-
-	epicsInt32 ch_cond[4];
-	for (ch = 0; ch < 4; ++ch) {
-		getIntegerParam(P_ch_condition[ch], &ch_cond[ch]);
-	}
-	getIntegerParam(P_PicoConnected, &connected);
-
-	/*printf("conditions: %d %d %d %d\n", ch_cond[0], ch_cond[1], ch_cond[2],
-	    ch_cond[3]);*/
-
-	conditions[0].channelA = (PS3000A_TRIGGER_STATE)ch_cond[0];
-	conditions[0].channelB = (PS3000A_TRIGGER_STATE)ch_cond[1];
-	conditions[0].channelC = (PS3000A_TRIGGER_STATE)ch_cond[2];
-	conditions[0].channelD = (PS3000A_TRIGGER_STATE)ch_cond[3];
-	conditions[0].external = PS3000A_CONDITION_DONT_CARE;
-	conditions[0].aux = PS3000A_CONDITION_DONT_CARE;
-	conditions[0].pulseWidthQualifier = PS3000A_CONDITION_DONT_CARE;
-
-	if (connected != 0) {
-		ok = ps3000aSetTriggerChannelConditions(ps.handle, conditions,
-		    nConditions);
-		CHKOK("SetTriggerChannelConditions");
-	}
-
-	return 0;
-}
-
-int PS3000A::set_trigger_directions() {
-	PICO_STATUS ok;
-	int ch;
-	PS3000A_THRESHOLD_DIRECTION dir[4];
-	epicsInt32 connected;
-
-	getIntegerParam(P_PicoConnected, &connected);
-	if (connected == 0) return PICO_INTERFACE_NOT_CONNECTED;
-
-	for (ch = 0; ch < 4; ++ch) {
-		epicsInt32 direction;
-		getIntegerParam(P_ch_direction[ch], &direction);
-		dir[ch] = (PS3000A_THRESHOLD_DIRECTION)direction;
-	}
-
-	PS3000A_THRESHOLD_DIRECTION ext = PS3000A_FALLING;
-	PS3000A_THRESHOLD_DIRECTION aux = PS3000A_FALLING;
-
-	ok = ps3000aSetTriggerChannelDirections(ps.handle, dir[0], dir[1],
-	    dir[2], dir[3], ext, aux);
-	CHKOK("SetTriggerChannelDirections");
-
-	return 0;
-}
-
 static const char *pico_info_strings[] = {
 	"driver version",
 	"usb version",
@@ -665,52 +523,6 @@ void PS3000A::PrintUnitInfo() {
 		    string);
 	}
 	printf("----- End Unit info -----\n");
-}
-
-int PS3000A::set_signal_generator() {
-	PICO_STATUS ok;
-
-	epicsInt32 offset_voltage;
-	double pk_to_pk;
-	epicsInt32 wave_type;
-	epicsFloat64 start_frequency;
-	epicsInt32 connected;
-	epicsInt32 trigger_source;
-
-	getIntegerParam(P_PicoConnected, &connected);
-	getIntegerParam(P_sig_offset, &offset_voltage);
-	getDoubleParam (P_sig_pktopk, &pk_to_pk);
-	getIntegerParam(P_sig_wavetype, &wave_type);
-	getDoubleParam (P_sig_frequency, &start_frequency);
-	getIntegerParam(P_sig_trigger_source, &trigger_source);
-
-	printf("signal generator: %d %f %d %f\n", offset_voltage, pk_to_pk,
-	    wave_type, start_frequency);
-
-	double stop_frequency = start_frequency;
-	double increment = 1;
-	double dwell_time = 1;
-	PS3000A_SWEEP_TYPE sweep_type = PS3000A_UP;
-	PS3000A_EXTRA_OPERATIONS operation = PS3000A_ES_OFF;
-	uint32_t shots = 0;
-	uint32_t sweeps = 0;
-	PS3000A_SIGGEN_TRIG_TYPE trigger_type = PS3000A_SIGGEN_FALLING;
-	trigger_source = PS3000A_SIGGEN_NONE;
-	int16_t ext_in_threshold = 0;
-
-	if (connected != 0) {
-		/* Function takes values in micro-volts */
-		int32_t offset_uV = offset_voltage * 1000000;
-		int32_t pk_to_pk_uV = pk_to_pk * 1000000;
-		ok = ps3000aSetSigGenBuiltInV2(ps.handle, offset_uV,
-		    pk_to_pk_uV, wave_type, start_frequency, stop_frequency,
-		    increment, dwell_time, sweep_type, operation, shots, sweeps,
-		    trigger_type, (PS3000A_SIGGEN_TRIG_SOURCE)trigger_source,
-		    ext_in_threshold);
-		CHKOK("SetSigGenBuiltIn");
-	}
-
-	return 0;
 }
 
 int PS3000A::SetTimeBase() {
@@ -833,55 +645,21 @@ time_base_again:
 	return ok;
 }
 
-int PS3000A::set_data_buffer() {
+int PS3000A::SetDataBuffer() {
 	PICO_STATUS ok;
-	int ch;
-
 	epicsInt32 segment_index;
 	epicsInt32 max_points;
 	PS3000A_RATIO_MODE mode = PS3000A_RATIO_MODE_NONE;
 
-	getIntegerParam(P_segment_index, &segment_index);
-        getIntegerParam(P_MaxPoints, &max_points);
-
-	for (ch = 0; ch < 4; ++ch) {
-		ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) ch, data_buffer[ch], max_points, segment_index, mode);
-	}
-
+    getIntegerParam(P_MaxPoints, &max_points);
+	ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) 0, data_buffer[0], max_points, segment_index, mode);
+	ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) 1, data_buffer[1], max_points, segment_index, mode);
 	CHKOK("SetDataBuffer");
 
 	return 0;
 }
 
-PS3000A_RANGE get_best_range(int full_scale_mv) {
-	int i;
-	for (i = PS3000A_20MV; i < PS3000A_20V; ++i) {
-		if (input_ranges[i] >= full_scale_mv) {
-			break;
-		}
-	}
-	return (PS3000A_RANGE)i;
-}
-
-void PS3000A::setVoltsPerDiv(int ch) {
-    epicsInt32 mVPerDiv;
-    int full_scale_mv;
-
-    // Integer volts are in mV
-    getIntegerParam(P_VoltsPerDivSelect[ch], &mVPerDiv);
-    setDoubleParam(P_VoltsPerDiv[ch], mVPerDiv / 1000.);
-
-    /* update channel range */
-    full_scale_mv = mVPerDiv * NUM_DIVISIONS;
-    PS3000A_RANGE range = get_best_range(full_scale_mv);
-
-    /*printf("Full scale %d = %d mV\n", ch, full_scale_mv);
-    printf("Optimal range %d = %d (enum)\n", ch, range);*/
-    setIntegerParam(P_ch_range[ch], range);
-    set_channel(ch);
-}
-
-int PS3000A::setup_trigger() {
+int PS3000A::SetupTrigger() {
 	int ch;
 	int ok;
 	for (ch = 0; ch < 4; ch++) {
@@ -896,89 +674,21 @@ void PS3000A::ConnectPicoScope() {
 	epicsInt32 connect, connected;
 	getIntegerParam(P_PicoConnect, &connect);
 	getIntegerParam(P_PicoConnected, &connected);
-
 	printf("PICO connectPicoScope connect = %d\n", connect);
-
 	if (connect == 0 && connected == 1) {
-		// Device already connected, and an user issues a disconnect
 		printf("PICO Disconnecting...\n");
 		ClosePS3000A();
 		setIntegerParam(P_PicoConnected, 0);
 	} else if (connected == 0 && connect == 1) {
-		// Device not connected, and an user issues a connect
-		int ch;
 		printf("PICO Connecting...\n");
-		if(OpenPS3000A() != 0) {
-			return;
-		}
-		for (ch = 0; ch < 4; ch++) {
-			set_channel(ch);
-		}
-
+		if(OpenPS3000A() != 0) return;
+		SetChannels();
 		PrintUnitInfo();
-
 		SetTimeBase();
-		setup_trigger();
-		set_signal_generator();
-		set_data_buffer();
+		SetupTrigger();
+		SetDataBuffer();
 	}
-	// Any other case is a no-op
 }
-
-void PS3000A::setTimePerDiv() {
-	epicsInt32 nsPerDiv;
-	double time_per_div;
-	double full_time_ns;
-
-	// Integer times are in microseconds
-	getIntegerParam(P_TimePerDivSelect, &nsPerDiv);
-	time_per_div = (double)nsPerDiv;
-	full_time_ns = time_per_div * NUM_DIVISIONS;
-	setDoubleParam(P_TimePerDiv, time_per_div);
-	setDoubleParam(P_FullTime, full_time_ns);
-
-	printf("nsPerDiv = %d\n", nsPerDiv);
-	printf("time_per_div = %f\n", time_per_div);
-
-	set_time_base();
-	setup_trigger();
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /** Called when asyn clients call pasynInt32->write().
@@ -986,7 +696,7 @@ void PS3000A::setTimePerDiv() {
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write. */
-  asynStatus PS3000A::writeInt32(asynUser *pasynUser, epicsInt32 value) {
+asynStatus PS3000A::writeInt32(asynUser *pasynUser, epicsInt32 value) {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     const char *paramName;
@@ -1003,88 +713,16 @@ void PS3000A::setTimePerDiv() {
         if (value) epicsEventSignal(eventId_);
     } else if (function == P_PicoConnect) {
 		ConnectPicoScope();
-    } else {
-        /* All other parameters just get set in parameter list, no need to
-         * act on them here */
-    }
+    } else if (function == P_PicoConnect) {
+		ConnectPicoScope();
+    } else {}
 
     /* Do callbacks so higher layers see any changes */
     status = (asynStatus) callParamCallbacks();
-
     if (status)
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s:%s: status=%d, function=%d, name=%s, value=%d",
-                  driverName, functionName, status, function, paramName, value);
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, "%s:%s: status=%d, function=%d, name=%s, value=%d", driverName, functionName, status, function, paramName, value);
     else
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d, name=%s, value=%d\n",
-              driverName, functionName, function, paramName, value);
-    return status;
-}
-
-/** Called when asyn clients call pasynFloat64->write().
-  * This function sends a signal to the simTask thread if the value of P_UpdateTime has changed.
-  * For all  parameters it  sets the value in the parameter library and calls any registered callbacks.
-  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Value to write. */
-asynStatus PS3000A::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    epicsInt32 run;
-    const char *paramName;
-    const char* functionName = "writeFloat64";
-
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus) setDoubleParam(function, value);
-
-    /* Fetch the parameter string name for possible use in debugging */
-    getParamName(function, &paramName);
-
-    if (function == P_UpdateTime) {
-        /* Make sure the update time is valid. If not change it and put back in parameter library */
-        if (value < MIN_UPDATE_TIME) {
-            asynPrint(pasynUser, ASYN_TRACE_WARNING,
-                "%s:%s: warning, update time too small, changed from %f to %f\n",
-                driverName, functionName, value, MIN_UPDATE_TIME);
-            value = MIN_UPDATE_TIME;
-            setDoubleParam(P_UpdateTime, value);
-        }
-        /* If the update time has changed and we are running then wake up the simulation task */
-        getIntegerParam(P_Run, &run);
-        if (run) epicsEventSignal(eventId_);
-    }
-    else if (function == P_ch_threshold[0]) {
-	    set_trigger(0);
-    }
-    else if (function == P_ch_threshold[1]) {
-	    set_trigger(1);
-    }
-    else if (function == P_ch_threshold[2]) {
-	    set_trigger(2);
-    }
-    else if (function == P_ch_threshold[3]) {
-	    set_trigger(3);
-    }
-    else if (function == P_sig_frequency
-	  || function == P_sig_pktopk) {
-	    set_signal_generator();
-    }
-    else {
-        /* All other parameters just get set in parameter list, no need to
-         * act on them here */
-    }
-
-    /* Do callbacks so higher layers see any changes */
-    status = (asynStatus) callParamCallbacks();
-
-    if (status)
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s:%s: status=%d, function=%d, name=%s, value=%f",
-                  driverName, functionName, status, function, paramName, value);
-    else
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d, name=%s, value=%f\n",
-              driverName, functionName, function, paramName, value);
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, "%s:%s: function=%d, name=%s, value=%d\n", driverName, functionName, function, paramName, value);
     return status;
 }
 
@@ -1097,166 +735,56 @@ asynStatus PS3000A::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
 asynStatus PS3000A::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn) {
     int function = pasynUser->reason;
     size_t ncopy;
-    int ch;
     epicsInt32 itemp;
     asynStatus status = asynSuccess;
     epicsTimeStamp timeStamp;
-    epicsInt32 enabled;
-
     const char *functionName = "readFloat64Array";
-
     getTimeStamp(&timeStamp);
     pasynUser->timestamp = timeStamp;
-    getIntegerParam(P_sample_length, &itemp);
+    getIntegerParam(P_SampleLength, &itemp);
     ncopy = itemp;
-
     if (nElements < ncopy) ncopy = nElements;
-    for (ch = 0; ch < 4; ++ch) {
-	    if (function == P_Waveform[ch]) {
-		    getIntegerParam(P_ch_enabled[ch], &enabled);
-		    if (enabled == 1) {
-			    memcpy(value, pData_[ch],
-				ncopy*sizeof(epicsFloat64));
-			    *nIn = ncopy;
-		    } else {
-			    *nIn = 0;
-		    }
-	    }
-    }
-    if (function == P_TimeBase) {
+    if (function == P_WaveformA) {
+		memcpy(value, pData_[0],
+		ncopy*sizeof(epicsFloat64));
+		*nIn = ncopy;
+	} else if (function == P_WaveformB) {
+		memcpy(value, pData_[1],
+		ncopy*sizeof(epicsFloat64));
+		*nIn = ncopy;
+	} else if (function == P_TimeBase) {
         memcpy(value, pTimeBase_, ncopy*sizeof(epicsFloat64));
         *nIn = ncopy;
-    }
-    if (status)
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s:%s: status=%d, function=%d",
-                  driverName, functionName, status, function);
-    else
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d\n",
-              driverName, functionName, function);
+    } else {}
+
+    if (status) epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, "%s:%s: status=%d, function=%d", driverName, functionName, status, function);
+    else asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, "%s:%s: function=%d\n", driverName, functionName, function);
+
     return status;
 }
 
-asynStatus PS3000A::readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], size_t nElements, size_t *nIn) {
-    int function = pasynUser->reason;
-    size_t i;
-
-    if (function == P_VoltsPerDivSelect[0]) {
-        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
-            if (strings[i]) free(strings[i]);
-            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
-            values[i] = voltsPerDivValues_[i];
-            severities[i] = 0;
-        }
-    }
-    else if (function == P_VoltsPerDivSelect[1]) {
-        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
-            if (strings[i]) free(strings[i]);
-            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
-            values[i] = voltsPerDivValues_[i];
-            severities[i] = 0;
-        }
-    }
-    else if (function == P_VoltsPerDivSelect[2]) {
-        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
-            if (strings[i]) free(strings[i]);
-            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
-            values[i] = voltsPerDivValues_[i];
-            severities[i] = 0;
-        }
-    }
-    else if (function == P_VoltsPerDivSelect[3]) {
-        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
-            if (strings[i]) free(strings[i]);
-            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
-            values[i] = voltsPerDivValues_[i];
-            severities[i] = 0;
-        }
-    }
-    else {
-        *nIn = 0;
-        return asynError;
-    }
-    *nIn = i;
-    return asynSuccess;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Configuration routine.  Called directly, or from the iocsh function below */
-
 extern "C" {
+	/** EPICS iocsh callable function to call constructor for the PS3000A class.
+	* \param[in] portName The name of the asyn port driver to be created.
+	* \param[in] maxPoints The maximum  number of points in the volt and time arrays */
+	int PS3000AConfigure(const char *portName, int maxPoints) {
+		new PS3000A(portName, maxPoints);
+		return(asynSuccess);
+	}
 
-/** EPICS iocsh callable function to call constructor for the PS3000A class.
-  * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] maxPoints The maximum  number of points in the volt and time arrays */
-int PS3000AConfigure(const char *portName, int maxPoints) {
-    new PS3000A(portName, maxPoints);
-    return(asynSuccess);
+	/* EPICS iocsh shell commands */
+	static const iocshArg initArg0 = { "portName",iocshArgString};
+	static const iocshArg initArg1 = { "max points",iocshArgInt};
+	static const iocshArg * const initArgs[] = {&initArg0, &initArg1};
+	static const iocshFuncDef initFuncDef = {"PS3000AConfigure",2,initArgs};
+	static void initCallFunc(const iocshArgBuf *args) {
+		PS3000AConfigure(args[0].sval, args[1].ival);
+	}
+
+	void PS3000ARegister(void) {
+		iocshRegister(&initFuncDef,initCallFunc);
+	}
+
+	epicsExportRegistrar(PS3000ARegister);
 }
-
-
-/* EPICS iocsh shell commands */
-
-static const iocshArg initArg0 = { "portName",iocshArgString};
-static const iocshArg initArg1 = { "max points",iocshArgInt};
-static const iocshArg * const initArgs[] = {&initArg0, &initArg1};
-static const iocshFuncDef initFuncDef = {"PS3000AConfigure",2,initArgs};
-static void initCallFunc(const iocshArgBuf *args) {
-    PS3000AConfigure(args[0].sval, args[1].ival);
-}
-
-void PS3000ARegister(void) {
-    iocshRegister(&initFuncDef,initCallFunc);
-}
-
-epicsExportRegistrar(PS3000ARegister);
-
-}
-
-
-
-
-
-

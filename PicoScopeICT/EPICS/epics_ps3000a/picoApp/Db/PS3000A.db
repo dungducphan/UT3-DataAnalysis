@@ -60,16 +60,6 @@ record(bo, "$(P)$(R)PicoConnect")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICOSCOPE_CONNECT")
 }
 
-record(longin, "$(P)$(R)PicoStatus")
-{
-    field(PINI,  "1")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICOSCOPE_STATUS")
-    field(SCAN, "I/O Intr")
-    field(HSV,  "MAJOR")
-    field(HIGH, "1")
-}
-
 record(ai, "$(P)$(R)SampleFrequency_RBV")
 {
    field(PINI, "1")
@@ -84,23 +74,6 @@ record(ai, "$(P)$(R)SampleLength_RBV")
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICOSCOPE_SAMPLE_LENGTH")
-   field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)TriggerDelay")
-{
-   field(PINI, "1")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICOSCOPE_TRIGGER_DELAY")
-   field(PREC, "5")
-}
-
-record(ai, "$(P)$(R)TriggerDelay_RBV")
-{
-   field(PINI, "1")
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICOSCOPE_TRIGGER_DELAY")
-   field(PREC, "5")
    field(SCAN, "I/O Intr")
 }
 

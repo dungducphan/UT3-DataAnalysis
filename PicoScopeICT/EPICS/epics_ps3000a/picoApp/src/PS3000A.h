@@ -14,7 +14,6 @@
 
 #define P_RunString             "PICOSCOPE_RUN"               /* asynInt32,         r/w */
 #define P_MaxPointsString       "PICOSCOPE_MAX_POINTS"        /* asynInt32,         r/o */
-#define P_PicoStatusString      "PICOSCOPE_STATUS"            /* asynInt32,         r/o */
 #define P_PicoConnectString     "PICOSCOPE_CONNECT"           /* asynInt32,         r/w */
 #define P_PicoConnectedString   "PICOSCOPE_CONNECTED"         /* asynInt32,         r/o */
 #define P_SampleLengthString    "PICOSCOPE_SAMPLE_LENGTH"     /* asynInt32,         r/o */
@@ -22,7 +21,7 @@
 #define P_TriggerSourceString   "PICOSCOPE_TRIGGER_SOURCE   " /* asynInt32,         r/o */
 #define P_ChannelRangeStringA   "PICOSCOPE_CHA_RANGE"         /* asynInt32,         r/w */
 #define P_ChannelRangeStringB   "PICOSCOPE_CHB_RANGE"         /* asynInt32,         r/w */
-#define P_TriggerDelayString    "PICOSCOPE_TRIGGER_DELAY   "  /* asynFloat64,       r/w */
+
 #define P_TimeBaseString        "PICOSCOPE_TIMEBASE"          /* asynFloat64Array,  r/o */
 #define P_WaveformStringA       "PICOSCOPE_WAVEFORM_A"        /* asynFloat64Array,  r/o */
 #define P_WaveformStringB       "PICOSCOPE_WAVEFORM_B"        /* asynFloat64Array,  r/o */
@@ -64,9 +63,7 @@ public:
                  
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
-    virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], size_t nElements, size_t *nIn);
 
     /* These are the methods that are new to this class */
     void RunTask(void);
