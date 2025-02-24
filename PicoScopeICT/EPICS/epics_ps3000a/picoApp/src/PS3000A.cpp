@@ -16,16 +16,13 @@
 #include "PS3000A.h"
 #include <epicsExport.h>
 
-#define NUM_DIVISIONS 10     /* Number of scope divisions in X and Y */
-#define MIN_UPDATE_TIME 0.02 /* Minimum update time, to prevent CPU saturation */
-#define N_CH 2
 #define PS3000A_FREQUENCY 1000000000
 
 #define MAX_ENUM_STRING_SIZE 20
 static int allVoltsPerDivSelections[NUM_VERT_SELECTIONS]={5,10,20,50,100,200,500,1000,2000,5000,10000,20000};
 
 static const char *driverName="PS3000A";
-void run_task(void *drvPvt);
+void RunTask(void *drvPvt);
 
 static const uint16_t input_ranges[] = {
 	10,
@@ -173,226 +170,87 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
     /* Allocate the output waveform array */
     pData_[0] = (epicsFloat64 *)calloc(maxPoints, sizeof(epicsFloat64));
     pData_[1] = (epicsFloat64 *)calloc(maxPoints, sizeof(epicsFloat64));
-    pData_[2] = (epicsFloat64 *)calloc(maxPoints, sizeof(epicsFloat64));
-    pData_[3] = (epicsFloat64 *)calloc(maxPoints, sizeof(epicsFloat64));
 
     /* Allocate the waveform array (pico scope delivers int16_t array */
     data_buffer[0] = (int16_t *)calloc(maxPoints, sizeof(int16_t)); /* uV */
     data_buffer[1] = (int16_t *)calloc(maxPoints, sizeof(int16_t)); /* uV */
-    data_buffer[2] = (int16_t *)calloc(maxPoints, sizeof(int16_t)); /* uV */
-    data_buffer[3] = (int16_t *)calloc(maxPoints, sizeof(int16_t)); /* uV */
 
     /* Allocate the time base array */
     pTimeBase_ = (epicsFloat64 *)calloc(maxPoints, sizeof(epicsFloat64));
-
     eventId_ = epicsEventCreate(epicsEventEmpty);
-    createParam(P_RunString, asynParamInt32, &P_Run);
-    createParam(P_MaxPointsString, asynParamInt32,&P_MaxPoints);
-    createParam(P_TimePerDivString, asynParamFloat64, &P_TimePerDiv);
-    createParam(P_FullTimeString, asynParamFloat64, &P_FullTime);
-    createParam(P_TimePerDivSelectString, asynParamInt32, &P_TimePerDivSelect);
-    createParam(P_VoltsPerDivStringA, asynParamFloat64, &P_VoltsPerDiv[0]);
-    createParam(P_VoltsPerDivStringB, asynParamFloat64, &P_VoltsPerDiv[1]);
-    createParam(P_VoltsPerDivStringC, asynParamFloat64, &P_VoltsPerDiv[2]);
-    createParam(P_VoltsPerDivStringD, asynParamFloat64, &P_VoltsPerDiv[3]);
-    createParam(P_VoltsPerDivSelectStringA, asynParamInt32, &P_VoltsPerDivSelect[0]);
-    createParam(P_VoltsPerDivSelectStringB, asynParamInt32, &P_VoltsPerDivSelect[1]);
-    createParam(P_VoltsPerDivSelectStringC, asynParamInt32, &P_VoltsPerDivSelect[2]);
-    createParam(P_VoltsPerDivSelectStringD, asynParamInt32, &P_VoltsPerDivSelect[3]);
-    createParam(P_VoltOffsetStringA, asynParamFloat64, &P_VoltOffset[0]);
-    createParam(P_VoltOffsetStringB, asynParamFloat64, &P_VoltOffset[1]);
-    createParam(P_VoltOffsetStringC, asynParamFloat64, &P_VoltOffset[2]);
-    createParam(P_VoltOffsetStringD, asynParamFloat64, &P_VoltOffset[3]);
-    createParam(P_TriggerDelayString, asynParamFloat64, &P_TriggerDelay);
-    createParam(P_NoiseAmplitudeString, asynParamFloat64, &P_NoiseAmplitude);
-    createParam(P_UpdateTimeString, asynParamFloat64, &P_UpdateTime);
-    createParam(P_Waveform_StringA, asynParamFloat64Array, &P_Waveform[0]);
-    createParam(P_Waveform_StringB, asynParamFloat64Array, &P_Waveform[1]);
-    createParam(P_Waveform_StringC, asynParamFloat64Array, &P_Waveform[2]);
-    createParam(P_Waveform_StringD, asynParamFloat64Array, &P_Waveform[3]);
-    createParam(P_TimeBaseString, asynParamFloat64Array, &P_TimeBase);
-    createParam(P_MinValueString, asynParamFloat64, &P_MinValue);
-    createParam(P_MaxValueString, asynParamFloat64, &P_MaxValue);
-    createParam(P_MeanValueString, asynParamFloat64, &P_MeanValue);
 
-    createParam(P_PicoStatusString, asynParamInt32, &P_PicoStatus);
-    createParam(P_PicoConnectString, asynParamInt32, &P_PicoConnect);
-    createParam(P_PicoConnectedString, asynParamInt32, &P_PicoConnected);
-    createParam(P_max_samples_string, asynParamInt32, &P_max_samples);
-    createParam(P_segment_index_string, asynParamInt32, &P_segment_index);
-    createParam(P_downsampled_frequency_string, asynParamInt32, &P_downsampled_frequency);
-    createParam(P_sample_frequency_string, asynParamInt32, &P_sample_frequency);
-    createParam(P_sample_length_string, asynParamInt32, &P_sample_length);
-    createParam(P_time_interval_ns_string, asynParamFloat64, &P_time_interval_ns);
-    createParam(P_down_sample_ratio_string, asynParamInt32, &P_down_sample_ratio);
-    createParam(P_ch_A_coupling_string, asynParamInt32, &P_ch_coupling[0]);
-    createParam(P_ch_A_enabled_string, asynParamInt32, &P_ch_enabled[0]);
-    createParam(P_ch_A_offset_string, asynParamFloat64, &P_ch_offset[0]);
-    createParam(P_ch_A_range_string, asynParamInt32, &P_ch_range[0]);
-    createParam(P_ch_A_direction_string, asynParamInt32, &P_ch_direction[0]);
-    createParam(P_ch_A_condition_string, asynParamInt32, &P_ch_condition[0]);
-    createParam(P_ch_A_threshold_string, asynParamFloat64, &P_ch_threshold[0]);
-    createParam(P_ch_A_overflow_string, asynParamInt32, &P_ch_overflow[0]);
-
-    createParam(P_ch_B_coupling_string, asynParamInt32, &P_ch_coupling[1]);
-    createParam(P_ch_B_enabled_string, asynParamInt32, &P_ch_enabled[1]);
-    createParam(P_ch_B_offset_string, asynParamFloat64, &P_ch_offset[1]);
-    createParam(P_ch_B_range_string, asynParamInt32, &P_ch_range[1]);
-    createParam(P_ch_B_direction_string, asynParamInt32, &P_ch_direction[1]);
-    createParam(P_ch_B_condition_string, asynParamInt32, &P_ch_condition[1]);
-    createParam(P_ch_B_threshold_string, asynParamFloat64, &P_ch_threshold[1]);
-    createParam(P_ch_B_overflow_string, asynParamInt32, &P_ch_overflow[1]);
-
-    createParam(P_ch_C_coupling_string, asynParamInt32, &P_ch_coupling[2]);
-    createParam(P_ch_C_enabled_string, asynParamInt32, &P_ch_enabled[2]);
-    createParam(P_ch_C_offset_string, asynParamFloat64, &P_ch_offset[2]);
-    createParam(P_ch_C_range_string, asynParamInt32, &P_ch_range[2]);
-    createParam(P_ch_C_direction_string, asynParamInt32, &P_ch_direction[2]);
-    createParam(P_ch_C_condition_string, asynParamInt32, &P_ch_condition[2]);
-    createParam(P_ch_C_threshold_string, asynParamFloat64, &P_ch_threshold[2]);
-    createParam(P_ch_C_overflow_string, asynParamInt32, &P_ch_overflow[2]);
-
-    createParam(P_ch_D_coupling_string, asynParamInt32, &P_ch_coupling[3]);
-    createParam(P_ch_D_enabled_string, asynParamInt32, &P_ch_enabled[3]);
-    createParam(P_ch_D_offset_string, asynParamFloat64, &P_ch_offset[3]);
-    createParam(P_ch_D_range_string, asynParamInt32, &P_ch_range[3]);
-    createParam(P_ch_D_direction_string, asynParamInt32, &P_ch_direction[3]);
-    createParam(P_ch_D_condition_string, asynParamInt32, &P_ch_condition[3]);
-    createParam(P_ch_D_threshold_string, asynParamFloat64, &P_ch_threshold[3]);
-    createParam(P_ch_D_overflow_string, asynParamInt32, &P_ch_overflow[3]);
-
-    createParam(P_sig_offset_string, asynParamInt32, &P_sig_offset);
-    createParam(P_sig_pktopk_string, asynParamFloat64, &P_sig_pktopk);
-    createParam(P_sig_wavetype_string, asynParamInt32, &P_sig_wavetype);
-    createParam(P_sig_frequency_string, asynParamFloat64, &P_sig_frequency);
-    createParam(P_sig_trigger_source_string, asynParamInt32,
-	&P_sig_trigger_source);
-
-    createParam(P_time_base_lopr_string, asynParamInt32, &P_time_base_lopr);
-    createParam(P_time_base_hopr_string, asynParamInt32, &P_time_base_hopr);
-    createParam(P_time_base_nelm_string, asynParamInt32, &P_time_base_nelm);
-
-    createParam(P_trigger_source_string, asynParamInt32, &P_trigger_source);
-
-    /* init volts per div values */
-    for (i = 0; i < NUM_VERT_SELECTIONS; i++) {
-        voltsPerDivStrings_[i] = (char *)calloc(MAX_ENUM_STRING_SIZE, sizeof(char));
-        voltsPerDivSeverities_[i] = 0;
-        epicsSnprintf(voltsPerDivStrings_[i], MAX_ENUM_STRING_SIZE, "%g", allVoltsPerDivSelections[i] / 1000.);
-        // The values are in mV
-        voltsPerDivValues_[i] = (int)(allVoltsPerDivSelections[i]);
-    }
+	createParam(P_RunString             , asynParamInt32       , &P_Run             ); // 1
+	createParam(P_MaxPointsString       , asynParamInt32       , &P_MaxPoints       ); // 2  
+	createParam(P_PicoStatusString      , asynParamInt32       , &P_PicoStatus      ); // 3
+	createParam(P_PicoConnectString     , asynParamInt32       , &P_PicoConnect     ); // 4
+	createParam(P_PicoConnectedString   , asynParamInt32       , &P_PicoConnected   ); // 5
+	createParam(P_SampleLengthString    , asynParamInt32       , &P_SampleLength    ); // 6
+	createParam(P_SampleFrequencyString , asynParamInt32       , &P_SampleFrequency ); // 7
+	createParam(P_TriggerSourceString   , asynParamInt32       , &P_TriggerSource   ); // 8
+	createParam(P_ChannelRangeStringA   , asynParamInt32       , &P_ChannelRangeA   ); // 9
+	createParam(P_ChannelRangeStringB   , asynParamInt32       , &P_ChannelRangeB   ); // 10
+	createParam(P_TriggerDelayString    , asynParamFloat64     , &P_TriggerDelay    ); // 11
+	createParam(P_TimeBaseString        , asynParamFloat64Array, &P_TimeBase        ); // 12
+	createParam(P_WaveformStringA       , asynParamFloat64Array, &P_WaveformA       ); // 13
+	createParam(P_WaveformStringB       , asynParamFloat64Array, &P_WaveformB       ); // 14
 
     /* Set the initial values of some parameters */
+	setIntegerParam(P_Run,               0);
+	setIntegerParam(P_MaxPoints,         maxPoints);
     setIntegerParam(P_PicoStatus,        0);
+	setIntegerParam(P_PicoConnect,       0);
     setIntegerParam(P_PicoConnected,     0);
-    setIntegerParam(P_MaxPoints,         maxPoints);
-    ps.max_points = maxPoints;
-    setIntegerParam(P_Run,               0);
+	setIntegerParam(P_SampleLength,      maxPoints);
+	setIntegerParam(P_SampleFrequency,   PS3000A_FREQUENCY);
+	setIntegerParam(P_TriggerSource,     2);
+	setIntegerParam(P_TriggerDelay,    0.0);
 
+	ps.max_points = maxPoints;
     ps.max_value = 32512;
 
-    /* Initial values for all channel parameters */
-    for (ch = 0; ch < 4; ++ch) {
-	    setDoubleParam (P_VoltsPerDiv[ch],       1.0);
-	    setIntegerParam(P_VoltsPerDivSelect[ch], 100);
-	    setDoubleParam (P_VoltOffset[ch],        0.0);
-	    setIntegerParam(P_ch_coupling[ch],	PS3000A_DC);
-	    setIntegerParam(P_ch_enabled[ch],	0);
-	    setDoubleParam (P_ch_offset[ch],	0);
-	    setIntegerParam(P_ch_range[ch],	PS3000A_500MV);
-	    ps.config.ch[ch].range = PS3000A_500MV;
-	    ps.config.ch[ch].range_v = input_ranges[ps.config.ch[ch].range];
-	    setDoubleParam (P_ch_threshold[ch],	mv_to_adc(-10, ch));
-	    setIntegerParam(P_ch_condition[ch],	PS3000A_CONDITION_DONT_CARE);
-	    setIntegerParam(P_ch_direction[ch],	PS3000A_FALLING);
-    }
-
-    /* Enable trigger on channel A */
-    setIntegerParam(P_ch_enabled  [0],	1                     ); /* Enable Channel A*/
-    setIntegerParam(P_ch_condition[0],	PS3000A_CONDITION_TRUE); /* Set Trigger Condition, see API [enPS3000ATriggerState]*/
-
-    setIntegerParam(P_down_sample_ratio, 1);					 /* No down sampling */
-    setIntegerParam(P_time_base_lopr, 0);                        /* Minimum operation value (0), please see "Sampling Interval Formula" in 3000A API docs */
-    setIntegerParam(P_time_base_hopr, 9); 					  	 /* Maximum operation value (9) */
-    setIntegerParam(P_time_base_nelm, maxPoints); 			    
-
-    setDoubleParam (P_TriggerDelay,      0.0);					 /* Trigger delay in sampling periods (NOT nanoseconds) */
-    setDoubleParam (P_FullTime,         2000);					 /* Sampling duration in nanoseconds */
-    setDoubleParam (P_TimePerDiv,        200);						 /* Time per division in nanoseconds */
-    setDoubleParam (P_UpdateTime,        0.5);
-    setDoubleParam (P_NoiseAmplitude,    0.1);
-    setDoubleParam (P_MinValue,          0.0);
-    setDoubleParam (P_MaxValue,          0.0);
-    setDoubleParam (P_MeanValue,         0.0);
-
-    setIntegerParam(P_max_samples,	maxPoints);					/* Maximum number of sampling points */
-    setIntegerParam(P_segment_index,	0);
-    setIntegerParam(P_downsampled_frequency, 1000000000);
-    setIntegerParam(P_sample_frequency, 1000000000);
-    setIntegerParam(P_sample_length,	maxPoints);    		    /* Number of sampling points*/
-    set_time_base_array();
-
-    setDoubleParam (P_time_interval_ns,	0);						 /* Sampling interval in nanoseconds */
-
-    setIntegerParam(P_trigger_source,	PS3000A_CHANNEL_A);      /* Trigger Source on Channel A*/ // FIXME: This should be on EXTERNAL
-
-	// FIXME: Should turn off signal generator
-    setIntegerParam(P_sig_offset,	0);
-    setDoubleParam (P_sig_pktopk,	1.0); /* Volt */
-    setIntegerParam(P_sig_wavetype,	PS3000A_SINE);
-    setDoubleParam (P_sig_frequency,	1e6); /* Hz */
-    setIntegerParam(P_sig_trigger_source, PS3000A_SIGGEN_NONE);
+	setIntegerParam(P_ChannelRangeA, (int) PS3000A_1V);
+	setIntegerParam(P_ChannelRangeB, (int) PS3000A_50MV);
+	ps.config.ch[0].range = PS3000A_1V;
+	ps.config.ch[0].range_v = input_ranges[ps.config.ch[0].range];
+	ps.config.ch[1].range = PS3000A_50MV;
+	ps.config.ch[1].range_v = input_ranges[ps.config.ch[1].range];
+    SetTimeBaseArray();
 
     /* Create the thread that runs the waveforms acq in the background */
-    status = (asynStatus)(epicsThreadCreate("PS3000ATask",
-                          epicsThreadPriorityMedium,
-                          epicsThreadGetStackSize(epicsThreadStackMedium),
-                          (EPICSTHREADFUNC)::run_task,
-                          this) == NULL);
-
+    status = (asynStatus)(epicsThreadCreate("PS3000ATask", epicsThreadPriorityMedium, epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)::RunTask, this) == NULL);
     if (status) {
         printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
         return;
     }
-
 }
 
-void PS3000A::set_time_base_array() {
+void PS3000A::SetTimeBaseArray() {
 	int i;
 	epicsInt32 max_points = 0;
 	getIntegerParam(P_MaxPoints, &max_points);
 
 	/* Set the time base array */
-	for (i = 0; i < max_points; ++i) {
-		pTimeBase_[i] = (double)i / (max_points - 1) * NUM_DIVISIONS;
-	}
-
-        doCallbacksFloat64Array(pTimeBase_, max_points,
-	    P_TimeBase, 0);
+	for (i = 0; i < max_points; ++i) pTimeBase_[i] = (double)i / (max_points - 1) * NUM_DIVISIONS;
+	doCallbacksFloat64Array(pTimeBase_, max_points,	P_TimeBase, 0);
 }
 
-void run_task(void *drvPvt) {
+void RunTask(void *drvPvt) {
     PS3000A *pPvt = (PS3000A *)drvPvt;
-    pPvt->run_task();
+    pPvt->RunTask();
 }
 
 void pico_block_ready(int16_t handle, PICO_STATUS ok, void *p_parameter) {
 	struct BlockInfo *info = (struct BlockInfo *)p_parameter;
-
-	if (ok != PICO_CANCELLED) {
-		info->ready = 1;
-	}
+	if (ok != PICO_CANCELLED) info->ready = 1;
 }
 
-void PS3000A::run_task() {
+void PS3000A::RunTask() {
 	epicsInt32 run;
 	double updateTime;
 
 	lock();
 
-	while(1)
-	{
+	while(1) {
 		getDoubleParam(P_UpdateTime, &updateTime);
 		getIntegerParam(P_Run, &run);
 
@@ -402,15 +260,14 @@ void PS3000A::run_task() {
 		else     (void) epicsEventWait(eventId_);
 
 		lock();
+		getIntegerParam(P_Run, &run);
+		if (!run) continue;
 
-        	getIntegerParam(P_Run, &run);
-        	if (!run) continue;
-
-		pico_run_block();
+		PicoRunBlock();
 	}
 }
 
-int PS3000A::pico_run_block() {
+int PS3000A::PicoRunBlock() {
 	PICO_STATUS ok;
 
 	epicsInt32 sample_length;
@@ -424,14 +281,14 @@ int PS3000A::pico_run_block() {
 	getIntegerParam(P_sample_length, &sample_length);
 	getIntegerParam(P_segment_index, &segment_index);
 	getIntegerParam(P_down_sample_ratio, &down_sample_ratio);
-        getDoubleParam (P_VoltsPerDiv[0], &volts_per_div[0]);
-        getDoubleParam (P_VoltsPerDiv[1], &volts_per_div[1]);
-        getDoubleParam (P_VoltsPerDiv[2], &volts_per_div[2]);
-        getDoubleParam (P_VoltsPerDiv[3], &volts_per_div[3]);
-        getDoubleParam (P_VoltOffset[0], &volt_offset[0]);
-        getDoubleParam (P_VoltOffset[1], &volt_offset[1]);
-        getDoubleParam (P_VoltOffset[2], &volt_offset[2]);
-        getDoubleParam (P_VoltOffset[3], &volt_offset[3]);
+	getDoubleParam (P_VoltsPerDiv[0], &volts_per_div[0]);
+	getDoubleParam (P_VoltsPerDiv[1], &volts_per_div[1]);
+	getDoubleParam (P_VoltsPerDiv[2], &volts_per_div[2]);
+	getDoubleParam (P_VoltsPerDiv[3], &volts_per_div[3]);
+	getDoubleParam (P_VoltOffset[0], &volt_offset[0]);
+	getDoubleParam (P_VoltOffset[1], &volt_offset[1]);
+	getDoubleParam (P_VoltOffset[2], &volt_offset[2]);
+	getDoubleParam (P_VoltOffset[3], &volt_offset[3]);
 
 	/*printf("sample length = %d\n", sample_length);*/
 
@@ -454,7 +311,7 @@ int PS3000A::pico_run_block() {
 	uint32_t n_samples = sample_length;
 	uint32_t start_index = 0;
 
-	/*printf("pico_run_block\n");*/
+	/*printf("PicoRunBlock\n");*/
 
 	/*printf("pre_ds_sample_length = %u\n", pre_ds_sample_length);
 	printf("pre_trigger = %d\n", pre_trigger);
@@ -544,275 +401,6 @@ int PS3000A::pico_run_block() {
 	}
 
 	return 0;
-}
-
-/** Called when asyn clients call pasynInt32->write().
-  * This function sends a signal to the simTask thread if the value of P_Run has changed.
-  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
-  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Value to write. */
-asynStatus PS3000A::writeInt32(asynUser *pasynUser, epicsInt32 value) {
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    const char *paramName;
-    const char* functionName = "writeInt32";
-
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus) setIntegerParam(function, value);
-
-    /* Fetch the parameter string name for possible use in debugging */
-    getParamName(function, &paramName);
-
-    if (function == P_Run) {
-        /* If run was set then wake up the simulation task */
-        if (value) epicsEventSignal(eventId_);
-    }
-    else if (function == P_VoltsPerDivSelect[0]) {
-        setVoltsPerDiv(0);
-    }
-    else if (function == P_VoltsPerDivSelect[1]) {
-        setVoltsPerDiv(1);
-    }
-    else if (function == P_VoltsPerDivSelect[2]) {
-        setVoltsPerDiv(2);
-    }
-    else if (function == P_VoltsPerDivSelect[3]) {
-        setVoltsPerDiv(3);
-    }
-    else if (function == P_TimePerDivSelect) {
-        setTimePerDiv();
-    }
-    else if (function == P_PicoConnect) {
-		ConnectPicoScope();
-    }
-    else if (function == P_trigger_source) {
-	    set_trigger_source();
-    }
-    else if (function == P_ch_coupling[0]
-	|| function == P_ch_enabled[0]
-	|| function == P_ch_range[0]) {
-	    set_channel(0);
-	    set_time_base();
-	    setup_trigger();
-    }
-    else if (function == P_ch_coupling[1]
-	|| function == P_ch_enabled[1]
-	|| function == P_ch_range[1]) {
-	    set_channel(1);
-	    set_time_base();
-	    setup_trigger();
-    }
-    else if (function == P_ch_coupling[2]
-	|| function == P_ch_enabled[2]
-	|| function == P_ch_range[2]) {
-	    set_channel(2);
-	    set_time_base();
-	    setup_trigger();
-    }
-    else if (function == P_ch_coupling[3]
-	|| function == P_ch_enabled[3]
-	|| function == P_ch_range[3]) {
-	    set_channel(3);
-	    set_time_base();
-	    setup_trigger();
-    }
-    else if (function == P_sample_frequency) {
-	    set_time_base();
-    }
-    else if (function == P_ch_direction[0]
-	  || function == P_ch_direction[1]
-	  || function == P_ch_direction[2]
-	  || function == P_ch_direction[3]) {
-	    setup_trigger();
-    }
-    else if (function == P_ch_condition[0]
-	  || function == P_ch_condition[1]
-	  || function == P_ch_condition[2]
-	  || function == P_ch_condition[3]) {
-	    setup_trigger();
-    }
-    else if (function == P_sig_offset
-	  || function == P_sig_wavetype
-	  || function == P_sig_trigger_source) {
-	    set_signal_generator();
-    }
-    else {
-        /* All other parameters just get set in parameter list, no need to
-         * act on them here */
-    }
-
-    /* Do callbacks so higher layers see any changes */
-    status = (asynStatus) callParamCallbacks();
-
-    if (status)
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s:%s: status=%d, function=%d, name=%s, value=%d",
-                  driverName, functionName, status, function, paramName, value);
-    else
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d, name=%s, value=%d\n",
-              driverName, functionName, function, paramName, value);
-    return status;
-}
-
-/** Called when asyn clients call pasynFloat64->write().
-  * This function sends a signal to the simTask thread if the value of P_UpdateTime has changed.
-  * For all  parameters it  sets the value in the parameter library and calls any registered callbacks.
-  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Value to write. */
-asynStatus PS3000A::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    epicsInt32 run;
-    const char *paramName;
-    const char* functionName = "writeFloat64";
-
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus) setDoubleParam(function, value);
-
-    /* Fetch the parameter string name for possible use in debugging */
-    getParamName(function, &paramName);
-
-    if (function == P_UpdateTime) {
-        /* Make sure the update time is valid. If not change it and put back in parameter library */
-        if (value < MIN_UPDATE_TIME) {
-            asynPrint(pasynUser, ASYN_TRACE_WARNING,
-                "%s:%s: warning, update time too small, changed from %f to %f\n",
-                driverName, functionName, value, MIN_UPDATE_TIME);
-            value = MIN_UPDATE_TIME;
-            setDoubleParam(P_UpdateTime, value);
-        }
-        /* If the update time has changed and we are running then wake up the simulation task */
-        getIntegerParam(P_Run, &run);
-        if (run) epicsEventSignal(eventId_);
-    }
-    else if (function == P_ch_threshold[0]) {
-	    set_trigger(0);
-    }
-    else if (function == P_ch_threshold[1]) {
-	    set_trigger(1);
-    }
-    else if (function == P_ch_threshold[2]) {
-	    set_trigger(2);
-    }
-    else if (function == P_ch_threshold[3]) {
-	    set_trigger(3);
-    }
-    else if (function == P_sig_frequency
-	  || function == P_sig_pktopk) {
-	    set_signal_generator();
-    }
-    else {
-        /* All other parameters just get set in parameter list, no need to
-         * act on them here */
-    }
-
-    /* Do callbacks so higher layers see any changes */
-    status = (asynStatus) callParamCallbacks();
-
-    if (status)
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s:%s: status=%d, function=%d, name=%s, value=%f",
-                  driverName, functionName, status, function, paramName, value);
-    else
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d, name=%s, value=%f\n",
-              driverName, functionName, function, paramName, value);
-    return status;
-}
-
-/** Called when asyn clients call pasynFloat64Array->read().
-  * Returns the value of the P_Waveform or P_TimeBase arrays.  
-  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Pointer to the array to read.
-  * \param[in] nElements Number of elements to read.
-  * \param[out] nIn Number of elements actually read. */
-asynStatus PS3000A::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn) {
-    int function = pasynUser->reason;
-    size_t ncopy;
-    int ch;
-    epicsInt32 itemp;
-    asynStatus status = asynSuccess;
-    epicsTimeStamp timeStamp;
-    epicsInt32 enabled;
-
-    const char *functionName = "readFloat64Array";
-
-    getTimeStamp(&timeStamp);
-    pasynUser->timestamp = timeStamp;
-    getIntegerParam(P_sample_length, &itemp);
-    ncopy = itemp;
-
-    if (nElements < ncopy) ncopy = nElements;
-    for (ch = 0; ch < 4; ++ch) {
-	    if (function == P_Waveform[ch]) {
-		    getIntegerParam(P_ch_enabled[ch], &enabled);
-		    if (enabled == 1) {
-			    memcpy(value, pData_[ch],
-				ncopy*sizeof(epicsFloat64));
-			    *nIn = ncopy;
-		    } else {
-			    *nIn = 0;
-		    }
-	    }
-    }
-    if (function == P_TimeBase) {
-        memcpy(value, pTimeBase_, ncopy*sizeof(epicsFloat64));
-        *nIn = ncopy;
-    }
-    if (status)
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s:%s: status=%d, function=%d",
-                  driverName, functionName, status, function);
-    else
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d\n",
-              driverName, functionName, function);
-    return status;
-}
-
-asynStatus PS3000A::readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], size_t nElements, size_t *nIn) {
-    int function = pasynUser->reason;
-    size_t i;
-
-    if (function == P_VoltsPerDivSelect[0]) {
-        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
-            if (strings[i]) free(strings[i]);
-            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
-            values[i] = voltsPerDivValues_[i];
-            severities[i] = 0;
-        }
-    }
-    else if (function == P_VoltsPerDivSelect[1]) {
-        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
-            if (strings[i]) free(strings[i]);
-            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
-            values[i] = voltsPerDivValues_[i];
-            severities[i] = 0;
-        }
-    }
-    else if (function == P_VoltsPerDivSelect[2]) {
-        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
-            if (strings[i]) free(strings[i]);
-            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
-            values[i] = voltsPerDivValues_[i];
-            severities[i] = 0;
-        }
-    }
-    else if (function == P_VoltsPerDivSelect[3]) {
-        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
-            if (strings[i]) free(strings[i]);
-            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
-            values[i] = voltsPerDivValues_[i];
-            severities[i] = 0;
-        }
-    }
-    else {
-        *nIn = 0;
-        return asynError;
-    }
-    *nIn = i;
-    return asynSuccess;
 }
 
 int PS3000A::OpenPS3000A() {
@@ -1356,6 +944,286 @@ void PS3000A::setTimePerDiv() {
 	setup_trigger();
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** Called when asyn clients call pasynInt32->write().
+  * This function sends a signal to the simTask thread if the value of P_Run has changed.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
+  asynStatus PS3000A::writeInt32(asynUser *pasynUser, epicsInt32 value) {
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *paramName;
+    const char* functionName = "writeInt32";
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setIntegerParam(function, value);
+
+    /* Fetch the parameter string name for possible use in debugging */
+    getParamName(function, &paramName);
+
+    if (function == P_Run) {
+        /* If run was set then wake up the simulation task */
+        if (value) epicsEventSignal(eventId_);
+    } else if (function == P_PicoConnect) {
+		ConnectPicoScope();
+    } else {
+        /* All other parameters just get set in parameter list, no need to
+         * act on them here */
+    }
+
+    /* Do callbacks so higher layers see any changes */
+    status = (asynStatus) callParamCallbacks();
+
+    if (status)
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, name=%s, value=%d",
+                  driverName, functionName, status, function, paramName, value);
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, name=%s, value=%d\n",
+              driverName, functionName, function, paramName, value);
+    return status;
+}
+
+/** Called when asyn clients call pasynFloat64->write().
+  * This function sends a signal to the simTask thread if the value of P_UpdateTime has changed.
+  * For all  parameters it  sets the value in the parameter library and calls any registered callbacks.
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
+asynStatus PS3000A::writeFloat64(asynUser *pasynUser, epicsFloat64 value) {
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    epicsInt32 run;
+    const char *paramName;
+    const char* functionName = "writeFloat64";
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setDoubleParam(function, value);
+
+    /* Fetch the parameter string name for possible use in debugging */
+    getParamName(function, &paramName);
+
+    if (function == P_UpdateTime) {
+        /* Make sure the update time is valid. If not change it and put back in parameter library */
+        if (value < MIN_UPDATE_TIME) {
+            asynPrint(pasynUser, ASYN_TRACE_WARNING,
+                "%s:%s: warning, update time too small, changed from %f to %f\n",
+                driverName, functionName, value, MIN_UPDATE_TIME);
+            value = MIN_UPDATE_TIME;
+            setDoubleParam(P_UpdateTime, value);
+        }
+        /* If the update time has changed and we are running then wake up the simulation task */
+        getIntegerParam(P_Run, &run);
+        if (run) epicsEventSignal(eventId_);
+    }
+    else if (function == P_ch_threshold[0]) {
+	    set_trigger(0);
+    }
+    else if (function == P_ch_threshold[1]) {
+	    set_trigger(1);
+    }
+    else if (function == P_ch_threshold[2]) {
+	    set_trigger(2);
+    }
+    else if (function == P_ch_threshold[3]) {
+	    set_trigger(3);
+    }
+    else if (function == P_sig_frequency
+	  || function == P_sig_pktopk) {
+	    set_signal_generator();
+    }
+    else {
+        /* All other parameters just get set in parameter list, no need to
+         * act on them here */
+    }
+
+    /* Do callbacks so higher layers see any changes */
+    status = (asynStatus) callParamCallbacks();
+
+    if (status)
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, name=%s, value=%f",
+                  driverName, functionName, status, function, paramName, value);
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, name=%s, value=%f\n",
+              driverName, functionName, function, paramName, value);
+    return status;
+}
+
+/** Called when asyn clients call pasynFloat64Array->read().
+  * Returns the value of the P_Waveform or P_TimeBase arrays.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
+asynStatus PS3000A::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn) {
+    int function = pasynUser->reason;
+    size_t ncopy;
+    int ch;
+    epicsInt32 itemp;
+    asynStatus status = asynSuccess;
+    epicsTimeStamp timeStamp;
+    epicsInt32 enabled;
+
+    const char *functionName = "readFloat64Array";
+
+    getTimeStamp(&timeStamp);
+    pasynUser->timestamp = timeStamp;
+    getIntegerParam(P_sample_length, &itemp);
+    ncopy = itemp;
+
+    if (nElements < ncopy) ncopy = nElements;
+    for (ch = 0; ch < 4; ++ch) {
+	    if (function == P_Waveform[ch]) {
+		    getIntegerParam(P_ch_enabled[ch], &enabled);
+		    if (enabled == 1) {
+			    memcpy(value, pData_[ch],
+				ncopy*sizeof(epicsFloat64));
+			    *nIn = ncopy;
+		    } else {
+			    *nIn = 0;
+		    }
+	    }
+    }
+    if (function == P_TimeBase) {
+        memcpy(value, pTimeBase_, ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
+    }
+    if (status)
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d",
+                  driverName, functionName, status, function);
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d\n",
+              driverName, functionName, function);
+    return status;
+}
+
+asynStatus PS3000A::readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[], size_t nElements, size_t *nIn) {
+    int function = pasynUser->reason;
+    size_t i;
+
+    if (function == P_VoltsPerDivSelect[0]) {
+        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
+            if (strings[i]) free(strings[i]);
+            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
+            values[i] = voltsPerDivValues_[i];
+            severities[i] = 0;
+        }
+    }
+    else if (function == P_VoltsPerDivSelect[1]) {
+        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
+            if (strings[i]) free(strings[i]);
+            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
+            values[i] = voltsPerDivValues_[i];
+            severities[i] = 0;
+        }
+    }
+    else if (function == P_VoltsPerDivSelect[2]) {
+        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
+            if (strings[i]) free(strings[i]);
+            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
+            values[i] = voltsPerDivValues_[i];
+            severities[i] = 0;
+        }
+    }
+    else if (function == P_VoltsPerDivSelect[3]) {
+        for (i = 0; ((i < NUM_VERT_SELECTIONS) && (i < nElements)); i++) {
+            if (strings[i]) free(strings[i]);
+            strings[i] = epicsStrDup(voltsPerDivStrings_[i]);
+            values[i] = voltsPerDivValues_[i];
+            severities[i] = 0;
+        }
+    }
+    else {
+        *nIn = 0;
+        return asynError;
+    }
+    *nIn = i;
+    return asynSuccess;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Configuration routine.  Called directly, or from the iocsh function below */
 
 extern "C" {
@@ -1386,4 +1254,9 @@ void PS3000ARegister(void) {
 epicsExportRegistrar(PS3000ARegister);
 
 }
+
+
+
+
+
 
