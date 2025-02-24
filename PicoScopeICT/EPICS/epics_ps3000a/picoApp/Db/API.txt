@@ -1,0 +1,17 @@
+TEST:scope1:Run
+TEST:scope1:PicoConnect
+TEST:scope1:ChannelARange
+TEST:scope1:ChannelBRange
+
+TEST:scope1:Run_RBV
+TEST:scope1:MaxPoints_RBV
+TEST:scope1:PicoConnected_RBV
+TEST:scope1:PicoConnect_RBV
+TEST:scope1:SampleFrequency_RBV
+TEST:scope1:SampleLength_RBV
+TEST:scope1:TriggerSource_RBV
+TEST:scope1:TimeBase_RBV
+TEST:scope1:Waveform_A_RBV
+TEST:scope1:Waveform_B_RBV
+TEST:scope1:ChannelARange_RBV
+TEST:scope1:ChannelBRange_RBV

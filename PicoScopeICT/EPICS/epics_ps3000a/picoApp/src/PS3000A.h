@@ -78,7 +78,6 @@ protected:
     int P_PicoConnected   = 0;
     int P_SampleLength    = 0;
     int P_SampleFrequency = 0;
-    int P_TriggerDelay    = 0;
     int P_TriggerSource   = 0;
     int P_TimeBase        = 0;
     int P_WaveformA       = 0;
@@ -97,7 +96,7 @@ private:
     int ClosePS3000A(void);
     int SetTimeBase(void);
     void SetTimeBaseArray(void);
-    int SetTriggerDelay(void);
+    void SetChannels(void);
     int SetTrigger(void);
     int PicoRunBlock(void);
     int OpenPS3000A(void);

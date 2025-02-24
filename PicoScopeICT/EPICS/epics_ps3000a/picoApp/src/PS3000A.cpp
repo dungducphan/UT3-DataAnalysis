@@ -188,10 +188,9 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	createParam(P_TriggerSourceString   , asynParamInt32       , &P_TriggerSource   ); // 7
 	createParam(P_ChannelRangeStringA   , asynParamInt32       , &P_ChannelRangeA   ); // 8
 	createParam(P_ChannelRangeStringB   , asynParamInt32       , &P_ChannelRangeB   ); // 9
-	createParam(P_TriggerDelayString    , asynParamFloat64     , &P_TriggerDelay    ); // 10
-	createParam(P_TimeBaseString        , asynParamFloat64Array, &P_TimeBase        ); // 11
-	createParam(P_WaveformStringA       , asynParamFloat64Array, &P_WaveformA       ); // 12
-	createParam(P_WaveformStringB       , asynParamFloat64Array, &P_WaveformB       ); // 13
+	createParam(P_TimeBaseString        , asynParamFloat64Array, &P_TimeBase        ); // 10
+	createParam(P_WaveformStringA       , asynParamFloat64Array, &P_WaveformA       ); // 11
+	createParam(P_WaveformStringB       , asynParamFloat64Array, &P_WaveformB       ); // 12
 
     /* Set the initial values of some parameters */
 	setIntegerParam(P_Run,               0);
@@ -201,7 +200,6 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	setIntegerParam(P_SampleLength,      maxPoints);
 	setIntegerParam(P_SampleFrequency,   PS3000A_FREQUENCY);
 	setIntegerParam(P_TriggerSource,     2);
-	setIntegerParam(P_TriggerDelay,    0.0);
 
 	ps.max_points = maxPoints;
     ps.max_value = 32512;
@@ -212,6 +210,8 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	ps.config.ch[0].range_v = input_ranges[ps.config.ch[0].range];
 	ps.config.ch[1].range = PS3000A_50MV;
 	ps.config.ch[1].range_v = input_ranges[ps.config.ch[1].range];
+
+	SetTimeBase();
     SetTimeBaseArray();
 
     /* Create the thread that runs the waveforms acq in the background */
@@ -226,8 +226,6 @@ void PS3000A::SetTimeBaseArray() {
 	int i;
 	epicsInt32 max_points = 0;
 	getIntegerParam(P_MaxPoints, &max_points);
-
-	/* Set the time base array */
 	for (i = 0; i < max_points; ++i) pTimeBase_[i] = (double)i / (max_points - 1) * NUM_DIVISIONS;
 	doCallbacksFloat64Array(pTimeBase_, max_points,	P_TimeBase, 0);
 }
@@ -647,13 +645,12 @@ time_base_again:
 
 int PS3000A::SetDataBuffer() {
 	PICO_STATUS ok;
-	epicsInt32 segment_index;
 	epicsInt32 max_points;
 	PS3000A_RATIO_MODE mode = PS3000A_RATIO_MODE_NONE;
 
     getIntegerParam(P_MaxPoints, &max_points);
-	ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) 0, data_buffer[0], max_points, segment_index, mode);
-	ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) 1, data_buffer[1], max_points, segment_index, mode);
+	ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) 0, data_buffer[0], max_points, 0, mode);
+	ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) 1, data_buffer[1], max_points, 0, mode);
 	CHKOK("SetDataBuffer");
 
 	return 0;
