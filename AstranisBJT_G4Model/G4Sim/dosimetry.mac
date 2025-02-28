@@ -2,13 +2,19 @@
 
 # Define scoring mesh
 /score/create/boxMesh DUTMesh
+/score/mesh/boxSize 1500. 500. 700. um
+/score/mesh/nBin 1 1 1
+/score/mesh/translate/xyz 0. -35. 0. um
+/score/quantity/doseDeposit doseDepAll
+/score/close
+
+/score/create/boxMesh DUTSiliconOnlyMesh
 /score/mesh/boxSize 405. 30. 205. um
 /score/mesh/nBin 1 1 1
 /score/mesh/translate/xyz 0. -25. 0. um
-
-# Filters
-/score/quantity/doseDeposit doseDepAll
+/score/quantity/doseDeposit doseDepSilicon
 /score/close
+
 /score/list
 
 ########################################
@@ -17,7 +23,7 @@
 /vis/disable
 /control/verbose 2
 /run/verbose 2
-/run/beamOn 1000000
+/run/beamOn 10000000
 /vis/enable
 
 ########################################
@@ -28,3 +34,4 @@
 ########################################
 # Dump scorers to a file
 /score/dumpQuantityToFile DUTMesh doseDepAll  doseDepAll.csv
+/score/dumpQuantityToFile DUTSiliconOnlyMesh doseDepSilicon  doseDepSilicon.csv

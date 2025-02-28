@@ -150,7 +150,7 @@ G4VPhysicalVolume *detcon::Construct() {
     fWorldVolume->GetLogicalVolume()->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
     LV_SOT23->SetMaterial(nist->FindOrBuildMaterial("MoldResin"));
     LV_ActiveRegion->SetMaterial(nist->FindOrBuildMaterial("G4_Si"));
-    LV_PCB->SetMaterial(nist->FindOrBuildMaterial("FR4"));
+    LV_PCB->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
     LV_AlFoil000->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
     LV_AlFoil001->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
     LV_AlFoil002->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
