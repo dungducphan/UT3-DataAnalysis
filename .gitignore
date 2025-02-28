@@ -18,3 +18,4 @@ PicoScopeICT/EPICS/epics_ps3000a/iocBoot/iocPS3000A/dllPath.bat
 PicoScopeICT/EPICS/epics_ps3000a/iocBoot/iocPS3000A/cdCommands
 PicoScopeICT/EPICS/epics_ps3000a/dbd/PS3000A.dbd
 *slices*
+AstranisDataAnalysis/
