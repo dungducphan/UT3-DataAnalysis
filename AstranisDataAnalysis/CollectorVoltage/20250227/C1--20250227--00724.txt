@@ -1,0 +1,5 @@
+LECROYWS4104HD,18971,Waveform
+Segments,1,SegmentSize,25002
+Segment,TrigTime,TimeSinceSegment1
+#1,27-Feb-2025 18:32:49,0                 
+Time,Ampl
