@@ -244,28 +244,19 @@ void pico_block_ready(int16_t handle, PICO_STATUS ok, void *p_parameter) {
 
 void PS3000A::RunTask() {
 	epicsInt32 run;
-	double updateTime;
 
 	lock();
 
 	while(1) {
-		getDoubleParam(P_UpdateTime, &updateTime);
-		getIntegerParam(P_Run, &run);
-
-		unlock();
-
-		if (run) epicsEventWaitWithTimeout(eventId_, updateTime);
-		else     (void) epicsEventWait(eventId_);
-
-		lock();
 		getIntegerParam(P_Run, &run);
 		if (!run) continue;
-
 		PicoRunBlock();
 	}
 }
 
 int PS3000A::PicoRunBlock() {
+
+	//FIXME: need to take care of this function
 	PICO_STATUS ok;
 
 	epicsInt32 sample_length;
@@ -574,13 +565,14 @@ int PS3000A::SetDataBuffer() {
 }
 
 int PS3000A::SetupTrigger() {
-	int ch;
-	int ok;
-	for (ch = 0; ch < 4; ch++) {
-		ok = set_trigger(ch);
+	PICO_STATUS ok;
+	epicsInt32 connected;
+	getIntegerParam(P_PicoConnected, &connected);
+	if (connected == 1) {
+		ok = ps3000aSetSimpleTrigger(ps.handle, 1, PS3000A_EXTERNAL, 16000, PS3000A_RISING, 0, 0);
+		CHKOK("SetSimpleTrigger");
 	}
-	ok = set_trigger_directions();
-	ok = set_trigger_conditions();
+	
 	return ok;
 }
 
