@@ -19,7 +19,7 @@
 #define PS3000A_FREQUENCY 1000000000
 
 #define MAX_ENUM_STRING_SIZE 20
-static int allVoltsPerDivSelections[NUM_VERT_SELECTIONS]={5,10,20,50,100,200,500,1000,2000,5000,10000,20000};
+static int allVoltsPerDivSelections[12]={5,10,20,50,100,200,500,1000,2000,5000,10000,20000};
 
 static const char *driverName="PS3000A";
 void RunTask(void *drvPvt);
@@ -160,7 +160,6 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 1, /* Autoconnect */
 0, /* Default priority */
 0) /* Default stack size*/ {
-    int i, ch;
     asynStatus status;
     const char *functionName = "PS3000A";
 
@@ -189,8 +188,9 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	createParam(P_ChannelRangeStringA   , asynParamInt32       , &P_ChannelRangeA   ); // 8
 	createParam(P_ChannelRangeStringB   , asynParamInt32       , &P_ChannelRangeB   ); // 9
 	createParam(P_TimeBaseString        , asynParamFloat64Array, &P_TimeBase        ); // 10
-	createParam(P_WaveformStringA       , asynParamFloat64Array, &P_WaveformA       ); // 11
-	createParam(P_WaveformStringB       , asynParamFloat64Array, &P_WaveformB       ); // 12
+	createParam(P_SamplingIntervalString, asynParamFloat64Array, &P_SamplingInterval); // 11
+	createParam(P_WaveformStringA       , asynParamFloat64Array, &P_WaveformA       ); // 12
+	createParam(P_WaveformStringB       , asynParamFloat64Array, &P_WaveformB       ); // 13
 
     /* Set the initial values of some parameters */
 	setIntegerParam(P_Run,               0);
@@ -200,6 +200,7 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	setIntegerParam(P_SampleLength,      maxPoints);
 	setIntegerParam(P_SampleFrequency,   PS3000A_FREQUENCY);
 	setIntegerParam(P_TriggerSource,     2);
+	setIntegerParam(P_TimeBase,          1); // 2 ns interval
 
 	ps.max_points = maxPoints;
     ps.max_value = 32512;
@@ -208,9 +209,10 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	setIntegerParam(P_ChannelRangeB, (int) PS3000A_50MV);
 	ps.config.ch[0].range = PS3000A_1V;
 	ps.config.ch[0].range_v = input_ranges[ps.config.ch[0].range];
-	ps.config.ch[1].range = PS3000A_50MV;
+	ps.config.ch[1].range = PS3000A_100MV;
 	ps.config.ch[1].range_v = input_ranges[ps.config.ch[1].range];
 
+	// Do this once at initialization
 	SetTimeBase();
     SetTimeBaseArray();
 
@@ -226,7 +228,7 @@ void PS3000A::SetTimeBaseArray() {
 	int i;
 	epicsInt32 max_points = 0;
 	getIntegerParam(P_MaxPoints, &max_points);
-	for (i = 0; i < max_points; ++i) pTimeBase_[i] = (double)i / (max_points - 1) * NUM_DIVISIONS;
+	for (i = 0; i < max_points; ++i) pTimeBase_[i] = (double)i * ps.time_interval_ns;
 	doCallbacksFloat64Array(pTimeBase_, max_points,	P_TimeBase, 0);
 }
 
@@ -415,14 +417,12 @@ int PS3000A::OpenPS3000A() {
 	printf("max_value = %d\n", ps.max_value);
 	printf("range = %d\n", ps.config.ch[0].range);
 
-	ok = ps3000aGetAnalogueOffset(ps.handle, ps.config.ch[0].range,
-	    ps.config.ch[0].coupling, &ps.maximumVoltage, &ps.minimumVoltage);
+	ok = ps3000aGetAnalogueOffset(ps.handle, ps.config.ch[0].range, ps.config.ch[0].coupling, &ps.maximumVoltage, &ps.minimumVoltage);
 	CHKOK("GetAnalogueOffset");
 	printf("Minimum Voltage = %f\n", ps.minimumVoltage);
 	printf("Maximum Voltage = %f\n", ps.maximumVoltage);
 
-	ok = ps3000aGetMaxDownSampleRatio(ps.handle, ps.max_points,
-	    &ps.max_down_sample_ratio, PS3000A_RATIO_MODE_AVERAGE, 0);
+	ok = ps3000aGetMaxDownSampleRatio(ps.handle, ps.max_points, &ps.max_down_sample_ratio, PS3000A_RATIO_MODE_AVERAGE, 0);
 	CHKOK("GetMaxDownSampleRatio");
 	printf("Maximum downsample ratio = %u\n", ps.max_down_sample_ratio);
 
@@ -439,43 +439,39 @@ int PS3000A::ClosePS3000A() {
 }
 
 int PS3000A::SetChannels() {
-	int ok;
-	PS3000A_CHANNEL channel = PS3000A_CHANNEL(PS3000A_CHANNEL_A + ch);
-
-	epicsInt32 enabled;
-	epicsInt32 coupling;
-	epicsInt32 range;
 	epicsInt32 connected;
-	epicsInt32 max_points;
-	double analog_offset;
-
 	getIntegerParam(P_PicoConnected, &connected);
-	getIntegerParam(P_ch_enabled[ch], &enabled);
-	getIntegerParam(P_ch_coupling[ch], &coupling);
-	getIntegerParam(P_ch_range[ch], &range);
+
+	epicsInt32 max_points;
 	getIntegerParam(P_MaxPoints, &max_points);
-	getDoubleParam(P_ch_offset[ch], &analog_offset);
 
-	memset(pData_[ch], 0, sizeof(epicsFloat64) * max_points);
+	// Channel A
+	PS3000A_CHANNEL channel_A = PS3000A_CHANNEL(PS3000A_CHANNEL_A);
+	epicsInt32 range_A;
+	getIntegerParam(P_ChannelRangeA, &range_A);
+	memset(pData_[0], 0, sizeof(epicsFloat64) * max_points);
+	ps.config.ch[0].range = (PS3000A_RANGE) range_A;
+	ps.config.ch[0].range_v = input_ranges[ps.config.ch[0].range];
+	printf("Set channel %d: Range %d\n", 0, range_A);
 
-    	ps.config.ch[ch].range = (PS3000A_RANGE)range;
-	ps.config.ch[ch].range_v = input_ranges[ps.config.ch[ch].range];
+	// Channel B
+	PS3000A_CHANNEL channel_B = PS3000A_CHANNEL(PS3000A_CHANNEL_B);
+	epicsInt32 range_B;
+	getIntegerParam(P_ChannelRangeB, &range_B);
+	memset(pData_[1], 0, sizeof(epicsFloat64) * max_points);
+	ps.config.ch[1].range = (PS3000A_RANGE) range_B;
+	ps.config.ch[1].range_v = input_ranges[ps.config.ch[1].range];
+	printf("Set channel %d: Range %d\n", 1, range_B);
 
-	/*printf("Set channel %d: %d, %d, %d, %f\n", ch, enabled, coupling, range,
-	    analog_offset);*/
-
+	int ok;
 	if (connected != 0) {
-		ok = ps3000aSetChannel(ps.handle, channel, (int16_t)enabled,
-		    (PS3000A_COUPLING)coupling, (PS3000A_RANGE)range,
-		    (float)analog_offset);
+		ok = ps3000aSetChannel(ps.handle, channel_A, 1, PS3000A_DC, (PS3000A_RANGE) range_A, 0);
+		CHKOK("SetChannel");
+		ok = ps3000aSetChannel(ps.handle, channel_B, 1, PS3000A_DC, (PS3000A_RANGE) range_B, 0);
 		CHKOK("SetChannel");
 	}
 
 	return 0;
-}
-
-float PS3000A::s_to_ns(int32_t s) {
-	return s * ps.time_interval_ns;
 }
 
 int32_t PS3000A::adc_to_uv(int32_t adc, int ch) {
@@ -525,120 +521,41 @@ void PS3000A::PrintUnitInfo() {
 
 int PS3000A::SetTimeBase() {
 	PICO_STATUS ok;
-	int ch;
-	int channels_enabled;
 	epicsInt32 max_points;
-	epicsInt32 downsampled_frequency;
 	epicsInt32 sample_frequency;
 	epicsInt32 time_base;
 	epicsInt32 max_samples = 0;
 	epicsInt32 segment_index;
-	epicsInt32 down_sample_ratio;
-	epicsInt32 enabled[4] = {0};
-	epicsInt32 samples_needed = 0;
-	epicsInt32 samples_to_read = 0;
 	float time_interval_ns = 0;
 	double full_time_ns;
-	double time_per_div_ns;
 	epicsInt32 connected;
 
 	getIntegerParam(P_PicoConnected, &connected);
-
 	if (connected == 0) return PICO_INTERFACE_NOT_CONNECTED;
 
-	/* We want to read at maximum about this amount of samples */
 	getIntegerParam(P_MaxPoints, &max_points);
-
-	/* Memory segment to use (usually 0) */
 	getIntegerParam(P_segment_index, &segment_index);
 
-	/* We want to read samples respresenting this time per division */
-	getDoubleParam (P_TimePerDiv, &time_per_div_ns);
-	getDoubleParam (P_FullTime, &full_time_ns);
+	getIntegerParam(P_TimeBase, &time_base);
+	printf("Request Time Base = %d\n", time_base);
+	ok = ps3000aGetTimebase2(ps.handle, time_base, max_points, &time_interval_ns, 0, &max_samples, segment_index);
+	CHKOK("GetTimebase2");
+	setIntegerParam(P_time_base, time_base);
+	ps.time_base = time_base;
+	printf("Maximum samples (regarding buffer capacity) = %d\n", max_samples);
+
+	full_time_ns = max_points * time_interval_ns;
+	setIntegerParam(P_sample_length, full_time_ns);
 	printf("Full time = %f ns\n", full_time_ns);
 
-	/* Try to always use the lowest time base possible */
-	channels_enabled = 0;
-	for (ch = 0; ch < 4; ++ch) {
-		getIntegerParam(P_ch_enabled[ch], &enabled[ch]);
-		if (enabled[ch] != 0) channels_enabled++;
-	}
-
-	switch (channels_enabled) {
-	case 0:
-	case 1:
-		time_base = 0;
-		break;
-	case 2:
-		time_base = 1;
-		break;
-	case 3:
-	case 4:
-		time_base = 2;
-		break;
-	default:
-		printf("Error: Illegal amount of channels enabled.\n");
-		abort();
-	}
-
-	/* Find the lowest time base that can handle the requested time
-	** per division and specified  number of samples.
-	** Using ps3000aGetTimebase2() from API to get the time interval
-	** in FLOAT rather than in INT32.
-	*/
-time_base_again:
-	printf("Request time_base = %d\n", time_base);
-
-	ok = ps3000aGetTimebase2(ps.handle, time_base, max_points,
-	    &time_interval_ns, 0, &max_samples, segment_index);
-	CHKOK("GetTimebase2");
-	if (ok == PICO_INVALID_TIMEBASE) {
-		time_base++;
-		goto time_base_again;
-	}
-
-	printf("Final time_base = %d\n", time_base);
-	ps.time_base = time_base;
-
-	printf("Returned time_interval_ns = %f\n", time_interval_ns);
+	printf("Sampling Interval (ns) = %f\n", time_interval_ns);
 	setDoubleParam(P_time_interval_ns, time_interval_ns);
 	ps.time_interval_ns = time_interval_ns;
-
-	printf("Returned max_samples = %d\n", max_samples);
-	setIntegerParam(P_max_samples, max_samples);
 
 	sample_frequency = PS3000A_FREQUENCY / time_interval_ns;
 	printf("Sample frequency = %d Hz\n", sample_frequency);
 	setIntegerParam(P_sample_frequency, sample_frequency);
-
-	/*
-	 * How many samples do we need for the full_time?
-	 */
-	samples_needed = full_time_ns * (double)sample_frequency / 1.0e9;
-	printf("Samples needed = %d\n", samples_needed);
-
-	/*
-	 * Do we need to downsample the data?
-	 */
-	if (samples_needed > max_points) {
-		down_sample_ratio = ceil((double)samples_needed / (double)max_points);
-	} else {
-		down_sample_ratio = 1;
-	}
-	printf("Downsample ratio requested = %u\n", down_sample_ratio);
-	setIntegerParam(P_down_sample_ratio, down_sample_ratio);
-
-	downsampled_frequency = sample_frequency / down_sample_ratio;
-	printf("Downsampled frequency = %d Hz\n", downsampled_frequency);
-	setIntegerParam(P_downsampled_frequency, downsampled_frequency);
-
-	/*
-	 * How many samples do we need to read after downsampling?
-	 */
-	samples_to_read = ceil((double)samples_needed / (double)down_sample_ratio);
-	printf("Samples to read = %d\n", samples_to_read);
-	setIntegerParam(P_sample_length, samples_to_read);
-	setIntegerParam(P_time_base_nelm, samples_to_read);
+	printf("Samples needed = %d\n", max_points);
 
 	return ok;
 }
@@ -682,11 +599,11 @@ void PS3000A::ConnectPicoScope() {
 		SetChannels();
 		PrintUnitInfo();
 		SetTimeBase();
-		SetupTrigger();
+		SetTimeBaseArray();
 		SetDataBuffer();
+		SetupTrigger();
 	}
 }
-
 
 /** Called when asyn clients call pasynInt32->write().
   * This function sends a signal to the simTask thread if the value of P_Run has changed.

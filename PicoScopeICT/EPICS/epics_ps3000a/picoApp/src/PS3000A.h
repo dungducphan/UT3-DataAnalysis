@@ -12,19 +12,19 @@
 
 #include "asynPortDriver.h"
 
-#define P_RunString             "PICOSCOPE_RUN"               /* asynInt32,         r/w */
-#define P_MaxPointsString       "PICOSCOPE_MAX_POINTS"        /* asynInt32,         r/o */
-#define P_PicoConnectString     "PICOSCOPE_CONNECT"           /* asynInt32,         r/w */
-#define P_PicoConnectedString   "PICOSCOPE_CONNECTED"         /* asynInt32,         r/o */
-#define P_SampleLengthString    "PICOSCOPE_SAMPLE_LENGTH"     /* asynInt32,         r/o */
-#define P_SampleFrequencyString "PICOSCOPE_SAMPLE_FREQUENCY"  /* asynInt32,         r/o */
-#define P_TriggerSourceString   "PICOSCOPE_TRIGGER_SOURCE   " /* asynInt32,         r/o */
-#define P_ChannelRangeStringA   "PICOSCOPE_CHA_RANGE"         /* asynInt32,         r/w */
-#define P_ChannelRangeStringB   "PICOSCOPE_CHB_RANGE"         /* asynInt32,         r/w */
-
-#define P_TimeBaseString        "PICOSCOPE_TIMEBASE"          /* asynFloat64Array,  r/o */
-#define P_WaveformStringA       "PICOSCOPE_WAVEFORM_A"        /* asynFloat64Array,  r/o */
-#define P_WaveformStringB       "PICOSCOPE_WAVEFORM_B"        /* asynFloat64Array,  r/o */
+#define P_RunString              "PICOSCOPE_RUN"               /* asynInt32,         r/w */
+#define P_MaxPointsString        "PICOSCOPE_MAX_POINTS"        /* asynInt32,         r/o */
+#define P_PicoConnectString      "PICOSCOPE_CONNECT"           /* asynInt32,         r/w */
+#define P_PicoConnectedString    "PICOSCOPE_CONNECTED"         /* asynInt32,         r/o */
+#define P_SampleLengthString     "PICOSCOPE_SAMPLE_LENGTH"     /* asynInt32,         r/w */
+#define P_SampleFrequencyString  "PICOSCOPE_SAMPLE_FREQUENCY"  /* asynInt32,         r/o */
+#define P_TriggerSourceString    "PICOSCOPE_TRIGGER_SOURCE   " /* asynInt32,         r/o */
+#define P_ChannelRangeStringA    "PICOSCOPE_CHA_RANGE"         /* asynInt32,         r/w */
+#define P_ChannelRangeStringB    "PICOSCOPE_CHB_RANGE"         /* asynInt32,         r/w */
+#define P_TimeBaseString         "PICOSCOPE_TIMEBASE"          /* asynFloat64Array,  r/o */
+#define P_SamplingIntervalString "PICOSCOPE_SAMPLING_INTERVAL" /* asynFloat64Array,  r/o */
+#define P_WaveformStringA        "PICOSCOPE_WAVEFORM_A"        /* asynFloat64Array,  r/o */
+#define P_WaveformStringB        "PICOSCOPE_WAVEFORM_B"        /* asynFloat64Array,  r/o */
 
 
 
@@ -56,7 +56,6 @@ struct PS3000AModule {
 	uint32_t max_down_sample_ratio;
 };
 
-
 class PS3000A : public asynPortDriver {
 public:
     PS3000A(const char *portName, int maxArraySize);
@@ -70,41 +69,42 @@ public:
 
 protected:
     /** Values used for pasynUser->reason, and indexes into the parameter library. */
+    int P_Run              = 0; // [RW] Start[1]/stop[0] commands to the PicoScope
+    int P_MaxPoints        = 0; // [RO] Number of points in the waveform
+    int P_PicoStatus       = 0; // [RO] Status encoding of the PicoScope
+    int P_PicoConnect      = 0; // [RW] Connect[1]/disconnect[0] commands to the PicoScope
+    int P_PicoConnected    = 0; // [RO] Connection status encoding of the PicoScope
+    int P_SampleLength     = 0; // [RO] Total duration of sample (ns)
+    int P_SampleFrequency  = 0; // [RO] Sampling frequency of the PicoScope (Hz)
+    int P_TriggerSource    = 0; // [RO] Trigger source for the PicoScope
+    int P_TimeBase         = 0; // [RO] Time base of the PicoScope
+    int P_SamplingInterval = 0; // [RO] Sampling interval of the PicoScope (ns)
+    int P_WaveformA        = 0; // [RO] Waveform data of Channel A
+    int P_WaveformB        = 0; // [RO] Waveform data of Channel B
+    int P_ChannelRangeA    = 0; // [RW] Range of Channel A
+    int P_ChannelRangeB    = 0; // [RW] Range of Channel B
 
-    int P_Run             = 0;
-    int P_MaxPoints       = 0;
-    int P_PicoStatus      = 0;
-    int P_PicoConnect     = 0;
-    int P_PicoConnected   = 0;
-    int P_SampleLength    = 0;
-    int P_SampleFrequency = 0;
-    int P_TriggerSource   = 0;
-    int P_TimeBase        = 0;
-    int P_WaveformA       = 0;
-    int P_WaveformB       = 0;
-    int P_ChannelRangeA   = 0;
-    int P_ChannelRangeB   = 0;
- 
 private:
     /* Our data */
     epicsEventId eventId_;
     epicsFloat64 *pData_[2];
     epicsFloat64 *pTimeBase_;
 
-
     void ConnectPicoScope(void);
+    int OpenPS3000A(void);
     int ClosePS3000A(void);
+
     int SetTimeBase(void);
     void SetTimeBaseArray(void);
+
     void SetChannels(void);
-    int SetTrigger(void);
-    int PicoRunBlock(void);
-    int OpenPS3000A(void);
     void PrintUnitInfo(void);
+    int SetTrigger(void);
+
+    int PicoRunBlock(void);
 
     int16_t mv_to_adc(int16_t, int);
     int32_t adc_to_uv(int32_t, int);
-    float s_to_ns(int32_t);
 
     /* pico data members */
     int16_t *data_buffer[2];
