@@ -5,7 +5,7 @@
 #include <tuple>
 
 double QToDoseFactor = 47E-3; // Gy/pC
-double preExistingDose = 55; // Gy before 20250224
+double preExistingDose = 0; // Gy before 20250224
 double GyTokrad = 0.1; // Gy to krad
 
 using TUPLE_T = std::tuple<double, double, double, double>;
@@ -75,7 +75,7 @@ std::vector<double> CalculateCollectorResponse(const std::vector<TUPLE_T> &data)
 }
 
 void analysis() {
-    auto shotData = ReadDataFromCSV("Sum_27_26_25.csv");
+    auto shotData = ReadDataFromCSV("Sum_27_26_25_24_20_19.csv");
     auto cumulativeDose = CalculateCumulativeDose(shotData); // krad
     auto collectorResponse = CalculateCollectorResponse(shotData);
 
