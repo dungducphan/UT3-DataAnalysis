@@ -97,11 +97,13 @@ record(mbbi, "$(P)$(R)TriggerSource_RBV")
 ###################################################################
 record(waveform, "$(P)$(R)TimeBase_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynFloat64ArrayIn")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PICOSCOPE_TIME_BASE")
     field(FTVL, "DOUBLE")
     field(NELM, "$(NPOINTS)")
+    field(LOPR, "0")
+    field(HOPR, "10")
+    field(SCAN, "I/O Intr")
 }
 
 ###################################################################

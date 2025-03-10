@@ -229,7 +229,10 @@ void PS3000A::SetTimeBaseArray() {
 	int i;
 	epicsInt32 max_points = 0;
 	getIntegerParam(P_MaxPoints, &max_points);
-	for (i = 0; i < max_points; ++i) pTimeBase_[i] = (double)i * ps.time_interval_ns;
+	printf("SetTimeBaseArray()\n");
+	printf("Time interval = %fns\n", ps.time_interval_ns);
+	printf("Max points = %d\n", max_points);
+	for (i = 0; i < max_points; ++i) pTimeBase_[i] = (double)i * (double) ps.time_interval_ns;
 	doCallbacksFloat64Array(pTimeBase_, max_points,	P_TimeBase, 0);
 }
 
@@ -372,7 +375,6 @@ int PS3000A::ClosePS3000A() {
 	ok = ps3000aCloseUnit(ps.handle);
 	CHKOK("Close");
 	setIntegerParam(P_PicoConnected, 0);
-
 	
 	return 0;
 }
@@ -409,7 +411,6 @@ int PS3000A::SetChannels() {
 		ok = ps3000aSetChannel(ps.handle, channel_B, 1, PS3000A_DC, (PS3000A_RANGE) range_B, 0);
 		CHKOK("SetChannel");
 	}
-
 	
 	return 0;
 }
@@ -507,7 +508,6 @@ int PS3000A::SetDataBuffer() {
 	ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) 1, data_buffer[1], max_points, 0, mode);
 	CHKOK("SetDataBuffer");
 
-	
 	return 0;
 }
 
@@ -519,7 +519,6 @@ int PS3000A::SetupTrigger() {
 		ok = ps3000aSetSimpleTrigger(ps.handle, 1, PS3000A_EXTERNAL, 16000, PS3000A_RISING, 0, 0);
 		CHKOK("SetSimpleTrigger");
 	}
-	
 	
 	return ok;
 }
@@ -634,12 +633,10 @@ asynStatus PS3000A::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, s
     ncopy = itemp;
     if (nElements < ncopy) ncopy = nElements;
     if (function == P_WaveformA) {
-		memcpy(value, pData_[0],
-		ncopy*sizeof(epicsFloat64));
+		memcpy(value, pData_[0], ncopy*sizeof(epicsFloat64));
 		*nIn = ncopy;
 	} else if (function == P_WaveformB) {
-		memcpy(value, pData_[1],
-		ncopy*sizeof(epicsFloat64));
+		memcpy(value, pData_[1], ncopy*sizeof(epicsFloat64));
 		*nIn = ncopy;
 	} else if (function == P_TimeBase) {
         memcpy(value, pTimeBase_, ncopy*sizeof(epicsFloat64));
