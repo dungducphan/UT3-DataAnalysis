@@ -19,7 +19,7 @@
 #define PS3000A_FREQUENCY 1000000000
 
 #define MAX_ENUM_STRING_SIZE 20
-static int allVoltsPerDivSelections[12]={5,10,20,50,100,200,500,1000,2000,5000,10000,20000};
+// static int allVoltsPerDivSelections[12]={5,10,20,50,100,200,500,1000,2000,5000,10000,20000};
 
 static const char *driverName="PS3000A";
 void RunTask(void *drvPvt);
@@ -259,61 +259,37 @@ int PS3000A::PicoRunBlock() {
 	//FIXME: need to take care of this function
 	PICO_STATUS ok;
 
-	epicsInt32 sample_length;
 	epicsInt32 max_points;
-	epicsInt32 segment_index;
-	epicsInt32 down_sample_ratio;
-	double volts_per_div[4], volt_offset[4];
-	double min_value, max_value, mean_value;
-
 	getIntegerParam(P_MaxPoints, &max_points);
-	getIntegerParam(P_sample_length, &sample_length);
-	getIntegerParam(P_segment_index, &segment_index);
-	getIntegerParam(P_down_sample_ratio, &down_sample_ratio);
-	getDoubleParam (P_VoltsPerDiv[0], &volts_per_div[0]);
-	getDoubleParam (P_VoltsPerDiv[1], &volts_per_div[1]);
-	getDoubleParam (P_VoltsPerDiv[2], &volts_per_div[2]);
-	getDoubleParam (P_VoltsPerDiv[3], &volts_per_div[3]);
-	getDoubleParam (P_VoltOffset[0], &volt_offset[0]);
-	getDoubleParam (P_VoltOffset[1], &volt_offset[1]);
-	getDoubleParam (P_VoltOffset[2], &volt_offset[2]);
-	getDoubleParam (P_VoltOffset[3], &volt_offset[3]);
 
-	/*printf("sample length = %d\n", sample_length);*/
-
-	uint32_t pre_ds_sample_length = sample_length * down_sample_ratio;
-
-	/*
-	 * Trigger time is at 50 % of the screen
-	 */
-	float trigger_fraction = 0.5;
-	int32_t pre_trigger = pre_ds_sample_length * (1. - trigger_fraction);
-	int32_t post_trigger = pre_ds_sample_length * trigger_fraction;
-	int32_t time_indisposed_ms = 0;
+	/* Trigger time is at 40 % of the screen */
+	float trigger_fraction = 0.4;
+	int32_t pre_trigger = max_points * (1. - trigger_fraction);
+	int32_t post_trigger = max_points - pre_trigger;
+	/* time_indisposed_ms: on exit, the time, in milliseconds, that the scope will spend collecting samples. 
+	This does not include any auto trigger timeout. If this pointer is null, nothing will be written here. */
+	int32_t time_indisposed_ms = 0; 
+	/* callback_block_ready: a pointer to the ps3000aBlockReady callback function that the driver will call when
+	the data has been collected. To use the ps3000aIsReady polling method instead of a callback
+	function, set this pointer to NULL. */
 	ps3000aBlockReady callback_block_ready = pico_block_ready;
+	/* p_parameter: a void pointer that is passed to the ps3000aBlockReady callback function.
+	The callback can use this pointer to return arbitrary data to the application */
 	struct BlockInfo block_info;
 	block_info.ready = 0;
 	void *p_parameter = (void *)&block_info;
 	int cnt = 0;
-	const int trigger_timeout = 1000; /* ms */
-	PS3000A_RATIO_MODE down_sample_ratio_mode = PS3000A_RATIO_MODE_AVERAGE;
-	uint32_t n_samples = sample_length;
+	const int trigger_timeout = 60000; /* ms (set to 1 min just in case the IOC waits for trigger indefinitely) */
+	PS3000A_RATIO_MODE down_sample_ratio_mode = PS3000A_RATIO_MODE_NONE;
+	uint32_t n_samples = max_points;
 	uint32_t start_index = 0;
-
-	/*printf("PicoRunBlock\n");*/
-
-	/*printf("pre_ds_sample_length = %u\n", pre_ds_sample_length);
-	printf("pre_trigger = %d\n", pre_trigger);
-	printf("post_trigger = %d\n", post_trigger);*/
-	/*printf("ps.time_interval_ns = %f\n", ps.time_interval_ns);
-	printf("ps.time_base = %u\n", (uint32_t)ps.time_base);*/
-	ok = ps3000aRunBlock(ps.handle, pre_trigger, post_trigger,
-	    ps.time_base, 0, &time_indisposed_ms,
-	    segment_index, callback_block_ready, p_parameter);
+	uint32_t segment_index = 0;
+	ok = ps3000aRunBlock(ps.handle, pre_trigger, post_trigger, ps.time_base, 0, &time_indisposed_ms, segment_index, callback_block_ready, p_parameter);
 	CHKOK("RunBlock");
 
-	/*printf("Waiting for trigger...\n");*/
+	/* Waiting for trigger... */
 
+	/* If no trigger within timeout period */
 	cnt = 0;
 	while (block_info.ready == 0) {
 		epicsThreadSleep(1e-3);
@@ -324,11 +300,7 @@ int PS3000A::PicoRunBlock() {
 		}
 	}
 
-	/*printf("Triggered.\n");*/
-
-	min_value = 1e6;
-	max_value = -1e6;
-	mean_value = 0;
+	/* If triggered */
 	if (block_info.ready == 1) {
 		int i;
 		uint32_t ch;
@@ -337,57 +309,26 @@ int PS3000A::PicoRunBlock() {
 		PS3000A_TIME_UNITS time_units;
 		int16_t overflow = 0;
 
-		/*printf("Retrieving data...\n");*/
-		ok = ps3000aGetValues(ps.handle, start_index,
-		    &n_samples, down_sample_ratio, down_sample_ratio_mode,
-		    segment_index, &overflow);
-		/*printf("%d samples\n", n_samples);
-		printf("%d overflow\n", overflow);*/
+		/* Get the data */
+		ok = ps3000aGetValues(ps.handle, start_index, &n_samples, 1, down_sample_ratio_mode, segment_index, &overflow);
 		CHKOK("GetValues");
 
-		ok = ps3000aGetTriggerTimeOffset64(ps.handle, &time,
-		    &time_units, segment_index);
+		ok = ps3000aGetTriggerTimeOffset64(ps.handle, &time, &time_units, segment_index);
 		CHKOK("GetTriggerTimeOffset");
 
-		// double sampled_time_ns = n_samples * ps.time_interval_ns * down_sample_ratio;
-		/*printf("%f sampled_time_ns\n", sampled_time_ns);*/
-
-		/*printf("Trigger time = %ld %d.\n", time, time_units);*/
-
-		for (ch = 0; ch < 4; ++ch) {
-			epicsInt32 enabled;
-			double offset = volt_offset[ch] +
-			    volts_per_div[ch] * NUM_DIVISIONS / 2;
-
-			getIntegerParam(P_ch_enabled[ch], &enabled);
-			if (enabled == 0) continue;
-
-			/*printf("Got block data with %d samples\n", n_samples);
-			*/
-
+		for (ch = 0; ch < 2; ++ch) {
 			for (i = start_index; i < max_points; ++i) {
-				int bin = i * (double)n_samples /
-				    (double)max_points;
-				val = adc_to_uv(data_buffer[ch][bin], ch) / 1e6;
-				if (val < min_value) min_value = val;
-				if (val > max_value) max_value = val;
-				pData_[ch][i] = (offset + val)
-				    / volts_per_div[ch];
+				val = adc_to_uv(data_buffer[ch][i], ch) / 1e6;
+				pData_[ch][i] = val;
 			}
-			setDoubleParam(P_MinValue, min_value);
-			setDoubleParam(P_MaxValue, max_value);
-			setDoubleParam(P_MeanValue, mean_value);
-			mean_value = mean_value / n_samples;
-        		doCallbacksFloat64Array(pData_[ch], max_points,
-			    P_Waveform[ch], 0);
-			setIntegerParam(P_ch_overflow[ch],
-			    (overflow >> ch) & 1);
+			if (ch == 0) {
+        		doCallbacksFloat64Array(pData_[ch], max_points, P_WaveformA, 0);
+			} else {
+				doCallbacksFloat64Array(pData_[ch], max_points, P_WaveformB, 0);
+			}
 		}
-
-        	callParamCallbacks();
-	} else {
-		printf("What??\n");
-	}
+        callParamCallbacks();
+	} else {}
 
 	return 0;
 }
@@ -516,7 +457,7 @@ int PS3000A::SetTimeBase() {
 	epicsInt32 sample_frequency;
 	epicsInt32 time_base;
 	epicsInt32 max_samples = 0;
-	epicsInt32 segment_index;
+	epicsInt32 segment_index = 0;
 	float time_interval_ns = 0;
 	double full_time_ns;
 	epicsInt32 connected;
@@ -525,27 +466,25 @@ int PS3000A::SetTimeBase() {
 	if (connected == 0) return PICO_INTERFACE_NOT_CONNECTED;
 
 	getIntegerParam(P_MaxPoints, &max_points);
-	getIntegerParam(P_segment_index, &segment_index);
-
 	getIntegerParam(P_TimeBase, &time_base);
 	printf("Request Time Base = %d\n", time_base);
 	ok = ps3000aGetTimebase2(ps.handle, time_base, max_points, &time_interval_ns, 0, &max_samples, segment_index);
 	CHKOK("GetTimebase2");
-	setIntegerParam(P_time_base, time_base);
+	setIntegerParam(P_TimeBase, time_base);
 	ps.time_base = time_base;
 	printf("Maximum samples (regarding buffer capacity) = %d\n", max_samples);
 
 	full_time_ns = max_points * time_interval_ns;
-	setIntegerParam(P_sample_length, full_time_ns);
+	setIntegerParam(P_SampleLength, full_time_ns);
 	printf("Full time = %f ns\n", full_time_ns);
 
 	printf("Sampling Interval (ns) = %f\n", time_interval_ns);
-	setDoubleParam(P_time_interval_ns, time_interval_ns);
+	setDoubleParam(P_SamplingInterval, time_interval_ns);
 	ps.time_interval_ns = time_interval_ns;
 
 	sample_frequency = PS3000A_FREQUENCY / time_interval_ns;
 	printf("Sample frequency = %d Hz\n", sample_frequency);
-	setIntegerParam(P_sample_frequency, sample_frequency);
+	setIntegerParam(P_SampleFrequency, sample_frequency);
 	printf("Samples needed = %d\n", max_points);
 
 	return ok;

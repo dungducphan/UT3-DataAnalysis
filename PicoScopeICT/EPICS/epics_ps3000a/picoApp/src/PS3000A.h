@@ -97,9 +97,10 @@ private:
     int SetTimeBase(void);
     void SetTimeBaseArray(void);
 
-    void SetChannels(void);
+    int SetChannels(void);
     void PrintUnitInfo(void);
-    int SetTrigger(void);
+    int SetupTrigger(void);
+    int SetDataBuffer(void);
 
     int PicoRunBlock(void);
 
