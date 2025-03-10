@@ -9,7 +9,6 @@ PS3000A_registerRecordDeviceDriver(pdbbase)
 PS3000AConfigure("ps3000a_port", 1000)
 
 dbLoadRecords("../../db/PS3000A.db","P=TEST:,R=scope1:,PORT=ps3000a_port,ADDR=0,TIMEOUT=1,NPOINTS=1000")
-dbLoadRecords("../../db/PS3000A_ch.db","P=TEST:,R=scope1:,PORT=ps3000a_port,ADDR=0,TIMEOUT=1,NPOINTS=1000")
 dbLoadRecords("../../db/asynRecord.db","P=TEST:,R=asyn1,PORT=ps3000a_port,ADDR=0,OMAX=80,IMAX=80")
 #asynSetTraceMask("ps3000a_port",0,0xff)
 asynSetTraceIOMask("ps3000a_port",0,0x2)

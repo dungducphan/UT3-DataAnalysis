@@ -12,17 +12,17 @@
 
 #include "asynPortDriver.h"
 
-#define P_RunString              "PICOSCOPE_RUN"               /* asynInt32,         r/w */
+#define P_RunString              "PICOSCOPE_RUN"               /* asynInt32,         r/w  Implemented*/ 
 #define P_MaxPointsString        "PICOSCOPE_MAX_POINTS"        /* asynInt32,         r/o */
-#define P_PicoConnectString      "PICOSCOPE_CONNECT"           /* asynInt32,         r/w */
+#define P_PicoConnectString      "PICOSCOPE_CONNECT"           /* asynInt32,         r/w  Implemented*/
 #define P_PicoConnectedString    "PICOSCOPE_CONNECTED"         /* asynInt32,         r/o */
-#define P_SampleLengthString     "PICOSCOPE_SAMPLE_LENGTH"     /* asynInt32,         r/w */
+#define P_SampleLengthString     "PICOSCOPE_SAMPLE_LENGTH"     /* asynInt32,         r/o */
 #define P_SampleFrequencyString  "PICOSCOPE_SAMPLE_FREQUENCY"  /* asynInt32,         r/o */
-#define P_TriggerSourceString    "PICOSCOPE_TRIGGER_SOURCE   " /* asynInt32,         r/o */
+#define P_TriggerSourceString    "PICOSCOPE_TRIGGER_SOURCE"    /* asynInt32,         r/o */
 #define P_ChannelRangeStringA    "PICOSCOPE_CHA_RANGE"         /* asynInt32,         r/w */
 #define P_ChannelRangeStringB    "PICOSCOPE_CHB_RANGE"         /* asynInt32,         r/w */
-#define P_TimeBaseString         "PICOSCOPE_TIMEBASE"          /* asynFloat64Array,  r/o */
-#define P_SamplingIntervalString "PICOSCOPE_SAMPLING_INTERVAL" /* asynFloat64Array,  r/o */
+#define P_SamplingIntervalString "PICOSCOPE_SAMPLING_INTERVAL" /* asynFloat64,       r/o */
+#define P_TimeBaseString         "PICOSCOPE_TIME_BASE"         /* asynFloat64Array,  r/o */
 #define P_WaveformStringA        "PICOSCOPE_WAVEFORM_A"        /* asynFloat64Array,  r/o */
 #define P_WaveformStringB        "PICOSCOPE_WAVEFORM_B"        /* asynFloat64Array,  r/o */
 
@@ -71,7 +71,6 @@ protected:
     /** Values used for pasynUser->reason, and indexes into the parameter library. */
     int P_Run              = 0; // [RW] Start[1]/stop[0] commands to the PicoScope
     int P_MaxPoints        = 0; // [RO] Number of points in the waveform
-    int P_PicoStatus       = 0; // [RO] Status encoding of the PicoScope
     int P_PicoConnect      = 0; // [RW] Connect[1]/disconnect[0] commands to the PicoScope
     int P_PicoConnected    = 0; // [RO] Connection status encoding of the PicoScope
     int P_SampleLength     = 0; // [RO] Total duration of sample (ns)
@@ -98,6 +97,7 @@ private:
     void SetTimeBaseArray(void);
 
     int SetChannels(void);
+    int SetRangeChannel(int, epicsInt32);
     void PrintUnitInfo(void);
     int SetupTrigger(void);
     int SetDataBuffer(void);
@@ -114,14 +114,12 @@ private:
 };
 
 #define CHKOK_OR_RETURN(name) do {\
-	setIntegerParam(P_PicoStatus, ok);\
 	if (ok != PICO_OK) {\
 		printf("ERROR %d in %s: %s\n", ok, name, ps3000a_strings[ok]);\
 		return ok;\
 	}\
 }while (0)
 #define CHKOK(name) do {\
-	setIntegerParam(P_PicoStatus, ok);\
 	if (ok != PICO_OK) {\
 		printf("ERROR %d in %s: %s\n", ok, name, ps3000a_strings[ok]);\
 	}\

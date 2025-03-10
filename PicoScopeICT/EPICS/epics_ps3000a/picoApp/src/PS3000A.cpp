@@ -188,7 +188,7 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	createParam(P_ChannelRangeStringA   , asynParamInt32       , &P_ChannelRangeA   ); // 8
 	createParam(P_ChannelRangeStringB   , asynParamInt32       , &P_ChannelRangeB   ); // 9
 	createParam(P_TimeBaseString        , asynParamFloat64Array, &P_TimeBase        ); // 10
-	createParam(P_SamplingIntervalString, asynParamFloat64Array, &P_SamplingInterval); // 11
+	createParam(P_SamplingIntervalString, asynParamFloat64     , &P_SamplingInterval); // 11
 	createParam(P_WaveformStringA       , asynParamFloat64Array, &P_WaveformA       ); // 12
 	createParam(P_WaveformStringB       , asynParamFloat64Array, &P_WaveformB       ); // 13
 
@@ -200,7 +200,6 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	setIntegerParam(P_SampleLength,      maxPoints);
 	setIntegerParam(P_SampleFrequency,   PS3000A_FREQUENCY);
 	setIntegerParam(P_TriggerSource,     2);
-	setIntegerParam(P_TimeBase,          1); // 2 ns interval
 
 	ps.max_points = maxPoints;
     ps.max_value = 32512;
@@ -211,6 +210,8 @@ asynInt32Mask | asynFloat64Mask | asynFloat64ArrayMask | asynEnumMask,  /* Inter
 	ps.config.ch[0].range_v = input_ranges[ps.config.ch[0].range];
 	ps.config.ch[1].range = PS3000A_100MV;
 	ps.config.ch[1].range_v = input_ranges[ps.config.ch[1].range];
+
+	printf("Starting Init\n");
 
 	// Do this once at initialization
 	SetTimeBase();
@@ -248,6 +249,9 @@ void PS3000A::RunTask() {
 	lock();
 
 	while(1) {
+		getIntegerParam(P_Run, &run);
+		unlock();
+		lock();
 		getIntegerParam(P_Run, &run);
 		if (!run) continue;
 		PicoRunBlock();
@@ -330,6 +334,7 @@ int PS3000A::PicoRunBlock() {
         callParamCallbacks();
 	} else {}
 
+	
 	return 0;
 }
 
@@ -358,6 +363,7 @@ int PS3000A::OpenPS3000A() {
 	CHKOK("GetMaxDownSampleRatio");
 	printf("Maximum downsample ratio = %u\n", ps.max_down_sample_ratio);
 
+	
 	return ok;
 }
 
@@ -367,6 +373,7 @@ int PS3000A::ClosePS3000A() {
 	CHKOK("Close");
 	setIntegerParam(P_PicoConnected, 0);
 
+	
 	return 0;
 }
 
@@ -403,6 +410,7 @@ int PS3000A::SetChannels() {
 		CHKOK("SetChannel");
 	}
 
+	
 	return 0;
 }
 
@@ -455,7 +463,7 @@ int PS3000A::SetTimeBase() {
 	PICO_STATUS ok;
 	epicsInt32 max_points;
 	epicsInt32 sample_frequency;
-	epicsInt32 time_base;
+	epicsInt32 time_base = 1;
 	epicsInt32 max_samples = 0;
 	epicsInt32 segment_index = 0;
 	float time_interval_ns = 0;
@@ -466,11 +474,10 @@ int PS3000A::SetTimeBase() {
 	if (connected == 0) return PICO_INTERFACE_NOT_CONNECTED;
 
 	getIntegerParam(P_MaxPoints, &max_points);
-	getIntegerParam(P_TimeBase, &time_base);
 	printf("Request Time Base = %d\n", time_base);
 	ok = ps3000aGetTimebase2(ps.handle, time_base, max_points, &time_interval_ns, 0, &max_samples, segment_index);
 	CHKOK("GetTimebase2");
-	setIntegerParam(P_TimeBase, time_base);
+	
 	ps.time_base = time_base;
 	printf("Maximum samples (regarding buffer capacity) = %d\n", max_samples);
 
@@ -486,7 +493,7 @@ int PS3000A::SetTimeBase() {
 	printf("Sample frequency = %d Hz\n", sample_frequency);
 	setIntegerParam(P_SampleFrequency, sample_frequency);
 	printf("Samples needed = %d\n", max_points);
-
+	
 	return ok;
 }
 
@@ -500,17 +507,19 @@ int PS3000A::SetDataBuffer() {
 	ok = ps3000aSetDataBuffer(ps.handle, (PS3000A_CHANNEL) 1, data_buffer[1], max_points, 0, mode);
 	CHKOK("SetDataBuffer");
 
+	
 	return 0;
 }
 
 int PS3000A::SetupTrigger() {
-	PICO_STATUS ok;
+	PICO_STATUS ok = 0;
 	epicsInt32 connected;
 	getIntegerParam(P_PicoConnected, &connected);
 	if (connected == 1) {
 		ok = ps3000aSetSimpleTrigger(ps.handle, 1, PS3000A_EXTERNAL, 16000, PS3000A_RISING, 0, 0);
 		CHKOK("SetSimpleTrigger");
 	}
+	
 	
 	return ok;
 }
@@ -536,6 +545,40 @@ void PS3000A::ConnectPicoScope() {
 	}
 }
 
+int PS3000A::SetRangeChannel(int ch, epicsInt32 range) {
+	epicsInt32 connected;
+	getIntegerParam(P_PicoConnected, &connected);
+
+	if (ch == 0) {
+		// Channel A
+		PS3000A_CHANNEL channel_A = PS3000A_CHANNEL(PS3000A_CHANNEL_A);
+		setIntegerParam(P_ChannelRangeA, range);
+		ps.config.ch[0].range = (PS3000A_RANGE) range;
+		ps.config.ch[0].range_v = input_ranges[ps.config.ch[0].range];
+		printf("Set channel A: Range %d\n", range);
+		int ok;
+		if (connected != 0) {
+			ok = ps3000aSetChannel(ps.handle, channel_A, 1, PS3000A_DC, (PS3000A_RANGE) range, 0);
+			CHKOK("SetChannel");
+		}
+	} else if (ch == 1) {
+		// Channel A
+		PS3000A_CHANNEL channel_B = PS3000A_CHANNEL(PS3000A_CHANNEL_B);
+		setIntegerParam(P_ChannelRangeB, range);
+		ps.config.ch[1].range = (PS3000A_RANGE) range;
+		ps.config.ch[1].range_v = input_ranges[ps.config.ch[1].range];
+		printf("Set channel B: Range %d\n", range);
+		int ok;
+		if (connected != 0) {
+			ok = ps3000aSetChannel(ps.handle, channel_B, 1, PS3000A_DC, (PS3000A_RANGE) range, 0);
+			CHKOK("SetChannel");
+		}
+	} else { return -1;}
+
+	
+	return 0;
+}
+
 /** Called when asyn clients call pasynInt32->write().
   * This function sends a signal to the simTask thread if the value of P_Run has changed.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
@@ -552,14 +595,15 @@ asynStatus PS3000A::writeInt32(asynUser *pasynUser, epicsInt32 value) {
 
     /* Fetch the parameter string name for possible use in debugging */
     getParamName(function, &paramName);
-
     if (function == P_Run) {
         /* If run was set then wake up the simulation task */
         if (value) epicsEventSignal(eventId_);
     } else if (function == P_PicoConnect) {
 		ConnectPicoScope();
-    } else if (function == P_PicoConnect) {
-		ConnectPicoScope();
+    } else if (function == P_ChannelRangeA) {
+		SetRangeChannel(0, value);
+    } else if (function == P_ChannelRangeB) {
+		SetRangeChannel(1, value);
     } else {}
 
     /* Do callbacks so higher layers see any changes */
