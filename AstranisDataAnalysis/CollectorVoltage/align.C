@@ -97,10 +97,11 @@ void alignDate(std::string date) {
 }
 
 void align() {
+    alignDate("20250303");
     // alignDate("20250227");
     // alignDate("20250226");
     // alignDate("20250225");
     // alignDate("20250224");
     // alignDate("20250220");
-    alignDate("20250219");
+    // alignDate("20250219");
 }
