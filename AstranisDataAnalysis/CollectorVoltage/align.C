@@ -90,16 +90,16 @@ void alignDate(std::string date) {
         if (sequenceNumberToTimestamp.find(i) == sequenceNumberToTimestamp.end()) {
             continue;
         }
-        csvFile << i << "," << sequenceNumberToTimestamp[i] << "," << sequenceNumberToVoltage[i] << "\n";
+        csvFile << i<< "," << sequenceNumberToTimestamp[i] << "," << sequenceNumberToVoltage[i] << "\n";
     }
 
     csvFile.close();
 }
 
 void align() {
-    alignDate("20250311");
+    // alignDate("20250311");
     // alignDate("20250310");
-    // alignDate("20250304");
+    alignDate("20250304");
     // alignDate("20250303");
     // alignDate("20250227");
     // alignDate("20250226");
