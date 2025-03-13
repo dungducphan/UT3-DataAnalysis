@@ -287,7 +287,7 @@ void analysis_current_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &sh
     h2d_Voltage->SetTitle("");
     h2d_Voltage->GetXaxis()->SetTitle("Accumulative Dose (krad)");
     h2d_Voltage->GetYaxis()->SetTitle("Instant Dose (rad)");
-    h2d_Voltage->GetZaxis()->SetTitle("Collector Current (V)");
+    h2d_Voltage->GetZaxis()->SetTitle("Collector Current (A.U.)");
     h2d_Voltage->GetXaxis()->CenterTitle();
     h2d_Voltage->GetYaxis()->CenterTitle();
     h2d_Voltage->GetXaxis()->SetTitleSize(0.05);
