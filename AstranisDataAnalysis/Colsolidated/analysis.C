@@ -3,12 +3,15 @@
 #include <sstream>
 #include <vector>
 #include <tuple>
+#include <filesystem>
 
 double QToDoseFactor = 47E-3; // Gy/pC
 double preExistingDose = 0; // Gy before 20250224
 double GyTokrad = 0.1; // Gy to krad
+std::string filename = "Sum_0219_0311.csv";
 
-using TUPLE_T = std::tuple<double, double, double, double>;
+
+using TUPLE_T = std::tuple<double, double, double, double>; // [Collector Max Voltage, ICT Total Charge, Enclosed Percentage, Enclosed Charge]
 
 std::vector<TUPLE_T> ReadDataFromCSV(const std::string &filename) {
     std::vector<TUPLE_T> shotData;
@@ -45,18 +48,30 @@ std::vector<double> CalculateCumulativeDose(const std::vector<TUPLE_T> &data) {
     std::vector<double> cumulativeDose;
     double sum = preExistingDose * GyTokrad; // Gy
     for (const auto &shot : data) {
-        double instantDose = std::get<3>(shot) * QToDoseFactor; // Gy
+        double instantDose = std::get<3>(shot) * QToDoseFactor * GyTokrad; // krad
 
         // If instant dose is negative, set it to zero
         if (instantDose <= 0) {
             instantDose = 0;
         }
 
-        sum += instantDose * GyTokrad; // krad
+        sum += instantDose; // krad
         cumulativeDose.push_back(sum);
     }
-
     return cumulativeDose;
+}
+
+std::vector<double> CalculateInstantDose(const std::vector<TUPLE_T> &data) {
+    std::vector<double> instantDoseVec;
+    for (const auto &shot : data) {
+        double instantDose = std::get<3>(shot) * QToDoseFactor * GyTokrad * 1E3; // rad
+        // If instant dose is negative, set it to zero
+        if (instantDose <= 0) {
+            instantDose = 0;
+        }
+        instantDoseVec.push_back(instantDose);
+    }
+    return instantDoseVec;
 }
 
 std::vector<double> CalculateCollectorResponse(const std::vector<TUPLE_T> &data) {
@@ -74,8 +89,41 @@ std::vector<double> CalculateCollectorResponse(const std::vector<TUPLE_T> &data)
     return collectorResponse;
 }
 
-void analysis() {
-    auto shotData = ReadDataFromCSV("Sum_27_26_25_24_20_19.csv");
+std::vector<double> CalculateCollectorMaxVoltage(const std::vector<TUPLE_T> &data) {
+    std::vector<double> collectorMaxVoltage;
+    for (const auto &shot : data) {
+        double collectorVoltage = std::get<0>(shot);
+        double instantDose = std::get<3>(shot) * QToDoseFactor * GyTokrad; // krad
+        if (collectorVoltage >= 0 || instantDose <= 0) {
+            collectorMaxVoltage.push_back(0);
+        } else {
+            collectorMaxVoltage.push_back(TMath::Abs(collectorVoltage));
+        }
+    }
+
+    return collectorMaxVoltage;
+}
+
+void makeROOTTree(const std::vector<TUPLE_T> &shotData) {
+    TFile *f = new TFile("data.root", "RECREATE");
+    TTree *tree = new TTree("data", "data");
+    double maxVoltageInVolts, enclosedChargeInpC;
+    tree->Branch("maxVoltageInVolts",  &maxVoltageInVolts,  "maxVoltageInVolts/D");
+    tree->Branch("enclosedChargeInpC", &enclosedChargeInpC, "enclosedChargeInpC/D");
+    for (const auto &shot : shotData) {
+        maxVoltageInVolts = std::get<0>(shot);
+        enclosedChargeInpC = std::get<3>(shot);
+        tree->Fill();
+    }
+    tree->Write();
+    f->Write();
+    f->Close();
+
+    delete tree;
+    delete f;
+}
+
+void analysis_respose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
     auto cumulativeDose = CalculateCumulativeDose(shotData); // krad
     auto collectorResponse = CalculateCollectorResponse(shotData);
 
@@ -105,5 +153,62 @@ void analysis() {
     gr_CollectorResponse->Draw("AP");
     // gr_CollectorResponse->GetXaxis()->SetRangeUser(9, 9.5);
     // gr_CollectorResponse->GetYaxis()->SetRangeUser(0, 4);
-    c->SaveAs("CollectorResponseVsAccumulativeDose.png");
+    c->SaveAs("CollectorResponseVsAccumulativeDose_0219_0311.png");
+
+    delete gr_CollectorResponse;
+    delete c;
+}
+
+void analysis_maxVoltage_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
+    auto cumulativeDose = CalculateCumulativeDose(shotData); // krad
+    auto collectorMaxVoltage = CalculateCollectorMaxVoltage(shotData);
+    auto instantDose = CalculateInstantDose(shotData); // rad
+
+    auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", 10, 0, 20, 20, 0, 40);
+    auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       10, 0, 20, 20, 0, 40);
+    for (int i = 0; i < shotData.size(); i++) {
+        h2d_Voltage->Fill(cumulativeDose[i], instantDose[i], collectorMaxVoltage[i]);
+        h2d_N->Fill(cumulativeDose[i], instantDose[i], 1);
+    }
+
+    auto c = new TCanvas("c", "c", 800, 600);
+    c->SetLeftMargin(0.15);
+    c->SetRightMargin(0.15);
+    c->SetBottomMargin(0.15);
+    c->SetTopMargin(0.15);
+    h2d_Voltage->Divide(h2d_N);
+    h2d_Voltage->Draw("colz");
+    c->SaveAs("MaxVoltageVsInstantDoseVsAccumulativeDose_0219_0311.png");
+}
+
+void analysis() {
+
+    std::vector<TUPLE_T> shotData;
+
+    // Check if data.root exists using ROOT
+    TFile *file = TFile::Open("data.root");
+    if (!file || file->IsZombie()) {
+        std::cerr << "data.root does not exist or is not accessible. Creating ROOT file." << std::endl;
+        delete file; // Clean up the file pointer
+        shotData = ReadDataFromCSV(filename.c_str());
+        makeROOTTree(shotData);
+    } else {
+        std::cout << "data.root exists. Reading data from ROOT file." << std::endl;
+        // Read data from ROOT file
+        TTree *tree = (TTree*)file->Get("data");
+        double maxVoltageInVolts, enclosedChargeInpC;
+        tree->SetBranchAddress("maxVoltageInVolts", &maxVoltageInVolts);
+        tree->SetBranchAddress("enclosedChargeInpC", &enclosedChargeInpC);
+        for (int i = 0; i < tree->GetEntries(); i++) {
+            tree->GetEntry(i);
+            TUPLE_T aShot(maxVoltageInVolts, 0, 0, enclosedChargeInpC);
+            shotData.push_back(aShot);
+        }
+        file->Close();
+        delete file; // Clean up the file pointer
+    }
+
+    // Perform analysis
+    analysis_respose_vs_totalDose(shotData);
+    analysis_maxVoltage_vs_instantDose_vs_totalDose(shotData);
 }
