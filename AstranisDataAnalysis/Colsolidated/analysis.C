@@ -155,6 +155,10 @@ void analysis_respose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
     // gr_CollectorResponse->GetYaxis()->SetRangeUser(0, 4);
     c->SaveAs("CollectorResponseVsAccumulativeDose_0219_0311.png");
 
+    c->SetLogy();
+    gr_CollectorResponse->GetYaxis()->SetRangeUser(1E-5, 1E4);
+    c->SaveAs("CollectorResponseVsAccumulativeDose_0219_0311_log.png");
+
     delete gr_CollectorResponse;
     delete c;
 }
@@ -164,13 +168,14 @@ void analysis_maxVoltage_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> 
     auto collectorMaxVoltage = CalculateCollectorMaxVoltage(shotData);
     auto instantDose = CalculateInstantDose(shotData); // rad
 
-    auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", 10, 0, 20, 20, 0, 40);
-    auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       10, 0, 20, 20, 0, 40);
+    auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", 20, 0, 20, 20, 0, 40);
+    auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       20, 0, 20, 20, 0, 40);
     for (int i = 0; i < shotData.size(); i++) {
         h2d_Voltage->Fill(cumulativeDose[i], instantDose[i], collectorMaxVoltage[i]);
         h2d_N->Fill(cumulativeDose[i], instantDose[i], 1);
     }
 
+    gStyle->SetOptStat(0);
     auto c = new TCanvas("c", "c", 800, 600);
     c->SetLeftMargin(0.15);
     c->SetRightMargin(0.15);
@@ -178,6 +183,20 @@ void analysis_maxVoltage_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> 
     c->SetTopMargin(0.15);
     h2d_Voltage->Divide(h2d_N);
     h2d_Voltage->Draw("colz");
+    h2d_Voltage->SetTitle("");
+    h2d_Voltage->GetXaxis()->SetTitle("Accumulative Dose (krad)");
+    h2d_Voltage->GetYaxis()->SetTitle("Instant Dose (rad)");
+    h2d_Voltage->GetZaxis()->SetTitle("Collector Max Voltage (V)");
+    h2d_Voltage->GetXaxis()->CenterTitle();
+    h2d_Voltage->GetYaxis()->CenterTitle();
+    h2d_Voltage->GetXaxis()->SetTitleSize(0.05);
+    h2d_Voltage->GetYaxis()->SetTitleSize(0.05);
+    h2d_Voltage->GetXaxis()->SetLabelSize(0.05);
+    h2d_Voltage->GetYaxis()->SetLabelSize(0.05);
+    h2d_Voltage->GetXaxis()->SetTitleOffset(1.3);
+    h2d_Voltage->GetYaxis()->SetTitleOffset(1.3);
+    h2d_Voltage->SetMarkerStyle(22);
+    h2d_Voltage->SetMarkerSize(0.8);
     c->SaveAs("MaxVoltageVsInstantDoseVsAccumulativeDose_0219_0311.png");
 }
 
