@@ -5,14 +5,29 @@
 #include <iostream>
 #include <string>
 
+std::string date = "20250227";
+std::string shotID = "00693";
 
 void exampleWaveform() {
-    std::fstream file("/home/dphan/Documents/GitHub/UT3-DataAnalysis/AstranisDataAnalysis/CollectorVoltage/C1--20250227--00700.txt");
+    std::fstream file(Form("%s/C1--%s--%s.txt", date.c_str(), date.c_str(), shotID.c_str()));
+    if (!file.is_open()) {
+        std::cout << "Error opening file. " << std::endl;
+    }
 
-    double time, voltage;
+    std::string line;
+    for (int i = 0; i < 6 && std::getline(file, line); ++i) {
+        // Read lines until the fourth line
+    }
+
     auto graph = new TGraph();
-    while (file >> time >> voltage) {
-        graph->SetPoint(graph->GetN(), time * 1E6, voltage);
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string firstFloat, secondFloat;
+        std::getline(iss, firstFloat, ',');
+        std::getline(iss, secondFloat, ',');
+        float firstNumber = std::stod(firstFloat);
+        float secondNumber = std::stod(secondFloat);
+        graph->SetPoint(graph->GetN(), firstNumber, secondNumber);
     }
 
     gStyle->SetLabelSize(0.05, "XY");
@@ -25,15 +40,13 @@ void exampleWaveform() {
     graph->GetYaxis()->SetTitle("Voltage (V)");
     graph->GetXaxis()->CenterTitle();
     graph->GetYaxis()->CenterTitle();
-    graph->GetXaxis()->SetRangeUser(0, 5);
     graph->SetLineColor(kRed);
     graph->SetLineWidth(2);
 
-    auto leg = new TLegend(0.5, 0.6, 0.8, 0.85);
-    leg->SetBorderSize(0);
-    leg->AddEntry(graph, "Collector Voltage", "l");
-    leg->Draw();
+    // auto leg = new TLegend(0.5, 0.6, 0.8, 0.85);
+    // leg->SetBorderSize(0);
+    // leg->AddEntry(graph, "Collector Voltage", "l");
+    // leg->Draw();
 
-    c->SaveAs("exampleWaveform.png");
-    c->SaveAs("exampleWaveform.pdf");
+    c->SaveAs(Form("wf-%s-%s.png", date.c_str(), shotID.c_str()));
 }

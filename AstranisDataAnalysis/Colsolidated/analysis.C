@@ -8,10 +8,10 @@
 double QToDoseFactor = 47E-3; // Gy/pC
 double preExistingDose = 0; // Gy before 20250224
 double GyTokrad = 0.1; // Gy to krad
-std::string filename = "Sum_0219_0311.csv";
+std::string filename = "SL_20250311_A.csv";
 
-
-using TUPLE_T = std::tuple<double, double, double, double>; // [Collector Max Voltage, ICT Total Charge, Enclosed Percentage, Enclosed Charge]
+using TUPLE_T = std::tuple<double, double, double, double, double>; 
+// [Collector Max Voltage, ICT Total Charge, Enclosed Percentage, Enclosed Charge, Current Response]
 
 std::vector<TUPLE_T> ReadDataFromCSV(const std::string &filename) {
     std::vector<TUPLE_T> shotData;
@@ -24,7 +24,7 @@ std::vector<TUPLE_T> ReadDataFromCSV(const std::string &filename) {
     
     std::string line;
     while (std::getline(file, line)) {
-        std::vector<double> values(4, 0.0);
+        std::vector<double> values(5, 0.0);
         std::stringstream ss(line);
         std::string token;
         int index = 0;
@@ -36,7 +36,7 @@ std::vector<TUPLE_T> ReadDataFromCSV(const std::string &filename) {
             index++;
         }
 
-        TUPLE_T aShot(values[0], values[1], values[2], values[3]);
+        TUPLE_T aShot(values[0], values[1], values[2], values[3], values[4]);
         shotData.push_back(aShot);
     }
 
@@ -74,7 +74,7 @@ std::vector<double> CalculateInstantDose(const std::vector<TUPLE_T> &data) {
     return instantDoseVec;
 }
 
-std::vector<double> CalculateCollectorResponse(const std::vector<TUPLE_T> &data) {
+std::vector<double> CalculateCollectorVoltageResponse(const std::vector<TUPLE_T> &data) {
     std::vector<double> collectorResponse;
     for (const auto &shot : data) {
         double collectorVoltage = std::get<0>(shot);
@@ -85,11 +85,10 @@ std::vector<double> CalculateCollectorResponse(const std::vector<TUPLE_T> &data)
             collectorResponse.push_back(1E-3 * TMath::Abs(collectorVoltage/instantDose));
         }
     }
-
     return collectorResponse;
 }
 
-std::vector<double> CalculateCollectorMaxVoltage(const std::vector<TUPLE_T> &data) {
+std::vector<double> CalculateCollectorVoltage(const std::vector<TUPLE_T> &data) {
     std::vector<double> collectorMaxVoltage;
     for (const auto &shot : data) {
         double collectorVoltage = std::get<0>(shot);
@@ -100,19 +99,48 @@ std::vector<double> CalculateCollectorMaxVoltage(const std::vector<TUPLE_T> &dat
             collectorMaxVoltage.push_back(TMath::Abs(collectorVoltage));
         }
     }
-
     return collectorMaxVoltage;
+}
+
+std::vector<double> CalculateCollectorCurrent(const std::vector<TUPLE_T> &data) {
+    std::vector<double> collectorCurrentResponse;
+    for (const auto &shot : data) {
+        double currentResponse = std::get<4>(shot);
+        double instantDose = std::get<3>(shot) * QToDoseFactor * GyTokrad; // krad
+        if (currentResponse >= 0 || instantDose <= 0) {
+            collectorCurrentResponse.push_back(0);
+        } else {
+            collectorCurrentResponse.push_back(TMath::Abs(currentResponse));
+        }
+    }
+    return collectorCurrentResponse;
+}
+
+std::vector<double> CalculateCollectorCurrentResponse(const std::vector<TUPLE_T> &data) {
+    std::vector<double> collectorCurrentResponse;
+    for (const auto &shot : data) {
+        double currentResponse = std::get<4>(shot);
+        double instantDose = std::get<3>(shot) * QToDoseFactor * GyTokrad * 1000; // rad
+        if (currentResponse >= 0 || instantDose <= 0) {
+            collectorCurrentResponse.push_back(0);
+        } else {
+            collectorCurrentResponse.push_back(TMath::Abs(currentResponse / instantDose));
+        }
+    }
+    return collectorCurrentResponse;
 }
 
 void makeROOTTree(const std::vector<TUPLE_T> &shotData) {
     TFile *f = new TFile("data.root", "RECREATE");
     TTree *tree = new TTree("data", "data");
-    double maxVoltageInVolts, enclosedChargeInpC;
+    double maxVoltageInVolts, enclosedChargeInpC, collectorCurrentInAU;
     tree->Branch("maxVoltageInVolts",  &maxVoltageInVolts,  "maxVoltageInVolts/D");
     tree->Branch("enclosedChargeInpC", &enclosedChargeInpC, "enclosedChargeInpC/D");
+    tree->Branch("collectorCurrentInAU", &collectorCurrentInAU, "collectorCurrentInAU/D");
     for (const auto &shot : shotData) {
         maxVoltageInVolts = std::get<0>(shot);
         enclosedChargeInpC = std::get<3>(shot);
+        collectorCurrentInAU = std::get<4>(shot);
         tree->Fill();
     }
     tree->Write();
@@ -123,9 +151,9 @@ void makeROOTTree(const std::vector<TUPLE_T> &shotData) {
     delete f;
 }
 
-void analysis_respose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
+void analysis_voltageResponse_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
     auto cumulativeDose = CalculateCumulativeDose(shotData); // krad
-    auto collectorResponse = CalculateCollectorResponse(shotData);
+    auto collectorResponse = CalculateCollectorVoltageResponse(shotData);
 
     std::cout << "Size of cumulative dose: " << cumulativeDose.size() << std::endl;
     std::cout << "Size of collector response: " << collectorResponse.size() << std::endl;
@@ -138,7 +166,7 @@ void analysis_respose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
     auto gr_CollectorResponse = new TGraph(cumulativeDose.size(), cumulativeDose.data(), collectorResponse.data());
     gr_CollectorResponse->SetTitle("");
     gr_CollectorResponse->GetXaxis()->SetTitle("Accumulative Dose (krad)");
-    gr_CollectorResponse->GetYaxis()->SetTitle("Transistor Response (A.U.)");
+    gr_CollectorResponse->GetYaxis()->SetTitle("Voltage Response (A.U.)");
     gr_CollectorResponse->GetXaxis()->CenterTitle();
     gr_CollectorResponse->GetYaxis()->CenterTitle();
     gr_CollectorResponse->GetXaxis()->SetTitleSize(0.05);
@@ -151,21 +179,94 @@ void analysis_respose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
     gr_CollectorResponse->SetMarkerSize(0.8);
     gr_CollectorResponse->SetMarkerColor(kRed);
     gr_CollectorResponse->Draw("AP");
-    // gr_CollectorResponse->GetXaxis()->SetRangeUser(9, 9.5);
-    // gr_CollectorResponse->GetYaxis()->SetRangeUser(0, 4);
-    c->SaveAs("CollectorResponseVsAccumulativeDose_0219_0311.png");
+    c->SaveAs("VoltageResponse_1D.png");
 
     c->SetLogy();
     gr_CollectorResponse->GetYaxis()->SetRangeUser(1E-5, 1E4);
-    c->SaveAs("CollectorResponseVsAccumulativeDose_0219_0311_log.png");
+    c->SaveAs("VoltageResponse_1D_log.png");
 
     delete gr_CollectorResponse;
     delete c;
 }
 
-void analysis_maxVoltage_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
+void analysis_currentResponse_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
     auto cumulativeDose = CalculateCumulativeDose(shotData); // krad
-    auto collectorMaxVoltage = CalculateCollectorMaxVoltage(shotData);
+    auto collectorResponse = CalculateCollectorCurrentResponse(shotData);
+
+    std::cout << "Size of cumulative dose: " << cumulativeDose.size() << std::endl;
+    std::cout << "Size of collector response: " << collectorResponse.size() << std::endl;
+
+    auto c = new TCanvas("c", "c", 800, 600);
+    c->SetLeftMargin(0.15);
+    c->SetRightMargin(0.15);
+    c->SetBottomMargin(0.15);
+    c->SetTopMargin(0.15);
+    auto gr_CollectorResponse = new TGraph(cumulativeDose.size(), cumulativeDose.data(), collectorResponse.data());
+    gr_CollectorResponse->SetTitle("");
+    gr_CollectorResponse->GetXaxis()->SetTitle("Accumulative Dose (krad)");
+    gr_CollectorResponse->GetYaxis()->SetTitle("Current Response (A.U.)");
+    gr_CollectorResponse->GetXaxis()->CenterTitle();
+    gr_CollectorResponse->GetYaxis()->CenterTitle();
+    gr_CollectorResponse->GetXaxis()->SetTitleSize(0.05);
+    gr_CollectorResponse->GetYaxis()->SetTitleSize(0.05);
+    gr_CollectorResponse->GetXaxis()->SetLabelSize(0.05);
+    gr_CollectorResponse->GetYaxis()->SetLabelSize(0.05);
+    gr_CollectorResponse->GetXaxis()->SetTitleOffset(1.3);
+    gr_CollectorResponse->GetYaxis()->SetTitleOffset(1.3);
+    gr_CollectorResponse->SetMarkerStyle(22);
+    gr_CollectorResponse->SetMarkerSize(0.8);
+    gr_CollectorResponse->SetMarkerColor(kRed);
+    gr_CollectorResponse->Draw("AP");
+    c->SaveAs("CurrentReponse_1D.png");
+
+    c->SetLogy();
+    gr_CollectorResponse->GetYaxis()->SetRangeUser(1E-5, 1E4);
+    c->SaveAs("CurrentReponse_1D_log.png");
+
+    delete gr_CollectorResponse;
+    delete c;
+}
+
+void analysis_voltage_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
+    auto cumulativeDose = CalculateCumulativeDose(shotData); // krad
+    auto collectorMaxVoltage = CalculateCollectorVoltage(shotData);
+    auto instantDose = CalculateInstantDose(shotData); // rad
+
+    auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", 20, 0, 20, 20, 0, 40);
+    auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       20, 0, 20, 20, 0, 40);
+    for (int i = 0; i < shotData.size(); i++) {
+        h2d_Voltage->Fill(cumulativeDose[i], instantDose[i], collectorMaxVoltage[i]);
+        h2d_N->Fill(cumulativeDose[i], instantDose[i], 1);
+    }
+
+    gStyle->SetOptStat(0);
+    auto c = new TCanvas("c", "c", 800, 600);
+    c->SetLeftMargin(0.15);
+    c->SetRightMargin(0.15);
+    c->SetBottomMargin(0.15);
+    c->SetTopMargin(0.15);
+    h2d_Voltage->Divide(h2d_N);
+    h2d_Voltage->Draw("colz");
+    h2d_Voltage->SetTitle("");
+    h2d_Voltage->GetXaxis()->SetTitle("Accumulative Dose (krad)");
+    h2d_Voltage->GetYaxis()->SetTitle("Instant Dose (rad)");
+    h2d_Voltage->GetZaxis()->SetTitle("Collector Maximum Voltage (V)");
+    h2d_Voltage->GetXaxis()->CenterTitle();
+    h2d_Voltage->GetYaxis()->CenterTitle();
+    h2d_Voltage->GetXaxis()->SetTitleSize(0.05);
+    h2d_Voltage->GetYaxis()->SetTitleSize(0.05);
+    h2d_Voltage->GetXaxis()->SetLabelSize(0.05);
+    h2d_Voltage->GetYaxis()->SetLabelSize(0.05);
+    h2d_Voltage->GetXaxis()->SetTitleOffset(1.3);
+    h2d_Voltage->GetYaxis()->SetTitleOffset(1.3);
+    h2d_Voltage->SetMarkerStyle(22);
+    h2d_Voltage->SetMarkerSize(0.8);
+    c->SaveAs("MaximumVoltage_2D.png");
+}
+
+void analysis_current_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
+    auto cumulativeDose = CalculateCumulativeDose(shotData); // krad
+    auto collectorMaxVoltage = CalculateCollectorCurrent(shotData);
     auto instantDose = CalculateInstantDose(shotData); // rad
 
     auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", 20, 0, 20, 20, 0, 40);
@@ -197,17 +298,15 @@ void analysis_maxVoltage_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> 
     h2d_Voltage->GetYaxis()->SetTitleOffset(1.3);
     h2d_Voltage->SetMarkerStyle(22);
     h2d_Voltage->SetMarkerSize(0.8);
-    c->SaveAs("MaxVoltageVsInstantDoseVsAccumulativeDose_0219_0311.png");
+    c->SaveAs("Current_2D.png");
 }
 
 void analysis() {
-
     std::vector<TUPLE_T> shotData;
-
     // Check if data.root exists using ROOT
     TFile *file = TFile::Open("data.root");
     if (!file || file->IsZombie()) {
-        std::cerr << "data.root does not exist or is not accessible. Creating ROOT file." << std::endl;
+        std::cout << "Data file data.root does not exist or is not accessible. Creating ROOT file." << std::endl;
         delete file; // Clean up the file pointer
         shotData = ReadDataFromCSV(filename.c_str());
         makeROOTTree(shotData);
@@ -215,12 +314,13 @@ void analysis() {
         std::cout << "data.root exists. Reading data from ROOT file." << std::endl;
         // Read data from ROOT file
         TTree *tree = (TTree*)file->Get("data");
-        double maxVoltageInVolts, enclosedChargeInpC;
+        double maxVoltageInVolts, enclosedChargeInpC, collectorCurrentInAU;
         tree->SetBranchAddress("maxVoltageInVolts", &maxVoltageInVolts);
         tree->SetBranchAddress("enclosedChargeInpC", &enclosedChargeInpC);
+        tree->SetBranchAddress("collectorCurrentInAU", &collectorCurrentInAU);
         for (int i = 0; i < tree->GetEntries(); i++) {
             tree->GetEntry(i);
-            TUPLE_T aShot(maxVoltageInVolts, 0, 0, enclosedChargeInpC);
+            TUPLE_T aShot(maxVoltageInVolts, 0, 0, enclosedChargeInpC, collectorCurrentInAU);
             shotData.push_back(aShot);
         }
         file->Close();
@@ -228,6 +328,8 @@ void analysis() {
     }
 
     // Perform analysis
-    analysis_respose_vs_totalDose(shotData);
-    analysis_maxVoltage_vs_instantDose_vs_totalDose(shotData);
+    // analysis_voltageResponse_vs_totalDose(shotData);
+    analysis_currentResponse_vs_totalDose(shotData);
+    // analysis_voltage_vs_instantDose_vs_totalDose(shotData);
+    analysis_current_vs_instantDose_vs_totalDose(shotData);
 }
