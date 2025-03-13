@@ -204,9 +204,9 @@ void read_data() {
 
     // calculateDriftCharge("20250311");
     // calculateDriftCharge("20250310");
-    calculateDriftCharge("20250304");
+    // calculateDriftCharge("20250304");
     // calculateDriftCharge("20250303");
-    // calculateDriftCharge("20250227");
+    calculateDriftCharge("20250227");
     // calculateDriftCharge("20250226");
     // calculateDriftCharge("20250225");
     // calculateDriftCharge("20250224");
