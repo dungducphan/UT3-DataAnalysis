@@ -1,48 +1,44 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <dirent.h>
+#include <windows.h>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <iostream>
 
-std::vector<std::string> getAllTxtFiles(const char *folderPath) {
+std::vector<std::string> getAllTxtFiles(const std::string &folderPath) {
     std::vector<std::string> txtFiles;
+    std::string searchPath = folderPath + "\\*.txt";
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFile(searchPath.c_str(), &findFileData);
 
-    struct dirent *entry;
-    DIR *dp = opendir(folderPath);
-
-    if (dp == NULL) {
-        perror("opendir");
+    if (hFind == INVALID_HANDLE_VALUE) {
+        std::cerr << "Error opening directory: " << folderPath << std::endl;
         return txtFiles;
     }
 
-    while ((entry = readdir(dp))) {
-        if (entry->d_type == DT_REG) {
-            const char *ext = strrchr(entry->d_name, '.');
-            if (ext && strcmp(ext, ".txt") == 0) {
-                txtFiles.push_back(entry->d_name);
-            }
+    do {
+        if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            txtFiles.push_back(findFileData.cFileName);
         }
-    }
+    } while (FindNextFile(hFind, &findFileData) != 0);
 
-    closedir(dp);
+    FindClose(hFind);
     return txtFiles;
 }
 
-void alignDate(std::string date) {
-    const char *folderPath = Form("/home/dphan/Documents/GitHub/UT3-DataAnalysis/AstranisDataAnalysis/CollectorVoltage/%s", date.c_str());
+void alignDate(const std::string &date) {
+    std::string folderPath = date; // Update this path accordingly
     auto list = getAllTxtFiles(folderPath);
 
     std::map<int, std::string> sequenceNumberToTimestamp;
     std::map<int, float> sequenceNumberToVoltage;
     std::map<int, float> sequenceNumberToSamplingLength;
     for (const auto &fileName : list) {
-        std::string filePath = std::string(folderPath) + "/" + fileName;
+        std::string filePath = folderPath + "\\" + fileName;
         std::ifstream file(filePath);
         if (!file.is_open()) {
-            perror("ifstream");
+            std::cerr << "Error opening file: " << filePath << std::endl;
             continue;
         }
 
@@ -57,7 +53,7 @@ void alignDate(std::string date) {
             int tokenIndex = 0;
             while (std::getline(iss, token, ',')) {
                 if (tokenIndex == 1) {
-                    std::string timestamp = token.substr(12); // Extract the time part from files's header content
+                    std::string timestamp = token.substr(12); // Extract the time part from file's header content
                     std::string sequenceNumber = fileName.substr(14, 5); // Extract the sequence number from the file's name
                     sequenceNumberToTimestamp[std::stoi(sequenceNumber)] = timestamp;
                     break;
@@ -87,9 +83,9 @@ void alignDate(std::string date) {
         file.close();
     }
 
-    std::ofstream csvFile(Form("%s.csv", date.c_str()));
+    std::ofstream csvFile(date + ".sampleLength.csv");
     if (!csvFile.is_open()) {
-        perror("ofstream");
+        std::cerr << "Error opening CSV file: " << date << ".csv" << std::endl;
         return;
     }
 
@@ -108,10 +104,10 @@ void read_data() {
     // alignDate("20250310");
     // alignDate("20250304");
     // alignDate("20250303");
-    // alignDate("20250227");
-    // alignDate("20250226");
-    // alignDate("20250225");
-    // alignDate("20250224");
-    // alignDate("20250220");
-    alignDate("20250219");
+    alignDate("20250227");
+    alignDate("20250226");
+    alignDate("20250225");
+    alignDate("20250224");
+    alignDate("20250220");
+    // alignDate("20250219");
 }
