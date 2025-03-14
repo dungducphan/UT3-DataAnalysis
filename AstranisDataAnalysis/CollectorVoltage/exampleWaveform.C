@@ -5,11 +5,12 @@
 #include <iostream>
 #include <string>
 
-std::string date = "20250227";
-std::string shotID = "00693";
+std::string date = "20250312";
+// std::string shotID = "00056";
 
-void exampleWaveform() {
-    std::fstream file(Form("%s/C1--%s--%s.txt", date.c_str(), date.c_str(), shotID.c_str()));
+void draw(int shotID) {
+    // std::fstream file(Form("%s/C1--%s--%s.txt", date.c_str(), date.c_str(), shotID.c_str()));
+    std::fstream file(Form("%s/C1--%s--%05i.txt", date.c_str(), "20250311", shotID));
     if (!file.is_open()) {
         std::cout << "Error opening file. " << std::endl;
     }
@@ -29,6 +30,7 @@ void exampleWaveform() {
         float secondNumber = std::stod(secondFloat);
         graph->SetPoint(graph->GetN(), firstNumber, secondNumber);
     }
+    file.close();
 
     gStyle->SetLabelSize(0.05, "XY");
     gStyle->SetTitleSize(0.05, "XY");
@@ -48,5 +50,13 @@ void exampleWaveform() {
     // leg->AddEntry(graph, "Collector Voltage", "l");
     // leg->Draw();
 
-    c->SaveAs(Form("wf-%s-%s.png", date.c_str(), shotID.c_str()));
+    c->SaveAs(Form("wf-%s-%05i.png", date.c_str(), shotID));
+    delete c;
+    delete graph;
+}
+
+void exampleWaveform() {
+    for (int i = 0; i < 566; i += 5) {
+        draw(i);
+    }
 }

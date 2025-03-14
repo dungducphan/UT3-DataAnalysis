@@ -5,10 +5,17 @@
 #include <tuple>
 #include <filesystem>
 
-double QToDoseFactor = 47E-3; // Gy/pC
+// double QToDoseFactor = 47E-3; // Gy/pC // For whole package
+double QToDoseFactor = 202E-3; // Gy/pC // For silicon die only
 double preExistingDose = 0;
 double GyTokrad = 0.1; // Gy to krad
-std::string filename = "Sum_0219_0311_A.csv";
+std::string filename = "Sum_0219_0312_A.csv";
+
+
+double maxTotalDose = 100; // krad
+double maxInstantDose = 150; // rad
+double nBinsTotalDose = 30; // krad
+double nBinsInstantDose = 30; // rad
 
 using TUPLE_T = std::tuple<double, double, double, double, double>; 
 // [Collector Max Voltage, ICT Total Charge, Enclosed Percentage, Enclosed Charge, Current Response]
@@ -220,7 +227,7 @@ void analysis_currentResponse_vs_totalDose(const std::vector<TUPLE_T> &shotData)
     c->SaveAs("CurrentReponse_1D.png");
 
     c->SetLogy();
-    gr_CollectorResponse->GetYaxis()->SetRangeUser(1E-5, 1E3);
+    gr_CollectorResponse->GetYaxis()->SetRangeUser(1E-8, 1E3);
     c->SaveAs("CurrentReponse_1D_log.png");
 
     delete gr_CollectorResponse;
@@ -232,8 +239,8 @@ void analysis_voltage_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &sh
     auto collectorMaxVoltage = CalculateCollectorVoltage(shotData);
     auto instantDose = CalculateInstantDose(shotData); // rad
 
-    auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", 30, 0, 20, 30, 0, 40);
-    auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       30, 0, 20, 30, 0, 40);
+    auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", nBinsTotalDose, 0, maxTotalDose, nBinsInstantDose, 0, maxInstantDose);
+    auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       nBinsTotalDose, 0, maxTotalDose, nBinsInstantDose, 0, maxInstantDose);
     for (int i = 0; i < shotData.size(); i++) {
         h2d_Voltage->Fill(cumulativeDose[i], instantDose[i], collectorMaxVoltage[i]);
         h2d_N->Fill(cumulativeDose[i], instantDose[i], 1);
@@ -269,8 +276,8 @@ void analysis_current_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &sh
     auto collectorMaxVoltage = CalculateCollectorCurrent(shotData);
     auto instantDose = CalculateInstantDose(shotData); // rad
 
-    auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", 30, 0, 20, 30, 0, 40);
-    auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       30, 0, 20, 30, 0, 40);
+    auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", nBinsTotalDose, 0, maxTotalDose, nBinsInstantDose, 0, maxInstantDose);
+    auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       nBinsTotalDose, 0, maxTotalDose, nBinsInstantDose, 0, maxInstantDose);
     for (int i = 0; i < shotData.size(); i++) {
         h2d_Voltage->Fill(cumulativeDose[i], instantDose[i], collectorMaxVoltage[i]);
         h2d_N->Fill(cumulativeDose[i], instantDose[i], 1);
