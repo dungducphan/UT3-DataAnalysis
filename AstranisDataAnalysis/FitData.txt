@@ -1,0 +1,8 @@
+Total Dose: 94.6151 krad
+Total Number of Shots: 6155
+
+Linear Fit Results: CurrentResponse(A.U.) = A + B * TotalDose(krad)
+Chi2                      =       374.78
+NDf                       =         2901
+A                        =   -0.0468279   +/-   0.0198348   
+B                        =   0.00207794   +/-   0.000341796

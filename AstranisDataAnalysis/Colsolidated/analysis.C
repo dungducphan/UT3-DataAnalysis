@@ -65,6 +65,7 @@ std::vector<double> CalculateCumulativeDose(const std::vector<TUPLE_T> &data) {
         sum += instantDose; // krad
         cumulativeDose.push_back(sum);
     }
+    std::cout << "Total dose: " << sum << " krad" << std::endl;
     return cumulativeDose;
 }
 
@@ -208,6 +209,7 @@ void analysis_currentResponse_vs_totalDose(const std::vector<TUPLE_T> &shotData)
     c->SetRightMargin(0.15);
     c->SetBottomMargin(0.15);
     c->SetTopMargin(0.15);
+    auto fit = new TF1("fit", "[0] + [1]*x", 32, 95);
     auto gr_CollectorResponse = new TGraph(cumulativeDose.size(), cumulativeDose.data(), collectorResponse.data());
     gr_CollectorResponse->SetTitle("");
     gr_CollectorResponse->GetXaxis()->SetTitle("Accumulative Dose (krad)");
@@ -220,14 +222,18 @@ void analysis_currentResponse_vs_totalDose(const std::vector<TUPLE_T> &shotData)
     gr_CollectorResponse->GetYaxis()->SetLabelSize(0.05);
     gr_CollectorResponse->GetXaxis()->SetTitleOffset(1.3);
     gr_CollectorResponse->GetYaxis()->SetTitleOffset(1.3);
+    gr_CollectorResponse->GetYaxis()->SetRangeUser(0, 0.5);
     gr_CollectorResponse->SetMarkerStyle(22);
     gr_CollectorResponse->SetMarkerSize(0.8);
-    gr_CollectorResponse->SetMarkerColor(kRed);
+    gr_CollectorResponse->SetMarkerColor(kBlue);
     gr_CollectorResponse->Draw("AP");
+    gr_CollectorResponse->Fit(fit, "R");
     c->SaveAs("CurrentReponse_1D.png");
 
     c->SetLogy();
+    
     gr_CollectorResponse->GetYaxis()->SetRangeUser(1E-8, 1E3);
+    gr_CollectorResponse->Fit(fit, "R");
     c->SaveAs("CurrentReponse_1D_log.png");
 
     delete gr_CollectorResponse;
@@ -282,6 +288,7 @@ void analysis_current_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &sh
         h2d_Voltage->Fill(cumulativeDose[i], instantDose[i], collectorMaxVoltage[i]);
         h2d_N->Fill(cumulativeDose[i], instantDose[i], 1);
     }
+    
 
     gStyle->SetOptStat(0);
     auto c = new TCanvas("c", "c", 800, 600);
