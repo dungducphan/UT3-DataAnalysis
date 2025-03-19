@@ -199,6 +199,7 @@ void analysis_voltageResponse_vs_totalDose(const std::vector<TUPLE_T> &shotData)
 
 void analysis_currentResponse_vs_totalDose(const std::vector<TUPLE_T> &shotData) {
     auto cumulativeDose = CalculateCumulativeDose(shotData); // krad
+    auto instantDose = CalculateInstantDose(shotData); // rad
     auto collectorResponse = CalculateCollectorCurrentResponse(shotData);
 
     std::cout << "Size of cumulative dose: " << cumulativeDose.size() << std::endl;
@@ -210,7 +211,11 @@ void analysis_currentResponse_vs_totalDose(const std::vector<TUPLE_T> &shotData)
     c->SetBottomMargin(0.15);
     c->SetTopMargin(0.15);
     auto fit = new TF1("fit", "[0] + [1]*x", 32, 95);
-    auto gr_CollectorResponse = new TGraph(cumulativeDose.size(), cumulativeDose.data(), collectorResponse.data());
+    auto gr_CollectorResponse = new TGraph();
+    for (int i = 0; i < collectorResponse.size(); i++) {
+        // if (instantDose[i] < 60) continue;
+        gr_CollectorResponse->SetPoint(gr_CollectorResponse->GetN(), cumulativeDose[i], collectorResponse[i]);
+    }
     gr_CollectorResponse->SetTitle("");
     gr_CollectorResponse->GetXaxis()->SetTitle("Accumulative Dose (krad)");
     gr_CollectorResponse->GetYaxis()->SetTitle("Current Response (A.U.)");
@@ -285,6 +290,7 @@ void analysis_current_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &sh
     auto h2d_Voltage = new TH2D("h2d_Voltage", "h2d_Voltage", nBinsTotalDose, 0, maxTotalDose, nBinsInstantDose, 0, maxInstantDose);
     auto h2d_N       = new TH2D("h2d_N",       "h2d_N",       nBinsTotalDose, 0, maxTotalDose, nBinsInstantDose, 0, maxInstantDose);
     for (int i = 0; i < shotData.size(); i++) {
+        // if (instantDose[i] > 60) continue;
         h2d_Voltage->Fill(cumulativeDose[i], instantDose[i], collectorMaxVoltage[i]);
         h2d_N->Fill(cumulativeDose[i], instantDose[i], 1);
     }
@@ -315,6 +321,42 @@ void analysis_current_vs_instantDose_vs_totalDose(const std::vector<TUPLE_T> &sh
     c->SaveAs("Current_2D.png");
 }
 
+void analysis_1Dhist_current_vs_instantDose(const std::vector<TUPLE_T> &shotData) {
+    auto instantDose = CalculateInstantDose(shotData); // rad
+    auto collectorCurrent = CalculateCollectorCurrent(shotData);
+
+    auto h1d_Current = new TH1D("h1d_Current", "h1d_Current", nBinsInstantDose, 0, maxInstantDose);
+    auto h1d_N       = new TH1D("h1d_N",       "h1d_N",       nBinsInstantDose, 0, maxInstantDose);
+    for (int i = 0; i < shotData.size(); i++) {
+        h1d_Current->Fill(instantDose[i], collectorCurrent[i]);
+        h1d_N->Fill(instantDose[i]);
+    }
+    h1d_Current->Divide(h1d_N);
+
+    gStyle->SetOptStat(0);
+    auto c = new TCanvas("c", "c", 800, 600);
+    c->SetLeftMargin(0.15);
+    c->SetRightMargin(0.15);
+    c->SetBottomMargin(0.15);
+    c->SetTopMargin(0.15);
+    h1d_Current->Draw();
+    h1d_Current->SetTitle("");
+    h1d_Current->GetXaxis()->SetTitle("Instant Dose (rad)");
+    h1d_Current->GetYaxis()->SetTitle("Average Collector Current (A.U.)");
+    h1d_Current->GetXaxis()->CenterTitle();
+    h1d_Current->GetYaxis()->CenterTitle();
+    h1d_Current->GetXaxis()->SetTitleSize(0.05);
+    h1d_Current->GetYaxis()->SetTitleSize(0.05);
+    h1d_Current->GetXaxis()->SetLabelSize(0.05);
+    h1d_Current->GetYaxis()->SetLabelSize(0.05);
+    h1d_Current->GetXaxis()->SetTitleOffset(1.3);
+    h1d_Current->GetYaxis()->SetTitleOffset(1.3);
+    h1d_Current->SetMarkerStyle(20);
+    h1d_Current->SetMarkerSize(0.8);
+    h1d_Current->GetYaxis()->SetRangeUser(0, 25);
+    c->SaveAs("Hist1D_Current_InstantDose.png");
+}
+
 void analysis() {
     std::vector<TUPLE_T> shotData;
     // Check if data.root exists using ROOT
@@ -342,8 +384,9 @@ void analysis() {
     }
 
     // Perform analysis
-    analysis_voltageResponse_vs_totalDose(shotData);
+    // analysis_voltageResponse_vs_totalDose(shotData);
     analysis_currentResponse_vs_totalDose(shotData);
-    analysis_voltage_vs_instantDose_vs_totalDose(shotData);
+    // analysis_voltage_vs_instantDose_vs_totalDose(shotData);
     analysis_current_vs_instantDose_vs_totalDose(shotData);
+    analysis_1Dhist_current_vs_instantDose(shotData);
 }
