@@ -15,7 +15,6 @@ void Ana::Loop() {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
-      // if (Cut(ientry) < 0) continue;
       sumEdep_SiliconDie += IsActiveRegion == 1 ? EDep : 0;
       sumEdep_Total += EDep;
    }

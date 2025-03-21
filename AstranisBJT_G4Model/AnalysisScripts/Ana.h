@@ -9,6 +9,7 @@
 #include <TCanvas.h>
 
 std::string DataPath = "/home/dphan/Documents/GitHub/UT3-DataAnalysis/AstranisBJT_G4Model/Output";
+std::string filename = "EDep.1pC.root";
 
 class Ana {
 public :
@@ -34,9 +35,9 @@ public :
 
 Ana::Ana(TTree *tree) : fChain(0) {
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(Form("%s/EDep.root", DataPath.c_str()));
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(Form("%s/%s", DataPath.c_str(), filename.c_str()));
       if (!f || !f->IsOpen()) {
-         f = new TFile(Form("%s/EDep.root", DataPath.c_str()));
+         f = new TFile(Form("%s/%s", DataPath.c_str(), filename.c_str()));
       }
       f->GetObject("Hits",tree);
    }
