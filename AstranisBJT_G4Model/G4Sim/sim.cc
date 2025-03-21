@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     // Construct the run manager
 #ifdef G4MULTITHREADED
     G4MTRunManager *runManager = new G4MTRunManager();
-    runManager->SetNumberOfThreads(48);
+    runManager->SetNumberOfThreads(1);
 #else
     G4RunManager* runManager = new G4RunManager();
 #endif
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     G4GDMLParser parser;
     parser.SetStripFlag(false);
     parser.SetOverlapCheck(true);
-    parser.Read("AstranisGDML-worldVOL.gdml"); // Replace with your GDML file path
+    parser.Read("DieSizeCorrect.gdml"); // Replace with your GDML file path
     auto detector = new detcon(parser);
     runManager->SetUserInitialization(detector);
 

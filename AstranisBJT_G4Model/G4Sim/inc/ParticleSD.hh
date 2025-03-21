@@ -27,4 +27,6 @@ public:
     ParticleSD(const G4String& name);
     virtual ~ParticleSD();
     virtual G4bool  ProcessHits(G4Step*, G4TouchableHistory*);
+private:
+    G4AnalysisManager* man = nullptr;
 };

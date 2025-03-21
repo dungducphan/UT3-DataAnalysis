@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/GDML_3_0_0/schema/gdml.xsd" >
+  <materials>
+   <element name="Nitrogen" formula="Ni" Z="7">
+     <atom value="14.006740"/>
+   </element>
+   <element name="Oxygen" formula="O" Z="8">
+     <atom value="15.999400"/>
+   </element>
+   <element name="Aluminum" formula="Al" Z="13">
+     <atom value="26.981539"/>
+   </element>
+    <material Z="13" name="ALUMINUM" formula="ALUMINUM">
+      <D value="2.699000" unit="g/cm3"/>
+      <fraction n="1.000000" ref="Aluminum"/>
+    </material>
+    <material Z="1" name="VACUUM">
+      <atom unit="g/mole" value="1.00794"/>
+      <D value="1e-25"/>
+    </material>
+    <material name="AIR" formula="AIR">
+      <D value="0.00129" unit="g/cm3"/>
+      <fraction n="0.7" ref="Nitrogen"/>
+      <fraction n="0.3" ref="Oxygen"/>
+    </material>
+  </materials>
+  <define>
+    <position name="0" x="-1.44999999999999996" y="0.40000000000000008" z="0.65000000000000002" unit="mm"/>
+    <position name="1" x="-1.44999999999999996" y="0.39999999999999997" z="-0.65000000000000002" unit="mm"/>
+    <position name="2" x="-1.44999999999999996" y="-0.49999999999999994" z="0.65000000000000013" unit="mm"/>
+    <position name="3" x="-1.44999999999999996" y="-0.50000000000000011" z="-0.64999999999999991" unit="mm"/>
+    <position name="4" x="-1.44999999999999996" y="0.40000000000000008" z="0.65000000000000002" unit="mm"/>
+    <position name="5" x="1.44999999999999996" y="0.40000000000000008" z="0.65000000000000002" unit="mm"/>
+    <position name="6" x="-1.44999999999999996" y="0.39999999999999997" z="-0.65000000000000002" unit="mm"/>
+    <position name="7" x="1.44999999999999996" y="0.39999999999999997" z="-0.65000000000000002" unit="mm"/>
+    <position name="8" x="-1.44999999999999996" y="0.39999999999999997" z="-0.65000000000000002" unit="mm"/>
+    <position name="9" x="-1.44999999999999996" y="-0.50000000000000011" z="-0.64999999999999991" unit="mm"/>
+    <position name="10" x="1.44999999999999996" y="0.39999999999999997" z="-0.65000000000000002" unit="mm"/>
+    <position name="11" x="1.44999999999999996" y="-0.50000000000000011" z="-0.64999999999999991" unit="mm"/>
+    <position name="12" x="-1.44999999999999996" y="-0.49999999999999994" z="0.65000000000000013" unit="mm"/>
+    <position name="13" x="1.44999999999999996" y="-0.49999999999999994" z="0.65000000000000013" unit="mm"/>
+    <position name="14" x="-1.44999999999999996" y="-0.50000000000000011" z="-0.64999999999999991" unit="mm"/>
+    <position name="15" x="1.44999999999999996" y="-0.50000000000000011" z="-0.64999999999999991" unit="mm"/>
+    <position name="16" x="-1.44999999999999996" y="0.40000000000000008" z="0.65000000000000002" unit="mm"/>
+    <position name="17" x="-1.44999999999999996" y="-0.49999999999999994" z="0.65000000000000013" unit="mm"/>
+    <position name="18" x="1.44999999999999996" y="0.40000000000000008" z="0.65000000000000002" unit="mm"/>
+    <position name="19" x="1.44999999999999996" y="-0.49999999999999994" z="0.65000000000000013" unit="mm"/>
+    <position name="20" x="1.44999999999999996" y="0.40000000000000008" z="0.65000000000000002" unit="mm"/>
+    <position name="21" x="1.44999999999999996" y="0.39999999999999997" z="-0.65000000000000002" unit="mm"/>
+    <position name="22" x="1.44999999999999996" y="-0.49999999999999994" z="0.65000000000000013" unit="mm"/>
+    <position name="23" x="1.44999999999999996" y="-0.50000000000000011" z="-0.64999999999999991" unit="mm"/>
+    <position name="24" x="-0.22000000000000000" y="0.02499999999999997" z="-0.22000000000000000" unit="mm"/>
+    <position name="25" x="-0.22000000000000000" y="-0.02500000000000003" z="-0.22000000000000000" unit="mm"/>
+    <position name="26" x="-0.22000000000000000" y="0.02500000000000003" z="0.22000000000000000" unit="mm"/>
+    <position name="27" x="-0.22000000000000000" y="-0.02499999999999997" z="0.22000000000000000" unit="mm"/>
+    <position name="28" x="-0.22000000000000000" y="0.02499999999999997" z="-0.22000000000000000" unit="mm"/>
+    <position name="29" x="0.22000000000000000" y="0.02499999999999997" z="-0.22000000000000000" unit="mm"/>
+    <position name="30" x="-0.22000000000000000" y="-0.02500000000000003" z="-0.22000000000000000" unit="mm"/>
+    <position name="31" x="0.22000000000000000" y="-0.02500000000000003" z="-0.22000000000000000" unit="mm"/>
+    <position name="32" x="-0.22000000000000000" y="-0.02500000000000003" z="-0.22000000000000000" unit="mm"/>
+    <position name="33" x="-0.22000000000000000" y="-0.02499999999999997" z="0.22000000000000000" unit="mm"/>
+    <position name="34" x="0.22000000000000000" y="-0.02500000000000003" z="-0.22000000000000000" unit="mm"/>
+    <position name="35" x="0.22000000000000000" y="-0.02499999999999997" z="0.22000000000000000" unit="mm"/>
+    <position name="36" x="-0.22000000000000000" y="0.02500000000000003" z="0.22000000000000000" unit="mm"/>
+    <position name="37" x="0.22000000000000000" y="0.02500000000000003" z="0.22000000000000000" unit="mm"/>
+    <position name="38" x="-0.22000000000000000" y="-0.02499999999999997" z="0.22000000000000000" unit="mm"/>
+    <position name="39" x="0.22000000000000000" y="-0.02499999999999997" z="0.22000000000000000" unit="mm"/>
+    <position name="40" x="-0.22000000000000000" y="0.02499999999999997" z="-0.22000000000000000" unit="mm"/>
+    <position name="41" x="-0.22000000000000000" y="0.02500000000000003" z="0.22000000000000000" unit="mm"/>
+    <position name="42" x="0.22000000000000000" y="0.02499999999999997" z="-0.22000000000000000" unit="mm"/>
+    <position name="43" x="0.22000000000000000" y="0.02500000000000003" z="0.22000000000000000" unit="mm"/>
+    <position name="44" x="0.22000000000000000" y="0.02499999999999997" z="-0.22000000000000000" unit="mm"/>
+    <position name="45" x="0.22000000000000000" y="-0.02500000000000003" z="-0.22000000000000000" unit="mm"/>
+    <position name="46" x="0.22000000000000000" y="0.02500000000000003" z="0.22000000000000000" unit="mm"/>
+    <position name="47" x="0.22000000000000000" y="-0.02499999999999997" z="0.22000000000000000" unit="mm"/>
+  </define>
+  <solids>
+    <tessellated name="T-MoldResin-2">
+      <triangular vertex1="1" vertex2="2" vertex3="0" type="ABSOLUTE"/>
+      <triangular vertex1="1" vertex2="3" vertex3="2" type="ABSOLUTE"/>
+      <triangular vertex1="7" vertex2="4" vertex3="5" type="ABSOLUTE"/>
+      <triangular vertex1="7" vertex2="6" vertex3="4" type="ABSOLUTE"/>
+      <triangular vertex1="11" vertex2="9" vertex3="8" type="ABSOLUTE"/>
+      <triangular vertex1="11" vertex2="8" vertex3="10" type="ABSOLUTE"/>
+      <triangular vertex1="15" vertex2="13" vertex3="12" type="ABSOLUTE"/>
+      <triangular vertex1="15" vertex2="12" vertex3="14" type="ABSOLUTE"/>
+      <triangular vertex1="19" vertex2="16" vertex3="17" type="ABSOLUTE"/>
+      <triangular vertex1="19" vertex2="18" vertex3="16" type="ABSOLUTE"/>
+      <triangular vertex1="21" vertex2="20" vertex3="22" type="ABSOLUTE"/>
+      <triangular vertex1="21" vertex2="22" vertex3="23" type="ABSOLUTE"/>
+      <triangular vertex1="25" vertex2="24" vertex3="26" type="ABSOLUTE"/>
+      <triangular vertex1="25" vertex2="26" vertex3="27" type="ABSOLUTE"/>
+      <triangular vertex1="31" vertex2="29" vertex3="28" type="ABSOLUTE"/>
+      <triangular vertex1="31" vertex2="28" vertex3="30" type="ABSOLUTE"/>
+      <triangular vertex1="35" vertex2="32" vertex3="33" type="ABSOLUTE"/>
+      <triangular vertex1="35" vertex2="34" vertex3="32" type="ABSOLUTE"/>
+      <triangular vertex1="39" vertex2="36" vertex3="37" type="ABSOLUTE"/>
+      <triangular vertex1="39" vertex2="38" vertex3="36" type="ABSOLUTE"/>
+      <triangular vertex1="43" vertex2="41" vertex3="40" type="ABSOLUTE"/>
+      <triangular vertex1="43" vertex2="40" vertex3="42" type="ABSOLUTE"/>
+      <triangular vertex1="45" vertex2="46" vertex3="44" type="ABSOLUTE"/>
+      <triangular vertex1="45" vertex2="47" vertex3="46" type="ABSOLUTE"/>
+    </tessellated>
+  </solids>
+  <define>
+    <position name="0" x="-0.22000000000000000" y="-0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="1" x="-0.22000000000000000" y="0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="2" x="-0.22000000000000000" y="-0.02500000000000010" z="-0.22000000000000000" unit="mm"/>
+    <position name="3" x="-0.22000000000000000" y="0.02499999999999990" z="-0.22000000000000000" unit="mm"/>
+    <position name="4" x="0.22000000000000000" y="-0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="5" x="0.22000000000000000" y="0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="6" x="0.22000000000000000" y="-0.02500000000000010" z="-0.22000000000000000" unit="mm"/>
+    <position name="7" x="0.22000000000000000" y="0.02499999999999990" z="-0.22000000000000000" unit="mm"/>
+    <position name="8" x="-0.22000000000000000" y="-0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="9" x="0.22000000000000000" y="-0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="10" x="-0.22000000000000000" y="0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="11" x="0.22000000000000000" y="0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="12" x="-0.22000000000000000" y="-0.02500000000000010" z="-0.22000000000000000" unit="mm"/>
+    <position name="13" x="0.22000000000000000" y="-0.02500000000000010" z="-0.22000000000000000" unit="mm"/>
+    <position name="14" x="-0.22000000000000000" y="0.02499999999999990" z="-0.22000000000000000" unit="mm"/>
+    <position name="15" x="0.22000000000000000" y="0.02499999999999990" z="-0.22000000000000000" unit="mm"/>
+    <position name="16" x="-0.22000000000000000" y="-0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="17" x="-0.22000000000000000" y="-0.02500000000000010" z="-0.22000000000000000" unit="mm"/>
+    <position name="18" x="0.22000000000000000" y="-0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="19" x="0.22000000000000000" y="-0.02500000000000010" z="-0.22000000000000000" unit="mm"/>
+    <position name="20" x="-0.22000000000000000" y="0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="21" x="-0.22000000000000000" y="0.02499999999999990" z="-0.22000000000000000" unit="mm"/>
+    <position name="22" x="0.22000000000000000" y="0.02500000000000000" z="0.22000000000000000" unit="mm"/>
+    <position name="23" x="0.22000000000000000" y="0.02499999999999990" z="-0.22000000000000000" unit="mm"/>
+  </define>
+  <solids>
+    <tessellated name="T-SiliconDie-4">
+      <triangular vertex1="1" vertex2="2" vertex3="0" type="ABSOLUTE"/>
+      <triangular vertex1="1" vertex2="3" vertex3="2" type="ABSOLUTE"/>
+      <triangular vertex1="5" vertex2="4" vertex3="6" type="ABSOLUTE"/>
+      <triangular vertex1="5" vertex2="6" vertex3="7" type="ABSOLUTE"/>
+      <triangular vertex1="11" vertex2="8" vertex3="9" type="ABSOLUTE"/>
+      <triangular vertex1="11" vertex2="10" vertex3="8" type="ABSOLUTE"/>
+      <triangular vertex1="15" vertex2="13" vertex3="12" type="ABSOLUTE"/>
+      <triangular vertex1="15" vertex2="12" vertex3="14" type="ABSOLUTE"/>
+      <triangular vertex1="19" vertex2="16" vertex3="17" type="ABSOLUTE"/>
+      <triangular vertex1="19" vertex2="18" vertex3="16" type="ABSOLUTE"/>
+      <triangular vertex1="23" vertex2="21" vertex3="20" type="ABSOLUTE"/>
+      <triangular vertex1="23" vertex2="20" vertex3="22" type="ABSOLUTE"/>
+    </tessellated>
+  </solids>
+  <define>
+    <position name="center" x="0" y="0.05" z="-5.55112e-17" unit="mm"/>
+  </define>
+  <solids>
+    <box name="worldbox" x="8.7696" y="8.7696" z="8.7696" lunit="mm"/>
+  </solids>
+  <structure>
+    <volume name="V-MoldResin-2">
+      <materialref ref="AIR"/>
+      <solidref ref="T-MoldResin-2"/>
+    </volume>
+    <volume name="V-SiliconDie-4">
+      <materialref ref="AIR"/>
+      <solidref ref="T-SiliconDie-4"/>
+    </volume>
+    <volume name="World">
+      <materialref ref="VACUUM"/>
+      <solidref ref="worldbox"/>
+      <physvol name="P-MoldResin-2">
+        <volumeref ref="V-MoldResin-2"/>
+        <positionref ref="center"/>
+      </physvol>
+      <physvol name="P-SiliconDie-4">
+        <volumeref ref="V-SiliconDie-4"/>
+        <positionref ref="center"/>
+      </physvol>
+    </volume>
+  </structure>
+  <setup name="Default" version="1.0">
+    <world ref="World"/>
+  </setup>
+</gdml>

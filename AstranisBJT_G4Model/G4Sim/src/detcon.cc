@@ -10,97 +10,32 @@
 detcon::detcon(const G4GDMLParser &parser) :
 G4VUserDetectorConstruction(),
 fWorldVolume(nullptr),
-LV_SOT23(nullptr),
-LV_ActiveRegion(nullptr),
-LV_PCB(nullptr),
-LV_AlFoil000(nullptr),
-LV_AlFoil001(nullptr),
-LV_AlFoil002(nullptr),
-LV_MylarWindow000(nullptr),
-LV_MylarWindow001(nullptr),
-LV_PE_BaseLayer(nullptr),
-LV_PE_Protection(nullptr),
-LV_DRZActiveLayer(nullptr),
-LV_AIRBOX(nullptr) {
+LV_MoldResin(nullptr),
+LV_ActiveRegion(nullptr) {
     fWorldVolume = parser.GetWorldVolume();
 
-    LV_SOT23 = parser.GetVolume("LV_MoldResin");
-    LV_ActiveRegion = parser.GetVolume("LV_ActiveRegion");
-    LV_PCB = parser.GetVolume("LV_PCB");
-    LV_AlFoil000 = parser.GetVolume("LV_AlFoil000");
-    LV_AlFoil001 = parser.GetVolume("LV_AlFoil001");
-    LV_AlFoil002 = parser.GetVolume("LV_AlFoil002");
-    LV_MylarWindow000 = parser.GetVolume("LV_MylarWindow000");
-    LV_MylarWindow001 = parser.GetVolume("LV_MylarWindow001");
-    LV_PE_BaseLayer = parser.GetVolume("LV_PE_BaseLayer");
-    LV_PE_Protection = parser.GetVolume("LV_PE_Protection");
-    LV_DRZActiveLayer = parser.GetVolume("LV_DRZActiveLayer");
-    LV_AIRBOX = parser.GetVolume("LV_AIR");
+    LV_MoldResin = parser.GetVolume("V-MoldResin-2");
+    LV_ActiveRegion = parser.GetVolume("V-SiliconDie-4");
 
-    visAtt_SOT23 = new G4VisAttributes();
-    visAtt_SOT23->SetVisibility(true);
-    visAtt_SOT23->SetForceSolid(true);
-    visAtt_SOT23->SetColour(1, 1, 1, 0.3);
-    LV_SOT23->SetVisAttributes(visAtt_SOT23);
+    visAtt_MoldResin = new G4VisAttributes();
+    visAtt_MoldResin->SetVisibility(true);
+    visAtt_MoldResin->SetForceSolid(true);
+    visAtt_MoldResin->SetColour(1, 1, 1, 0.8);
+    LV_MoldResin->SetVisAttributes(visAtt_MoldResin);
 
     visAtt_ActiveRegion = new G4VisAttributes();
     visAtt_ActiveRegion->SetVisibility(true);
     visAtt_ActiveRegion->SetForceSolid(true);
     visAtt_ActiveRegion->SetColour(0, 1, 0, 0.9);
     LV_ActiveRegion->SetVisAttributes(visAtt_ActiveRegion);
-
-    visAtt_PCB = new G4VisAttributes();
-    visAtt_PCB->SetVisibility(true);
-    visAtt_PCB->SetForceSolid(true);
-    visAtt_PCB->SetColour(0, 0, 1, 0.3);
-    LV_PCB->SetVisAttributes(visAtt_PCB);
-
-    visAtt_AlFoil = new G4VisAttributes();
-    visAtt_AlFoil->SetVisibility(true);
-    visAtt_AlFoil->SetForceSolid(true);
-    visAtt_AlFoil->SetColour(1, 1, 0, 0.3);
-    LV_AlFoil000->SetVisAttributes(visAtt_AlFoil);
-    LV_AlFoil001->SetVisAttributes(visAtt_AlFoil);
-    LV_AlFoil002->SetVisAttributes(visAtt_AlFoil);
-
-    visAtt_MylarWindow = new G4VisAttributes();
-    visAtt_MylarWindow->SetVisibility(true);
-    visAtt_MylarWindow->SetForceSolid(true);
-    visAtt_MylarWindow->SetColour(0, 1, 1, 0.3);
-    LV_MylarWindow000->SetVisAttributes(visAtt_MylarWindow);
-    LV_MylarWindow001->SetVisAttributes(visAtt_MylarWindow);
-
-    visAtt_DRZScreen = new G4VisAttributes();
-    visAtt_DRZScreen->SetVisibility(true);
-    visAtt_DRZScreen->SetForceSolid(true);
-    visAtt_DRZScreen->SetColour(1, 0, 0, 0.3);
-    LV_DRZActiveLayer->SetVisAttributes(visAtt_DRZScreen);
-    LV_PE_Protection->SetVisAttributes(visAtt_DRZScreen);
-    LV_PE_BaseLayer->SetVisAttributes(visAtt_DRZScreen);
-
-    visAtt_AIRBOX = new G4VisAttributes();
-    visAtt_AIRBOX->SetVisibility(false);
-    visAtt_AIRBOX->SetForceSolid(true);
-    visAtt_AIRBOX->SetColour(0, 0, 0, 0);
-    LV_AIRBOX->SetVisAttributes(visAtt_AIRBOX);
 }
 
 detcon::~detcon() {
-    delete LV_SOT23;
+    delete LV_MoldResin;
     delete LV_ActiveRegion; // <- this is the sensitive detector
-    delete LV_PCB;
-    delete LV_AlFoil000;
-    delete LV_AlFoil001;
-    delete LV_AlFoil002;
-    delete LV_MylarWindow000;
-    delete LV_MylarWindow001;
 
-    delete visAtt_SOT23;
+    delete visAtt_MoldResin;
     delete visAtt_ActiveRegion;
-    delete visAtt_PCB;
-    delete visAtt_DRZScreen;
-    delete visAtt_AlFoil;
-    delete visAtt_MylarWindow;
 
     delete fWorldVolume;
 }
@@ -148,26 +83,24 @@ G4VPhysicalVolume *detcon::Construct() {
     Polyester->AddElement(nist->FindOrBuildElement("O"), 4);
 
     fWorldVolume->GetLogicalVolume()->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_SOT23->SetMaterial(nist->FindOrBuildMaterial("MoldResin"));
+    LV_MoldResin->SetMaterial(nist->FindOrBuildMaterial("MoldResin"));
     LV_ActiveRegion->SetMaterial(nist->FindOrBuildMaterial("G4_Si"));
-    LV_PCB->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_AlFoil000->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_AlFoil001->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_AlFoil002->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_MylarWindow000->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_MylarWindow001->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    // LV_PE_BaseLayer->SetMaterial(Polyester);
-    // LV_PE_Protection->SetMaterial(Polyester);
-    // LV_DRZActiveLayer->SetMaterial(DRZ_material);
-    LV_PE_BaseLayer->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_PE_Protection->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_DRZActiveLayer->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
-    LV_AIRBOX->SetMaterial(nist->FindOrBuildMaterial("G4_Galactic"));
 
     G4bool checkOverlaps = true;
+
+    // Print mass of the volumes
+    G4double MoldResinMass = LV_MoldResin->GetMass();
+    G4double ActiveRegionMass = LV_ActiveRegion->GetMass();
+    std::cout << "MoldResin mass: " << MoldResinMass / g << " g" << std::endl;
+    std::cout << "ActiveRegion mass: " << ActiveRegionMass / g << " g" << std::endl;
 
     return fWorldVolume;
 }
 
 void detcon::ConstructSDandField() {
+    // Set sensitive detector
+    auto particleSD = new ParticleSD("SD");
+    G4SDManager::GetSDMpointer()->AddNewDetector(particleSD);
+    SetSensitiveDetector(LV_MoldResin, particleSD);
+    SetSensitiveDetector(LV_ActiveRegion, particleSD);
 }
