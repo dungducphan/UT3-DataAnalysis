@@ -19,8 +19,8 @@ void Ana::Loop() {
       sumEdep_Total += EDep;
    }
 
-   std::cout << "Total dose: " << 10 * sumEdep_Total * 1.60218e-19 / ((mass_MoldResin_gram + mass_ActiveRegion_gram) / 1000.) << " Gy." << std::endl;
-   std::cout << "Dose in the active region: " << 10 * sumEdep_SiliconDie * 1.60218e-19 / (mass_ActiveRegion_gram / 1000.) << " Gy." << std::endl;
+   std::cout << "Total dose: " << 0.1 * 1000 * sumEdep_Total * 1.60218e-19 / ((mass_MoldResin_gram + mass_ActiveRegion_gram) / 1000.) << " mGy." << std::endl;
+   std::cout << "Dose in the active region: " << 0.1 * 1000 * sumEdep_SiliconDie * 1.60218e-19 / (mass_ActiveRegion_gram / 1000.) << " mGy." << std::endl;
 }
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)

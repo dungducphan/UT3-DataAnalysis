@@ -9,7 +9,7 @@
 #include <TCanvas.h>
 
 std::string DataPath = "/home/dphan/Documents/GitHub/UT3-DataAnalysis/AstranisBJT_G4Model/Output";
-std::string filename = "EDep.1pC.root";
+std::string filename = "EDep.10pC.root";
 
 class Ana {
 public :
