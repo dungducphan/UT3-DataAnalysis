@@ -19,3 +19,4 @@ PicoScopeICT/EPICS/epics_ps3000a/iocBoot/iocPS3000A/cdCommands
 PicoScopeICT/EPICS/epics_ps3000a/dbd/PS3000A.dbd
 *slices*
 wf-20250312-*.png
+AstranisBJT_G4Model/Output/EDep.10pC.root
