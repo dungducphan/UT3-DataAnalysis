@@ -1,0 +1,27 @@
+*	Water Cherenkov Threshold Detector for High-Energy Electrons
+*
+* 100MeV Electron Beam 
+
+# QGSP_BERT is better for low-energy simulations
+physics QGSP_BERT
+
+# the beam is nominally headed in the +Z direction
+beam gaussian particle=e- nEvents=1.25E7 beamZ=0.0 \
+	sigmaX=0.05 sigmaY=0.05 sigmaXp=0.0 sigmaYp=0.0 \
+	meanMomentum=$EMOM sigmaP=0.0 meanT=0.0 sigmaT=0.0
+
+
+# Target is 30cm of water cylinder, 10cm in diameter, make it blue.
+cylinder Target outerRadius=50 length=300 material=WATER color=0,0,1
+place Target z=200
+
+# This virtualdetector catches what comes out of the target in the forward direction; make it green
+virtualdetector DetForward radius=3000 length=1 color=0,1,0
+place DetForward z=250
+
+# BeamVis just shows where the beam comes from
+box BeamVis width=0.1 height=0.1 length=0.1 material=Vacuum color=1,0,0
+place BeamVis z=0
+
+# label the visualization
+label text="Water Cherenkov Threshold Detector" 1200,0,-500
