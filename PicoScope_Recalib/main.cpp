@@ -16,7 +16,8 @@
 using waveform = std::pair<std::vector<double>, std::vector<double>>;
 
 std::string LeCroyDataDir = "/home/dphan/Documents/GitHub/UT3-DataAnalysis/PicoScope_Recalib/20250114-LeCroy/";
-std::string PicoScopeDataDir = "/home/dphan/Documents/GitHub/UT3-DataAnalysis/PicoScope_Recalib/20250114-PicoScope/";
+std::string PicoScopeDataDir = "/home/dphan/Documents/GitHub/UT3-DataAnalysis/PicoScope_Recalib/20250606/";
+std::string OutputGraphsDir = "/home/dphan/Documents/GitHub/UT3-DataAnalysis/PicoScope_Recalib/test/";
 
 waveform ReadSingleWaveformLeCroy(const std::string& filename) {
   std::vector<double> x, y;
@@ -84,8 +85,8 @@ waveform ReadSingleWaveformPicoScope(const std::string& filename) {
       double x_val = std::stod(x_str);
       double y_val = std::stod(y_str);
       // if (x_val > 500 && x_val < 510) std::cout << "picoscope: " << counter << std::endl;
-      x.push_back(x_val * 1E-9); // ns
-      y.push_back(y_val * 1E-3); // mV
+      x.push_back(x_val * 1E-9); // s
+      y.push_back(y_val * 1E-3); // V
     }
     counter++;
   }
@@ -166,61 +167,75 @@ double IntegrateTGraph(TGraph* gr, int idx_min) {
   return gr->Integral(idx_min, -1);
 }
 
+// int main() {
+//   // PlotLeCroy(true, 1750);
+//   // PlotPicoScope(true, 1200);
+//
+//   int integralMarkerLeCroy = 1752;
+//   int integralMarkerPicoScope = 1202;
+//   int nbins = 40;
+//   int min_charge = 0;
+//   int max_charge = 20;
+//
+//   auto h_LeCroy = new TH1D("h_LeCroy", "h_LeCroy", nbins, min_charge, max_charge);
+//   for (int shotID = 75; shotID < 124; shotID++) {
+//     std::string filename = Form("C2--20250114--%05i.txt", shotID);
+//     auto wf_01 = ReadSingleWaveformLeCroy(LeCroyDataDir + filename);
+//     auto gr_01 = WaveformToTGraph(wf_01);
+//     BackgroundSubtraction(gr_01, integralMarkerLeCroy - 1);
+//     double integral = IntegrateTGraph(gr_01, integralMarkerLeCroy);
+//     h_LeCroy->Fill(integral * 1E12 / 50);
+//     std::cout << "LeCroy: " << shotID << " " << integral * 1E9 << std::endl;
+//     delete gr_01;
+//   }
+//
+//   auto h_PicoScope = new TH1D("h_PicoScope", "h_PicoScope", nbins, min_charge, max_charge);
+//   for (int shotID = 1; shotID < 53; shotID++) {
+//     std::string filename = Form("20250114_%02i.csv", shotID);
+//     auto wf_01 = ReadSingleWaveformPicoScope(PicoScopeDataDir + filename);
+//     auto gr_01 = WaveformToTGraph(wf_01);
+//     BackgroundSubtraction(gr_01, integralMarkerPicoScope - 1);
+//     double integral = IntegrateTGraph(gr_01, integralMarkerPicoScope);
+//     h_PicoScope->Fill(integral * 1E12 / 50);
+//     std::cout << "PicoScope: " << shotID << " " << integral * 1E9 << std::endl;
+//     delete gr_01;
+//   }
+//
+//   gStyle->SetOptStat(0);
+//   auto c = new TCanvas("c", "c", 800, 800);
+//   h_LeCroy->SetLineColor(kRed);
+//   h_LeCroy->SetFillColorAlpha(kRed, 0.5);
+//   h_LeCroy->SetTitle("Data Collected on 2025-01-14");
+//   h_LeCroy->GetXaxis()->SetTitle("Charge (pC)");
+//   h_LeCroy->GetYaxis()->SetTitle("Counts");
+//   h_LeCroy->GetXaxis()->CenterTitle();
+//   h_LeCroy->GetYaxis()->CenterTitle();
+//   h_LeCroy->Draw();
+//   h_PicoScope->SetLineColor(kBlue);
+//   h_PicoScope->SetFillColorAlpha(kBlue, 0.5);
+//   h_PicoScope->Draw("SAME");
+//
+//   auto leg = new TLegend(0.45, 0.65, 0.85, 0.85);
+//   leg->AddEntry(h_LeCroy, Form("LeCroy: %1.2f #pm %1.2f pC", h_LeCroy->GetMean(), h_LeCroy->GetStdDev()), "f");
+//   leg->AddEntry(h_PicoScope, Form("PicoScope: %1.2f  #pm %1.2f pC", h_PicoScope->GetMean(), h_PicoScope->GetStdDev()), "f");
+//   leg->SetBorderSize(0);
+//   leg->Draw();
+//
+//   c->SaveAs("test/hist.png");
+//
+//   return 0;
+// }
+
+
 int main() {
-  // PlotLeCroy(true, 1750);
-  // PlotPicoScope(true, 1200);
+  int integralMarkerPicoScope = 500;
 
-  int integralMarkerLeCroy = 1752;
-  int integralMarkerPicoScope = 1202;
-  int nbins = 40;
-  int min_charge = 0;
-  int max_charge = 20;
-
-  auto h_LeCroy = new TH1D("h_LeCroy", "h_LeCroy", nbins, min_charge, max_charge);
-  for (int shotID = 75; shotID < 124; shotID++) {
-    std::string filename = Form("C2--20250114--%05i.txt", shotID);
-    auto wf_01 = ReadSingleWaveformLeCroy(LeCroyDataDir + filename);
-    auto gr_01 = WaveformToTGraph(wf_01);
-    BackgroundSubtraction(gr_01, integralMarkerLeCroy - 1);
-    double integral = IntegrateTGraph(gr_01, integralMarkerLeCroy);
-    h_LeCroy->Fill(integral * 1E12 / 50);
-    std::cout << "LeCroy: " << shotID << " " << integral * 1E9 << std::endl;
-    delete gr_01;
-  }
-
-  auto h_PicoScope = new TH1D("h_PicoScope", "h_PicoScope", nbins, min_charge, max_charge);
-  for (int shotID = 1; shotID < 53; shotID++) {
-    std::string filename = Form("20250114_%02i.csv", shotID);
+  for (int shotID = 0; shotID < 20; shotID++) {
+    std::string filename = Form("wf_%i.csv", shotID);
     auto wf_01 = ReadSingleWaveformPicoScope(PicoScopeDataDir + filename);
     auto gr_01 = WaveformToTGraph(wf_01);
     BackgroundSubtraction(gr_01, integralMarkerPicoScope - 1);
     double integral = IntegrateTGraph(gr_01, integralMarkerPicoScope);
-    h_PicoScope->Fill(integral * 1E12 / 50);
-    std::cout << "PicoScope: " << shotID << " " << integral * 1E9 << std::endl;
-    delete gr_01;
+    std::cout <<  integral * 1E12 / 50 << " pC" << std::endl;
   }
-
-  gStyle->SetOptStat(0);
-  auto c = new TCanvas("c", "c", 800, 800);
-  h_LeCroy->SetLineColor(kRed);
-  h_LeCroy->SetFillColorAlpha(kRed, 0.5);
-  h_LeCroy->SetTitle("Data Collected on 2025-01-14");
-  h_LeCroy->GetXaxis()->SetTitle("Charge (pC)");
-  h_LeCroy->GetYaxis()->SetTitle("Counts");
-  h_LeCroy->GetXaxis()->CenterTitle();
-  h_LeCroy->GetYaxis()->CenterTitle();
-  h_LeCroy->Draw();
-  h_PicoScope->SetLineColor(kBlue);
-  h_PicoScope->SetFillColorAlpha(kBlue, 0.5);
-  h_PicoScope->Draw("SAME");
-
-  auto leg = new TLegend(0.45, 0.65, 0.85, 0.85);
-  leg->AddEntry(h_LeCroy, Form("LeCroy: %1.2f #pm %1.2f pC", h_LeCroy->GetMean(), h_LeCroy->GetStdDev()), "f");
-  leg->AddEntry(h_PicoScope, Form("PicoScope: %1.2f  #pm %1.2f pC", h_PicoScope->GetMean(), h_PicoScope->GetStdDev()), "f");
-  leg->SetBorderSize(0);
-  leg->Draw();
-
-  c->SaveAs("test/hist.png");
-
-  return 0;
 }
